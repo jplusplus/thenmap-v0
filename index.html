@@ -83,8 +83,17 @@ body {
 	</section>
 		
 	<script>
-
+/************/
+/* SETTINGS */
+/************/
+var startingYear = 1970;
+var firstYear    = 1945;
+var lastYear     = 2013;
 var thenmapCurrentLanguage = 'sv';
+
+/************/
+/* MESSAGES */
+/************/
 var messages = 
 {
  "sv": { translation: {
@@ -117,6 +126,7 @@ $(document).ready(function(){
 	var $timelineHandle = $thenmap.find("#thenmap-timeline .handle");
 	var $playButton = $thenmap.find("#thenmap-play");
 	var $isPlaying = false;
+	var $currentYear = startingYear;
 	var timeline;
 	var timer;
 	
@@ -130,13 +140,14 @@ $(document).ready(function(){
 			steps: yearSpan+1, // Number of steps
 			animationCallback: function(x) {
 				// Update handle	
-				var year = year0 + x * yearSpan; // Get selecetd year
-				$timelineHandle.text(year); // Update handle text
+				$currentYear  = year0 + x * yearSpan; // Get selecetd year
+				$timelineHandle.text($currentYear); // Update handle text
+				console.log("AN: "+$currentYear );
 			},
 			callback: function(x) {
 				// Update map and do other stuff
-				var year = year0 + x * yearSpan; // Get selecetd year
-				console.log("Redraw map!");
+				$currentYear = year0 + x * yearSpan; // Get selecetd year
+				console.log("CB: "+$currentYear );
 			}
 		});
 	}
@@ -170,18 +181,24 @@ $(document).ready(function(){
 		}
 	})
 	$thenmap.find("#thenmap-stepback").click(function() {
+		if ($currentYear >= firstYear){
+			timeline.setStep(($currentYear--)-firstYear);
+		}
 	});
 	$thenmap.find("#thenmap-stepforward").click(function() {
+		if ($currentYear <= lastYear) {
+			timeline.setStep(($currentYear++)-firstYear+2);//why do we need to add 2 here???
+		}
 	});
 	$thenmap.find("#thenmap-rewind").click(function() {
-		timeline.setStep("0");
+		timeline.setStep(0);
 	});
 	$thenmap.find("#thenmap-gotoend").click(function() {
-		timeline.setStep("2013");
+		timeline.setStep(lastYear-firstYear+1);
 	});
 	
 	// Init timeline
-	initTimeline('thenmap-slider', 1956, 2013, 1970);
+	initTimeline('thenmap-slider', firstYear, lastYear, startingYear);
 });
 		</script>
 	</body>
