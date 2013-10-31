@@ -142,12 +142,10 @@ $(document).ready(function(){
 				// Update handle	
 				$currentYear  = year0 + x * yearSpan; // Get selecetd year
 				$timelineHandle.text($currentYear); // Update handle text
-				console.log("AN: "+$currentYear );
 			},
 			callback: function(x) {
 				// Update map and do other stuff
-				$currentYear = year0 + x * yearSpan; // Get selecetd year
-				console.log("CB: "+$currentYear );
+//				$currentYear = year0 + x * yearSpan; // Get selecetd year
 			}
 		});
 	}
@@ -155,31 +153,37 @@ $(document).ready(function(){
 	// Function to play
 	function playTimeline() {
 		timer = setInterval(function() {
-			var opt = timeline.options; 
+			if ( $currentYear <= lastYear ) {
+				timeline.setStep(($currentYear++)-firstYear+2);//why do we need to add 2 here???
+			} else {
+				stopTimeline();
+			}
+/*			var opt = timeline.options; 
 			var newX = opt.x + opt.step; // Set new x value
 			timeline.options.x = newX;
 			timeline.setValue(newX);
-			if (newX >= 1) clearInterval(timer);
+			if (newX >= 1) clearInterval(timer);*/
 		}, 500) // Set animation speed, 2000 = 2 sec
 		$isPlaying = true;
+		$playButton.text(i18n.t("pause"));
 	}
 	// Function to stop timeline animation
 	function stopTimeline() {
 		clearInterval(timer);
 		$isPlaying = false;
+		$playButton.text(i18n.t("play"));
 	}
 	
-	// Click events for controls
+	// Play / pause
 	$playButton.click(function() {
 		if ($isPlaying) {
 			stopTimeline();
-			$playButton.text(i18n.t("play"));
-		}
-		else {
+		} else {
 			playTimeline();
-			$playButton.text(i18n.t("pause"));
 		}
-	})
+	});
+	
+	// Step
 	$thenmap.find("#thenmap-stepback").click(function() {
 		if ($currentYear >= firstYear){
 			timeline.setStep(($currentYear--)-firstYear);
@@ -190,6 +194,7 @@ $(document).ready(function(){
 			timeline.setStep(($currentYear++)-firstYear+2);//why do we need to add 2 here???
 		}
 	});
+	// Go first/last
 	$thenmap.find("#thenmap-rewind").click(function() {
 		timeline.setStep(0);
 	});
