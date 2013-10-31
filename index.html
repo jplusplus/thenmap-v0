@@ -24,17 +24,19 @@
 		body {
 			font-family: Arial, "sans-serif";
 		}
-		#thenmap-play {
+		.control {
 			font-size: 16px;
 			font-weight: bold;
 			cursor: pointer;
-			padding: 10px;
 			background-color: #C00;
 			color: #fff;
+			padding: 10px;
 			margin: 10px;
 			display: inline-block;
-			width: 100px;
 			text-align: center;
+		}
+		#thenmap-play {
+			width: 100px;
 		}
 		#thenmap-play:hover {
 			background-color: #8A0000;
@@ -51,8 +53,12 @@
 			</div>
 
 		</div> 
-		<menu class="controls">
-			<div id="thenmap-play" data-i18n="controls.play"></div>
+		<menu class="controlbar">
+			<div id="thenmap-rewind" class="control" data-i18n="controlbar.rewind"></div>
+			<div id="thenmap-stepback" class="control" data-i18n="controlbar.stepback"></div>
+			<div id="thenmap-play" class="control" data-i18n="controlbar.play"></div>
+			<div id="thenmap-stepforward" class="control" data-i18n="controlbar.stepforward"></div>
+			<div id="thenmap-gotoend" class="control" data-i18n="controlbar.gotoend"></div>
 		</menu>
 	</section>
 		
@@ -62,9 +68,13 @@ var thenmapCurrentLanguage = 'sv';
 var messages = 
 {
  "sv": { translation: {
-  "name": "ThenMap",
-  "controls" : {
-   "play": "Spela upp"
+  "name"       : "ThenMap",
+  "controlbar" : {
+   "rewind"        : "⏮",
+   "stepback"      : "Förra",
+   "play"          : "Spela upp",
+   "stepforward"   : "Nästa",
+   "gotoend"       : "⏭"
   }
  }}
 }
@@ -75,7 +85,7 @@ $(document).ready(function(){
 				debug: true,
 				/*useLocalStorage: true, */
 				resStore: messages }, function() {
-		$(".controls").i18n();
+		$(".controlbar").i18n();
 	});
 });
 
@@ -128,7 +138,7 @@ $(document).ready(function(){
 		$isPlaying = false;
 	}
 	
-	// Click events for play button 
+	// Click events for controls
 	$playButton.click(function() {
 		if ($isPlaying) {
 			stopTimeline();
@@ -139,6 +149,16 @@ $(document).ready(function(){
 			$playButton.text(i18n.t("pause"));
 		}
 	})
+	$thenmap.find("#thenmap-stepback").click(function() {
+	});
+	$thenmap.find("#thenmap-stepforward").click(function() {
+	});
+	$thenmap.find("#thenmap-rewind").click(function() {
+		timeline.setStep("0");
+	});
+	$thenmap.find("#thenmap-gotoend").click(function() {
+		timeline.setStep("2013");
+	});
 	
 	// Init timeline
 	initTimeline('thenmap-slider', 1956, 2013, 1970);
