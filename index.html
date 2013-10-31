@@ -1,0 +1,114 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+		<title>Världskartor: slider</title> 
+
+		<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.0/jquery.min.js"></script>
+
+		<script src="js/dragdealer.js" type="text/javascript" charset="utf-8"></script>
+		<link rel="stylesheet" href="css/dragdealer.css" type="text/css" media="screen" title="no title" charset="utf-8">
+	
+		<style>
+		body {
+			font-family: Arial;
+		}
+		#play {
+			font-size: 16px;
+			font-weight: bold;
+			cursor: pointer;
+			padding: 10px;
+			background-color: #CC0000;
+			color: #fff;
+			margin: 10px;
+			display: inline-block;
+			width: 100px;
+			text-align: center;
+		}
+		#play:hover {
+			background-color: #8A0000;
+		}
+		
+		
+		</style>
+		
+
+
+
+		
+	
+	</head>
+
+<body>
+
+	<div id="timeline">
+		<div id="slider" class="dragdealer">
+			<div class="red-bar handle"></div>
+		</div>
+
+	</div> 
+	<div id="play">Spela upp</div>
+		
+	<script>
+	// Define variables
+	var $timelineHandle = $("#timeline .handle");
+	var timeline;
+	var timer;
+	
+	// Function to draw timeline
+	function initTimeline(elementId, year0, year1, yearSelected) {
+		var yearSpan = year1 - year0;
+		timeline = new Dragdealer('slider', {
+			step: 1 / (yearSpan + 1), // This option only used to communicate with playTimeline()
+			x: 1 - (year1 - yearSelected) / yearSpan, // Set selected year
+			snap: true,
+			steps: yearSpan+1, // Number of steps
+			animationCallback: function(x) {
+				// Update handle	
+				var year = year0 + x * yearSpan; // Get selecetd year
+				$timelineHandle.text(year); // Update handle text
+			},
+			callback: function(x) {
+				// Update map and do other stuff
+				var year = year0 + x * yearSpan; // Get selecetd year
+				console.log("Redraw map!");
+			}
+		});
+	}
+	
+	// Function to play
+	function playTimeline() {
+		timer = setInterval(function() {
+			var opt = timeline.options; 
+			var newX = opt.x + opt.step; // Set new x value
+			timeline.options.x = newX;
+			timeline.setValue(newX);
+			if (newX >= 1) clearInterval(timer);
+		}, 500) // Set animation speed, 2000 = 2 sec
+	}
+	// Function to stop timeline animation
+	function stopTimeline() {
+		clearInterval(timer);
+	}
+	
+	// Click events for play button 
+	$("#play").click(function() {
+		var el = $(this);
+		if (el.text() == "Spela upp") {
+			playTimeline();
+			el.text("Pausa");
+		}
+		else {
+			stopTimeline();
+			el.text("Spela upp");
+		}
+	})
+	
+	// Init timeline
+	initTimeline('slider', 1956, 2013, 1970);
+	
+	</script>
+</body>
+</html>
