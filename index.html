@@ -12,8 +12,9 @@
 		<script type="text/javascript" src="//cdnjs.cloudflare.com/ajax/libs/i18next/1.6.3/i18next-1.6.3.min.js" />
 		<script>window.i18n || document.write('<script src="js/i18next-1.7.1.min.js"><\/script>')</script>
 
-		<script src="js/dragdealer.js" charset="utf-8"></script>
-
+		<script src="js/dragdealer.js"></script>
+		<script src="js/jquery.csv-0.71.min.js"></script>
+		
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
 		<!--[if lt IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -103,8 +104,8 @@ svg.thenmap-map {
 /* SETTINGS */
 /************/
 var startingYear = 1970;
-var firstYear    = 1965;
-var lastYear     = 2013;
+var firstYear    = 1946;
+var lastYear     = 2012;
 var mapWidth     = 956;
 var mapHeight    = 369;
 var thenmapCurrentLanguage = 'sv';
@@ -131,6 +132,12 @@ var messages =
  }}
 }
 
+/***************/
+/*   MAP KEYS  */
+/***************/
+
+var mapKeys; //read from csv for now, for easier development
+
 /* Init i18n, and translate all messages */
 $(document).ready(function(){
 	i18n.init({ lng: thenmapCurrentLanguage, 
@@ -138,6 +145,21 @@ $(document).ready(function(){
 				/*useLocalStorage: true, */
 				resStore: messages }, function() {
 		$(".controlbar").i18n();
+	});
+});
+
+/* Load map data */
+$(document).ready(function() {
+	$.ajax({
+		type: "GET",
+		url: "maps/keys.csv",
+		dataType: "text",
+		success: function(data) {
+			mapKeys = $.csv.toObjects(data);//FIXME callback
+		},
+		error: function(e) {
+			console.log("Error reading map keys: "+e);
+		}
 	});
 });
 
@@ -204,9 +226,24 @@ $(document).ready(function(){
 	var timeline;
 	var timer;
 	
+	/* We should have a list of id for each year, this is to slow */
+	/* Fine for development, until we decided what map to use  */
 	function printMap(y, svg){
-		console.log("It's "+y+" in "+svg);
-		
+		if ('undefined' != (typeof mapKeys)) {
+
+			/* Hide all groups */
+//			$(svg).find('#cshapes > g > g').css("display","none");
+			$('svg > #cshapes > g > g').css("display","none");
+
+			$(mapKeys).each(function(k,v) {
+				var y1 = v["GWSYEAR,N,19,15"]; 
+				var y2 = v["GWEYEAR,N,19,15"];
+				if ((+y1 <= $currentYear) && ($currentYear <= +y2)) {
+					var key = +k+1;
+					$('#cshapes_'+key).css("display","inline");
+				}
+			});
+		}
 	}
 	
 	// Function to draw timeline
@@ -279,6 +316,7 @@ $(document).ready(function(){
 	
 	// Init timeline
 	initTimeline('thenmap-slider', firstYear, lastYear, startingYear);
+	printMap($currentYear, $thenmapsvg);
 });
 		</script>
 	</body>
