@@ -4,7 +4,7 @@
 		<meta charset=utf-8 />
 		<meta name="viewport" content="width=device-width">
 
-		<title>Världskartor: slider</title>
+		<title>thenmap, test page</title>
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script>window.jquery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
@@ -22,6 +22,15 @@
 		<style>
 body {
 	font-family: Arial, "sans-serif";
+}
+
+#thenmap-map-container{
+	max-width:956px;
+	margin-left:auto;margin-right:auto;
+}
+
+svg.thenmap-map {
+	width:100%;
 }
 
 .controlbar {
@@ -74,19 +83,17 @@ body {
 
 <body>
 	<section id="thenmap">
-	 	<div><pre>
-	 	    	 	    ┌------------------┐
-	 	    	 	    │ M A P goes here! │
-	 	    	 	    └------------------┘
-	 	</pre></div>
+	 	<div id="thenmap-map-container">
+			<img id="thenmap-map" class="thenmap-map" src="maps/ALLTHEWORLD.svg"/>
+	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="red-bar handle"></div>
 		</div>
 		<menu class="controlbar">
 			<input type=button id="thenmap-rewind" class="control" data-i18n="[value]controlbar.rewind;[title]controlbar.rewind-title" />
-			<input type=button id="thenmap-stepback" class="control" data-i18n="[value]controlbar.stepback;[title]controlbar.rewind-title" />
+			<input type=button id="thenmap-stepback" class="control" data-i18n="[value]controlbar.stepback;[title]controlbar.stepback-title" />
 			<input type=button id="thenmap-play" class="control" data-i18n="[value]controlbar.play" />
-			<input type=button id="thenmap-stepforward" class="control" data-i18n="[value]controlbar.stepforward;[title]controlbar.rewind-title" />
+			<input type=button id="thenmap-stepforward" class="control" data-i18n="[value]controlbar.stepforward;[title]controlbar.stepforward-title" />
 			<input type=button id="thenmap-gotoend" class="control" data-i18n="[value]controlbar.gotoend;[title]controlbar.gotoend-title" />
 		</menu>
 	</section>
@@ -96,8 +103,10 @@ body {
 /* SETTINGS */
 /************/
 var startingYear = 1970;
-var firstYear    = 1945;
+var firstYear    = 1965;
 var lastYear     = 2013;
+var mapWidth     = 956;
+var mapHeight    = 369;
 var thenmapCurrentLanguage = 'sv';
 
 /************/
@@ -113,6 +122,7 @@ var messages =
    "stepback"         : "◀",
    "stepback-title"   : "Förra",
    "play"             : "Spela upp",
+   "pause"            : "Pausa",
    "stepforward"      : "▶",
    "stepforward-title": "Nästa",
    "gotoend"          : "⏭",
@@ -131,17 +141,73 @@ $(document).ready(function(){
 	});
 });
 
+/* Replace all SVG images with inline SVG */
+$(document).ready(function(){
+
+	/* Don't stretch map over it's witdh */
+	$('#thenmap-map-container').css("max-width",mapWidth);
+
+	var $thenmapmap = $('#thenmap-map');
+	/* Replace img */
+	var imgID = $thenmapmap.attr('id');
+	var imgClass = $thenmapmap.attr('class');
+	var imgURL = $thenmapmap.attr('src');
+
+	$.get(imgURL, function(data) {
+	    // Get the SVG tag, ignore the rest
+	    var $svg = $(data).find('svg');
+
+	    // Add replaced image's ID to the new SVG
+	    if(typeof imgID !== 'undefined') {
+	        $svg = $svg.attr('id', imgID);
+	    }
+	    // Add replaced image's classes to the new SVG
+	    if(typeof imgClass !== 'undefined') {
+	        $svg = $svg.attr('class', imgClass+' replaced-svg');
+	    }
+
+	    // Remove any invalid XML tags as per http://validator.w3.org
+	    /* (we shouldn't have any) 
+	    $svg = $svg.removeAttr('xmlns:a'); */
+
+		$svg = $svg.attr('width', mapWidth);
+		$svg = $svg.attr('height', mapHeight);
+
+	    // Replace image with new SVG
+	    $thenmapmap.replaceWith($svg);
+	    
+	    //Add markers
+/*		    var year = $($img).data("year");
+	    if (typeof spots[year] !== 'undefined' ) {
+	    	$(spots[year]).each(function(){
+console.log(this);
+				var coords = mapProjection.projectToCSS(this.lat, this.lon);
+console.log(coords);
+		    	addMarkerAt('y1959', coords.x, coords.y);
+		    });
+	    }*/
+
+	}, 'xml');
+
+});
+
 /* Init player */
 $(document).ready(function(){
 	/* Variables */	
 	/* cache elements */
 	var $thenmap = $("#thenmap");
+	var $thenmapsvg = $thenmap.find('#thenmap-map');
 	var $timelineHandle = $thenmap.find("#thenmap-slider .handle");
 	var $playButton = $thenmap.find("#thenmap-play");
 	var $isPlaying = false;
 	var $currentYear = startingYear;
 	var timeline;
 	var timer;
+	
+	function printMap(y, svg){
+		console.log("It's "+y+" in "+svg);
+		
+	}
 	
 	// Function to draw timeline
 	function initTimeline(elementId, year0, year1, yearSelected) {
@@ -152,13 +218,15 @@ $(document).ready(function(){
 			snap: true,
 			steps: yearSpan+1, // Number of steps
 			animationCallback: function(x) {
-				// Update handle	
+				// Update handle and map
 				$currentYear  = year0 + x * yearSpan; // Get selecteds year
 				$timelineHandle.text($currentYear); // Update handle text
-			},
+				printMap($currentYear, $thenmapsvg); // uppdate map
+			}/*,
 			callback: function(x) {
 				// Update map and do other stuff
-			}
+				printMap($currentYear, $thenmapsvg);
+			}*/
 		});
 	}
 		
@@ -172,13 +240,13 @@ $(document).ready(function(){
 			}
 		}, 500) // Set animation speed, 2000 = 2 sec
 		$isPlaying = true;
-		$playButton.attr("value",i18n.t("pause"));
+		$playButton.val(i18n.t("controlbar.pause"));
 	}
 	// Function to stop timeline animation
 	function stopTimeline() {
 		clearInterval(timer);
 		$isPlaying = false;
-		$playButton.attr("value",i18n.t("play"));
+		$playButton.val(i18n.t("controlbar.play"));
 	}
 	
 	// Play / pause
