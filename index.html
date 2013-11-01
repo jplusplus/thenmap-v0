@@ -23,23 +23,30 @@
 body {
 	font-family: Arial, "sans-serif";
 }
+
+.controlbar {
+	margin-left:auto;margin-right:auto;
+	max-width:450px;
+}
+
 .control {
 	font-size: 16px;
 	font-weight: bold;
 	cursor: pointer;
 	background-color: #C00;
 	color: #fff;
-	padding: 10px;
-	margin: 10px;
+	padding: 5px 8px;
+	margin: 4px 6px;
+	border-radius: 3px;
 	display: inline-block;
 	text-align: center;
+	outline:0;border:0;
 }
 .control:hover {
 	background-color: #8A0000;
 }
 #thenmap-play {width: 100px;}
-#thenmap-stepback,#thenmap-stepforward {width: 40px;}
-#thenmap-rewind,#thenmap-rewind {width: 10px;}
+#thenmap-stepback,#thenmap-stepforward, #thenmap-rewind,#thenmap-rewind {width: 30px;}
 
 .dragdealer {
 	position: relative;
@@ -67,18 +74,15 @@ body {
 
 <body>
 	<section id="thenmap">
-		<div id="thenmap-timeline">
-			<div id="thenmap-slider" class="dragdealer">
-				<div class="red-bar handle"></div>
-			</div>
-
-		</div> 
+		<div id="thenmap-slider" class="dragdealer">
+			<div class="red-bar handle"></div>
+		</div>
 		<menu class="controlbar">
-			<div id="thenmap-rewind" class="control" data-i18n="controlbar.rewind"></div>
-			<div id="thenmap-stepback" class="control" data-i18n="controlbar.stepback"></div>
-			<div id="thenmap-play" class="control" data-i18n="controlbar.play"></div>
-			<div id="thenmap-stepforward" class="control" data-i18n="controlbar.stepforward"></div>
-			<div id="thenmap-gotoend" class="control" data-i18n="controlbar.gotoend"></div>
+			<input type=button id="thenmap-rewind" class="control" data-i18n="[value]controlbar.rewind;[title]controlbar.rewind-title" />
+			<input type=button id="thenmap-stepback" class="control" data-i18n="[value]controlbar.stepback;[title]controlbar.rewind-title" />
+			<input type=button id="thenmap-play" class="control" data-i18n="[value]controlbar.play" />
+			<input type=button id="thenmap-stepforward" class="control" data-i18n="[value]controlbar.stepforward;[title]controlbar.rewind-title" />
+			<input type=button id="thenmap-gotoend" class="control" data-i18n="[value]controlbar.gotoend;[title]controlbar.gotoend-title" />
 		</menu>
 	</section>
 		
@@ -99,11 +103,15 @@ var messages =
  "sv": { translation: {
   "name"       : "ThenMap",
   "controlbar" : {
-   "rewind"        : "⏮",
-   "stepback"      : "Förra",
-   "play"          : "Spela upp",
-   "stepforward"   : "Nästa",
-   "gotoend"       : "⏭"
+   "rewind"           : "⏮",
+   "rewind-title"     : "Hoppa till början",
+   "stepback"         : "◀",
+   "stepback-title"   : "Förra",
+   "play"             : "Spela upp",
+   "stepforward"      : "▶",
+   "stepforward-title": "Nästa",
+   "gotoend"          : "⏭",
+   "gotoend-title"    : "Hoppa till slutet" 
   }
  }}
 }
@@ -123,7 +131,7 @@ $(document).ready(function(){
 	/* Variables */	
 	/* cache elements */
 	var $thenmap = $("#thenmap");
-	var $timelineHandle = $thenmap.find("#thenmap-timeline .handle");
+	var $timelineHandle = $thenmap.find("#thenmap-slider .handle");
 	var $playButton = $thenmap.find("#thenmap-play");
 	var $isPlaying = false;
 	var $currentYear = startingYear;
@@ -134,44 +142,38 @@ $(document).ready(function(){
 	function initTimeline(elementId, year0, year1, yearSelected) {
 		var yearSpan = year1 - year0;
 		timeline = new Dragdealer('thenmap-slider', {
-			step: 1 / (yearSpan + 1), // This option only used to communicate with playTimeline()
-			x: 1 - (year1 - yearSelected) / yearSpan, // Set selected year
+			step: 1 / (yearSpan + 1), // How long is one step?
+			x: 1 - (year1 - yearSelected) / yearSpan, // Set selected position
 			snap: true,
 			steps: yearSpan+1, // Number of steps
 			animationCallback: function(x) {
 				// Update handle	
-				$currentYear  = year0 + x * yearSpan; // Get selecetd year
+				$currentYear  = year0 + x * yearSpan; // Get selecteds year
 				$timelineHandle.text($currentYear); // Update handle text
 			},
 			callback: function(x) {
 				// Update map and do other stuff
-//				$currentYear = year0 + x * yearSpan; // Get selecetd year
 			}
 		});
 	}
-	
+		
 	// Function to play
 	function playTimeline() {
 		timer = setInterval(function() {
 			if ( $currentYear <= lastYear ) {
-				timeline.setStep(($currentYear++)-firstYear+2);//why do we need to add 2 here???
+				timeline.setStep(($currentYear++)-firstYear+2);
 			} else {
 				stopTimeline();
 			}
-/*			var opt = timeline.options; 
-			var newX = opt.x + opt.step; // Set new x value
-			timeline.options.x = newX;
-			timeline.setValue(newX);
-			if (newX >= 1) clearInterval(timer);*/
 		}, 500) // Set animation speed, 2000 = 2 sec
 		$isPlaying = true;
-		$playButton.text(i18n.t("pause"));
+		$playButton.attr("value",i18n.t("pause"));
 	}
 	// Function to stop timeline animation
 	function stopTimeline() {
 		clearInterval(timer);
 		$isPlaying = false;
-		$playButton.text(i18n.t("play"));
+		$playButton.attr("value",i18n.t("play"));
 	}
 	
 	// Play / pause
@@ -191,7 +193,7 @@ $(document).ready(function(){
 	});
 	$thenmap.find("#thenmap-stepforward").click(function() {
 		if ($currentYear <= lastYear) {
-			timeline.setStep(($currentYear++)-firstYear+2);//why do we need to add 2 here???
+			timeline.setStep(($currentYear++)-firstYear+2);
 		}
 	});
 	// Go first/last
