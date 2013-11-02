@@ -91,7 +91,7 @@ svg.thenmap-map {
 <body>
 	<section id="thenmap">
 	 	<div id="thenmap-map-container">
-			<img id="thenmap-map" class="thenmap-map" src="maps/ALLTHEWORLD.svg"/>
+			<img id="thenmap-map" class="thenmap-map" src="maps/ALLTHEWORLD2.svg"/>
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="red-bar handle"></div>
@@ -110,7 +110,7 @@ svg.thenmap-map {
 /* SETTINGS */
 /************/
 var startingYear = 1970;
-var firstYear    = 1947;
+var firstYear    = 1946;
 var lastYear     = 2012;
 var mapWidth     = 956;
 var mapHeight    = 369;
@@ -246,6 +246,7 @@ $(document).ready(function(){
 				var y1 = v["JSDATE,D"]; 
 				var y2 = v["JEDATE,D"];
 
+				// 1970-01-01 <= 1974-06-15 <= 1980-08-30
 				if ((y1 <= ($currentYear+$dateOffset)) && (($currentYear+$dateOffset) <= y2)) {
 					var key = +k+1;
 					$('#cshapes_'+key).css("display","inline");
@@ -264,9 +265,9 @@ $(document).ready(function(){
 			steps: yearSpan+1, // Number of steps
 			animationCallback: function(x) {
 				// Update handle and map
-				$currentYear  = year0 + x * yearSpan; // Get selecteds year
+				$currentYear  = year0 + x * yearSpan; // Get selected year
 				$timelineHandle.text($currentYear); // Update handle text
-				printMap($currentYear, $thenmapsvg); // uppdate map
+				printMap($currentYear, $thenmapsvg); // update map
 			}/*,
 			callback: function(x) {
 				// Update map and do other stuff
