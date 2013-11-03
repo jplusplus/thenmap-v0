@@ -115,6 +115,7 @@ var lastYear     = 2012;
 var mapWidth     = 956;
 var mapHeight    = 369;
 var thenmapCurrentLanguage = 'sv';
+var dateOffset = "-07-01"; //Each map will show the world at this date of the year
 
 /************/
 /* MESSAGES */
@@ -154,20 +155,25 @@ $(document).ready(function(){
 	});
 });
 
-/* Load map data */
-$(document).ready(function() {
-	$.ajax({
-		type: "GET",
-		url: "maps/keys.csv",
-		dataType: "text",
-		success: function(data) {
-			mapKeys = $.csv.toObjects(data);//FIXME callback
-		},
-		error: function(e) {
-			console.log("Error reading map keys: "+e);
-		}
-	});
-});
+	
+function printMap(y, svg){
+	
+	if ($("#cshapes > g > g").length){
+		$("#cshapes > g > g").each(function() {
+			var y1 = $(this).data("start"); 
+			var y2 = $(this).data("end"); 
+			if ((y1 <= (y+dateOffset)) && ((y+dateOffset) <= y2)) {
+				$(this).css("display","inline");
+			} else {
+				$(this).css("display","none");			
+			}
+
+		});
+	} else {
+		console.log('not ready');
+	}
+}
+
 
 /* Replace all SVG images with inline SVG */
 $(document).ready(function(){
@@ -203,7 +209,8 @@ $(document).ready(function(){
 
 	    // Replace image with new SVG
 	    $thenmapmap.replaceWith($svg);
-	    
+	    $thenmapsvg = $svg;
+    	printMap(startingYear, $thenmapsvg);
 	    //Add markers
 /*		    var year = $($img).data("year");
 	    if (typeof spots[year] !== 'undefined' ) {
@@ -229,53 +236,8 @@ $(document).ready(function(){
 	var $playButton = $thenmap.find("#thenmap-play");
 	var $isPlaying = false;
 	var $currentYear = startingYear;
-	var $dateOffset = "-07-01"; //Each map will show the world at this date of the year
 	var timeline;
 	var timer;
-	
-	/* We should have a list of id for each year, this is to slow */
-	/* Fine for development, until we decided what map to use  */
-	function printMap_old(y, svg){
-		if ('undefined' != (typeof mapKeys)) {
-
-			/* Hide all groups */
-//			$(svg).find('#cshapes > g > g').css("display","none");
-			$('svg > #cshapes > g > g').css("display","none");
-			
-			$(mapKeys).each(function(k,v) {
-				var y1 = v["JSDATE,D"]; 
-				var y2 = v["JEDATE,D"];
-
-				// 1970-01-01 <= 1974-06-15 <= 1980-08-30
-				if ((y1 <= ($currentYear+$dateOffset)) && (($currentYear+$dateOffset) <= y2)) {
-					var key = +k+1;
-					$('#cshapes_'+key).css("display","inline");
-				}
-			});
-		}
-	}
-	
-	function printMap(y, svg){
-		
-		if ($("#cshapes > g > g").length){
-			$("#cshapes > g > g").each(function() {
-				var y1 = $(this).data("start"); 
-				var y2 = $(this).data("end"); 
-				if ((y1 <= ($currentYear+$dateOffset)) && (($currentYear+$dateOffset) <= y2)) {
-					$(this).css("display","inline");
-				} else {
-					$(this).css("display","none");			
-				}
-
-			});
-/*		$(mapKeys).each(function(k,v) {
-			var y1 = v["JSDATE,D"]; 
-			var y2 = v["JEDATE,D"];
-
-		});*/
-		}
-	}
-
 	
 	// Function to draw timeline
 	function initTimeline(elementId, year0, year1, yearSelected) {
@@ -347,7 +309,6 @@ $(document).ready(function(){
 	
 	// Init timeline
 	initTimeline('thenmap-slider', firstYear, lastYear, startingYear);
-	printMap($currentYear, $thenmapsvg);
 });
 		</script>
 	</body>
