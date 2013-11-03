@@ -91,7 +91,7 @@ svg.thenmap-map {
 <body>
 	<section id="thenmap">
 	 	<div id="thenmap-map-container">
-			<img id="thenmap-map" class="thenmap-map" src="maps/ALLTHEWORLD2.svg"/>
+			<img id="thenmap-map" class="thenmap-map" src="maps/latest.svg"/>
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="red-bar handle"></div>
@@ -235,7 +235,7 @@ $(document).ready(function(){
 	
 	/* We should have a list of id for each year, this is to slow */
 	/* Fine for development, until we decided what map to use  */
-	function printMap(y, svg){
+	function printMap_old(y, svg){
 		if ('undefined' != (typeof mapKeys)) {
 
 			/* Hide all groups */
@@ -254,6 +254,28 @@ $(document).ready(function(){
 			});
 		}
 	}
+	
+	function printMap(y, svg){
+		
+		if ($("#cshapes > g > g").length){
+			$("#cshapes > g > g").each(function() {
+				var y1 = $(this).data("start"); 
+				var y2 = $(this).data("end"); 
+				if ((y1 <= ($currentYear+$dateOffset)) && (($currentYear+$dateOffset) <= y2)) {
+					$(this).css("display","inline");
+				} else {
+					$(this).css("display","none");			
+				}
+
+			});
+/*		$(mapKeys).each(function(k,v) {
+			var y1 = v["JSDATE,D"]; 
+			var y2 = v["JEDATE,D"];
+
+		});*/
+		}
+	}
+
 	
 	// Function to draw timeline
 	function initTimeline(elementId, year0, year1, yearSelected) {
