@@ -156,7 +156,7 @@ $(document).ready(function(){
 });
 
 	
-function printMap(y, svg){
+function printMap(y){
 	
 	if ($("#cshapes > g > g").length){
 		$("#cshapes > g > g").each(function() {
@@ -210,7 +210,7 @@ $(document).ready(function(){
 	    // Replace image with new SVG
 	    $thenmapmap.replaceWith($svg);
 	    $thenmapsvg = $svg;
-    	printMap(startingYear, $thenmapsvg);
+    	printMap(startingYear);
 	    //Add markers
 /*		    var year = $($img).data("year");
 	    if (typeof spots[year] !== 'undefined' ) {
@@ -251,12 +251,12 @@ $(document).ready(function(){
 				// Update handle and map
 				$currentYear  = year0 + x * yearSpan; // Get selected year
 				$timelineHandle.text($currentYear); // Update handle text
-				printMap($currentYear, $thenmapsvg); // update map
-			}/*,
+			//	printMap($currentYear); // update map
+			},
 			callback: function(x) {
 				// Update map and do other stuff
-				printMap($currentYear, $thenmapsvg);
-			}*/
+				printMap($currentYear);
+			}
 		});
 	}
 		
@@ -265,6 +265,7 @@ $(document).ready(function(){
 		timer = setInterval(function() {
 			if ( $currentYear <= lastYear ) {
 				timeline.setStep(($currentYear++)-firstYear+2);
+				printMap($currentYear);
 			} else {
 				stopTimeline();
 			}
@@ -292,11 +293,13 @@ $(document).ready(function(){
 	$thenmap.find("#thenmap-stepback").click(function() {
 		if ($currentYear >= firstYear){
 			timeline.setStep(($currentYear--)-firstYear);
+			printMap($currentYear);
 		}
 	});
 	$thenmap.find("#thenmap-stepforward").click(function() {
 		if ($currentYear <= lastYear) {
 			timeline.setStep(($currentYear++)-firstYear+2);
+			printMap($currentYear);
 		}
 	});
 	// Go first/last
