@@ -26,7 +26,7 @@ body {
 }
 
 #thenmap-map-container{
-	max-width:956px;
+	max-width:1024px;
 	margin-left:auto;margin-right:auto;
 }
 
@@ -91,7 +91,7 @@ svg.thenmap-map {
 <body>
 	<section id="thenmap">
 	 	<div id="thenmap-map-container">
-			<img id="thenmap-map" class="thenmap-map" src="maps/latest.svg"/>
+			<img id="thenmap-map" class="thenmap-map" src="maps/infile.svg"/>
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="red-bar handle"></div>
@@ -112,8 +112,8 @@ svg.thenmap-map {
 var startingYear = 1970;
 var firstYear    = 1946;
 var lastYear     = 2012;
-var mapWidth     = 956;
-var mapHeight    = 369;
+var mapWidth     = 1715;//956;
+var mapHeight    = 720;//369;
 var thenmapCurrentLanguage = 'sv';
 var dateOffset = "-07-01"; //Each map will show the world at this date of the year
 
@@ -163,9 +163,11 @@ function printMap(y){
 			var y1 = $(this).data("start"); 
 			var y2 = $(this).data("end"); 
 			if ((y1 <= (y+dateOffset)) && ((y+dateOffset) <= y2)) {
-				$(this).css("display","inline");
+//				$(this).css("display","inline");
+				$(this).css("visibility","visible");			
 			} else {
-				$(this).css("display","none");			
+//				$(this).css("display","none");			
+				$(this).css("visibility","hidden");
 			}
 
 		});

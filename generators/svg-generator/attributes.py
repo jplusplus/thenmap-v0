@@ -9,26 +9,32 @@ import xml.etree.ElementTree as ET
 import datetime
 from mx import DateTime
 from dbfpy import dbf
+#File paths, command line args...
+import sys
+import os
 
 #SETTINGS
 language = 'sv' #Used for title elements
-infile = 'infile.svg'
-outfile = '../../maps/latest.svg'
+filename = 'infile.svg'
+
+currentPath = os.path.dirname(os.path.realpath(__file__))
+infile = currentPath + '/'+filename
+outfile = currentPath+'/../../maps/'+filename
 
 #Open database
-dbfile = dbf.Dbf("../shapes/cshapes.dbf", readOnly=1)
+dbfile = dbf.Dbf(currentPath+"/../shapes/cshapes.dbf", readOnly=1)
 
 #SVG namespace
 SVG_NS = "http://www.w3.org/2000/svg"
 ET.register_namespace('',SVG_NS)
 
 #get xml frp, svg
-tree = ET.parse('infile.svg')
+tree = ET.parse(infile)
 root = tree.getroot()
 
 #Set document size
 #root.set("viewBox", "0 0 1715.26 720.63")
-root.set("viewBox", "0 0 957.25188 369.25188")
+root.set("viewBox", "0 0 960 380")
 
 # svg > g > g > g
 for shapeLayer in root.findall('{%s}g' % SVG_NS):
