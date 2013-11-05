@@ -263,7 +263,7 @@ $(document).ready(function(){
 	// Function to play
 	function playTimeline() {
 		timer = setInterval(function() {
-			if ( $currentYear <= lastYear ) {
+			if ( $currentYear < lastYear ) {
 				timeline.setStep(($currentYear++)-firstYear+2);
 				printMap($currentYear);
 			} else {
@@ -291,13 +291,13 @@ $(document).ready(function(){
 	
 	// Step
 	$thenmap.find("#thenmap-stepback").click(function() {
-		if ($currentYear >= firstYear){
+		if ($currentYear > firstYear){
 			timeline.setStep(($currentYear--)-firstYear);
 			printMap($currentYear);
 		}
 	});
 	$thenmap.find("#thenmap-stepforward").click(function() {
-		if ($currentYear <= lastYear) {
+		if ($currentYear < lastYear) {
 			timeline.setStep(($currentYear++)-firstYear+2);
 			printMap($currentYear);
 		}
@@ -305,10 +305,43 @@ $(document).ready(function(){
 	// Go first/last
 	$thenmap.find("#thenmap-rewind").click(function() {
 		timeline.setStep(0);
+		$currentYear = firstYear;
+		printMap($currentYear);
 	});
 	$thenmap.find("#thenmap-gotoend").click(function() {
 		timeline.setStep(lastYear-firstYear+1);
+		$currentYear = lastYear;
+		printMap($currentYear);
 	});
+	
+	//keydown
+	$(window).keydown(function(e){
+    if(e.which === 37){
+		if ($currentYear > firstYear){
+			timeline.setStep(($currentYear--)-firstYear);
+			printMap($currentYear);
+		}
+    } else if(e.which === 39){
+		if ($currentYear < lastYear) {
+			timeline.setStep(($currentYear++)-firstYear+2);
+			printMap($currentYear);
+		}
+    } else if(e.which === 35){
+		timeline.setStep(lastYear-firstYear+1);
+		$currentYear = lastYear;
+		printMap($currentYear);
+    } else if(e.which === 36){
+		timeline.setStep(0);
+		$currentYear = firstYear;
+		printMap($currentYear);
+    } else if(e.which === 8){
+		if ($isPlaying) {
+			stopTimeline();
+		} else {
+			playTimeline();
+		}
+    }
+});
 	
 	// Init timeline
 	initTimeline('thenmap-slider', firstYear, lastYear, startingYear);
