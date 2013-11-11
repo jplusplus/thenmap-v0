@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>-18.6424768798448639</xmin>
-            <ymin>9.58456670307991132</ymin>
-            <xmax>10.79160612066343461</xmax>
-            <ymax>28.56654676055056896</ymax>
+            <xmin>-68.25250870757535893</xmin>
+            <ymin>-28.89365139732379362</ymin>
+            <xmax>60.65279334494094599</xmax>
+            <ymax>54.23711482429897046</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -23,7 +23,7 @@
             </spatialrefsys>
         </destinationsrs>
     </mapcanvas>
-    <legend updateDrawingOrder="true" activeLayer="ne_10m_admin_1_states_provinces20131109003355382">
+    <legend updateDrawingOrder="true" activeLayer="cshapes20131101092233606">
         <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
             <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="0"/>

@@ -47,7 +47,7 @@ if ( file_exists ( 'maps/' . $map->get() . '-' . $mapLanguage->get() . '.svg' ) 
 }
 
 /* Dates */
-$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1960 ) );
+$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1950 ) );
 $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
 $lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2013 ) );
 $lastYear->set( filter_input(INPUT_GET,"lYear",FILTER_SANITIZE_STRING) );
