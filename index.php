@@ -1,4 +1,5 @@
 <?php
+/* FIXME: Blir sv varje gång man sätter en param nu !?!*/
 header('Cache-Control: public');
 $modify_time = filemtime(__FILE__);  
 header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");  
@@ -7,8 +8,8 @@ header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");
 require_once('lib/setting.php');
 require_once('lib/light-i18n.php');
 
-$languages = array( "available"    => array ('sv', 'en', 'fi', 'de', 'fr'),
-					"fallback"     => 'en',
+$languages = array( "available"    => array ("sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"),
+					"fallback"     => 'sv',
 					"type"         => Setting::LANGUAGE,
 					);
 
@@ -25,12 +26,12 @@ $_SESSION['lang'] = $interfaceLanguage->get();
 
 /* Map language */ 
 $mapLanguage = new Setting( $languages );
-if ($_GET["mlang"]) {
-	$mapLanguage->set( filter_input(INPUT_GET,"mlang",FILTER_SANITIZE_STRING) );
-} else {
+/* If no map language given, but lang is explicitly set, use lang */
+if ( $_GET["lang"] && !$_GET["mlang"] ) {
 	$mapLanguage->set( $interfaceLanguage->get() );
+} else {
+	$mapLanguage->set( filter_input(INPUT_GET,"mlang",FILTER_SANITIZE_STRING) );
 }
-
 /* Map type */
 $map = new Setting( $maps );
 $map->set( filter_input(INPUT_GET,"map",FILTER_SANITIZE_STRING) );
@@ -81,7 +82,7 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 		<script>window.jquery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
 		
 		<script src="js/dragdealer.js"></script>
-		
+
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
 		<!--[if lt IE 9]>
 			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
@@ -113,6 +114,10 @@ svg.thenmap-map {
 	stroke-width:1px;
 }
 
+.limit {
+	fill:url("#diagonalHatch");
+}
+
 .controlbar {
 	margin-left:auto;margin-right:auto;
 	max-width:280px;
@@ -142,6 +147,8 @@ svg.thenmap-map {
 	position: relative;
 	height: 30px;
 	background: #EEE;
+	max-width: 1024px
+	margin-left:auto;margin-right:auto;
 }
 .dragdealer .handle {
 	position: absolute;
@@ -165,6 +172,18 @@ svg.thenmap-map {
 		font-size:1.2em;
 	}
 }
+
+
+#tooltip
+{
+    text-align: center;
+    color: #fff;
+    background: #111;
+    position: absolute;
+    z-index: 100;
+    padding: 12px;
+}
+ 
 		</style>
 	
 	</head>
@@ -173,7 +192,7 @@ svg.thenmap-map {
 	<section id="thenmap" class="jsonly">
 	 	<div id="thenmap-map-container">
 	 		<span id="thenmap-isloading">loading</span>
-			<img id="thenmap-map" class="thenmap-map" style="visibility:hidden;" src="<?php echo $svgFile; ?>"/>
+			<img id="thenmap-map" alt="Map of the world" class="thenmap-map" style="visibility:hidden;" src="<?php echo $svgFile; ?>"/>
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="red-bar handle"></div>
@@ -187,7 +206,14 @@ svg.thenmap-map {
 		</menu>
 	</section>
 	<article>
-	<p>Work in progress by <a href="http://leowallentiin.se">Leo Wallentin</a> and Jens Finnäs, J++.</p>
+	<p>Try one of these:</p>
+	<ul>
+	<li>Country names in <a href="http://www.leowallentin.se/thenmap?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.leowallentin.se/thenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
+	<li><a href="http://www.leowallentin.se/thenmap?map=europe">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>
+	<li>A dataset: <a href="http://www.leowallentin.se/thenmap?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
+	</ul>
+	<p><a href="https://trello.com/b/aqFu3s1d/thenmap">Report bugs here</a></p>
+	<p>Work in progress by <a href="http://leowallentin.se">Leo Wallentin</a> and Jens Finnäs, J++.<p>
 	</article>
 	<script>
 
@@ -208,7 +234,7 @@ var dateOffset = "-07-01"; //Each map will show the world at this date of the ye
 function printMap(y,svg){
 
 	var nations = $("g.nations > path"); //FIXME why can we use $(svg).find('g.nations > path')?
-	$('#thenmap-map').attr("class", "thenmap-map replaced-svg y"+y);
+	$('#thenmap-map').attr("class", "thenmap-map y"+y);
 	if (nations.length){
 		$(nations).each(function() {
 			var y1 = $(this).data("start");
@@ -244,7 +270,7 @@ $(document).ready(function(){
 	    }
 	    // Add replaced image's classes to the new SVG
 	    if(typeof imgClass !== 'undefined') {
-	        $svg = $svg.attr('class', imgClass+' replaced-svg');
+	        $svg = $svg.attr('class', imgClass);
 	    }
 
 		/* Move width and height to container, so that the map scales */
@@ -257,6 +283,8 @@ $(document).ready(function(){
 	    $thenmapmap.replaceWith($svg);
 
 	    $thenmapsvg = $("#thenmap-map");
+	    
+	    bindTooltips();
 
 		$("#thenmap-isloading").css("display","none");
     	printMap(startingYear,$thenmapsvg);
@@ -404,6 +432,80 @@ $(document).ready(function(){
 	// Init timeline
 	initTimeline('thenmap-slider', firstYear, lastYear, startingYear);
 });
+
+
+function getPosition ( t ) {
+    // return early if it's not an svg element
+    if ( !'getBBox' in t ) { return true };
+
+    var output = {};
+
+	var svg = $( '#thenmap-map-container > svg' );
+    var bbox = t[0].getBBox();
+    var containerBBox = svg[0].getBBox();
+    var offset = $(svg).offset();
+	var width = $(svg).width();
+	var height = $(svg).height();
+
+    output.left = Math.floor(( (bbox.x+(bbox.width/2))  / containerBBox.width) * width) + offset.left;
+    output.left = Math.min(output.left, width-240);
+    output.top  = Math.floor(( (bbox.y+(bbox.height/2)) / containerBBox.height) * height);
+
+    return output;
+}
+  
+// Add mouseevents to  display nation info to nations
+function bindTooltips() {
+    var targets = $( 'g.nations > path' ),
+        target  = false,
+        tooltip = false,
+        title   = false;
+ 
+    targets.bind( 'mouseenter', function(e) {
+        target  = $( this );
+        tip     = target.data("title");
+
+        tooltip = $( '<div id="tooltip"></div>' );
+ 
+        if( !tip || tip == '' )
+            return false;
+ 
+//        target.removeAttr( 'title' );
+        tooltip.css( 'opacity', 0 )
+               .html( tip )
+               .appendTo( 'body' );
+ 
+        var init_tooltip = function()
+        {
+            if( $( window ).width() < tooltip.outerWidth() * 1.5 )
+                tooltip.css( 'max-width', $( window ).width() / 2 );
+            else
+                tooltip.css( 'max-width', 340 );
+
+			var pos_x = Math.min(e.clientX, $(window).width() - 280 );
+            tooltip.css( { left: pos_x, top: e.clientY } )
+                   .animate( { top: '+=10', opacity: 1 }, 50 );
+        };
+ 
+        init_tooltip();
+        $( window ).resize( init_tooltip );
+ 
+        var remove_tooltip = function()
+        {
+//            tooltip.animate( { top: '-=10', opacity: 0 }, 50, function()
+//            {
+//                $( this ).remove();
+//            });
+ 
+//            target.attr( 'title', tip );
+			tooltip.remove();
+        };
+ 
+        target.bind( 'mouseleave', remove_tooltip );
+        tooltip.bind( 'click', remove_tooltip );
+        
+    });
+}
 		</script>
 	</body>
 </html>

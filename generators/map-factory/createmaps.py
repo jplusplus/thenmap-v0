@@ -6,10 +6,10 @@ import json
 
 ##########################################
 #          SETTINGS                      #
-languages   = ["sv","en","fi","fr","de"] #
+languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
-#mapType     = "world-robinson"           #
-startDate   = "1960-01-01"               #
+mapType     = "world-robinson"           #
+startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
 
@@ -41,7 +41,7 @@ mapSettings = {
 		},
 		"bounds": {
 			"mode": "points",
-			"data": [[-43,63.5],[31.2,35.3]]
+			"data": [[-43,65],[34,34]]
 		},
 	},
 }
@@ -87,7 +87,7 @@ config["export"] = {
 print ("Will try to create a %s map. This can take a very long time. Turn off all compressing during development." % mapType)
 
 K = Kartograph()
-K.generate(config, outfile=fileAfterKartograph)
+#K.generate(config, outfile=fileAfterKartograph)
 
 print ("Map created")
 
@@ -104,8 +104,27 @@ print ("Loading map for extra processing")
 #get xml from svg
 tree = ET.parse(fileAfterKartograph)
 root = tree.getroot()
+
 #Remove styling
 del root.attrib["style"];
+
+#Define diagonal hatch pattern
+#<pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4" patternTransform="rotate(45 2 2)">
+#	<path d="M -1,2 l 6,0" stroke="#000000" stroke-width="1"/>
+#</pattern>
+defs = root.find("{%s}defs" % SVG_NS)
+pattern = ET.SubElement(defs,"{%s}pattern" % SVG_NS)
+pattern.set("id","diagonalHatch")
+pattern.set("patternUnits","userSpaceOnUse")
+pattern.set("width","4")
+pattern.set("height","4")
+pattern.set("patternTransform","rotate(45 2 2)")
+path = ET.SubElement(pattern,"{%s}path" % SVG_NS)
+path.set("d","M -1,2 l 6,0")
+path.set("stroke","#888888")
+path.set("stroke-width","1")
+
+#Find the nations
 nations = root.find("{%s}g[@id='nations']" % SVG_NS)
 
 #Collect all WikiData codes in an array
@@ -146,7 +165,7 @@ for c in chunks:
 #				else:
 #					print("Language %s not found for nation %s" % (l,e))
 			else:
-				print("No labels in %i, we saw this instead: %s" % (i,e))
+				print("No labels in %s, we saw this instead: %s" % (i,e))
 
 for l in languages:
 	print ("Applying names in %s" % l)
@@ -159,15 +178,28 @@ for l in languages:
 			nationTitle = str(nation.get("data-name"))
 			print("Nation not found. Defaulting to %s for %s" % (nationTitle,qid))
 		#Remove any old titles first
-		for oldtitle in nation.findall('title'):
-			nation.remove(oldtitle)
+#		for oldtitle in nation.findall('{%s}title' % SVG_NS):
+#			nation.remove(oldtitle)
 		#Then set the new one
-		t = ET.SubElement(nation,'title')
-		t.text = nationTitle
-
+#		t = ET.SubElement(nation,'{%s}title' % SVG_NS)
+#		t.text = nationTitle
+		nation.set("data-title",nationTitle)
+		
 	outputFileName = outputDirectory + "/" + svgFileNameBase + "-" + l + ".svg"
 	tree.write(outputFileName,encoding="utf-8",xml_declaration=True);
 	print("Wrote %s" % outputFileName)
+	
+	print("Doing some post processing cleaning..."),
+	#remove data attributes we will no longer use, to save a few bytes on each nation
+	tree2 = ET.parse(outputFileName)
+	root2 = tree2.getroot()
+	nations2 = root2.find("{%s}g[@id='nations']" % SVG_NS)
+	for nation in nations2.findall('{%s}path' % SVG_NS):
+		del nation.attrib["data-class"]
+		del nation.attrib["data-wikidata"]
+		del nation.attrib["data-name"]
+	tree2.write(outputFileName,encoding="utf-8",xml_declaration=True)
+	print("done")
 
 # Projection best practices from
 # http://www.georeference.org/doc/guide_to_selecting_map_projections.htm

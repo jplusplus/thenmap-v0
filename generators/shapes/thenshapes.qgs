@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>-501.98624313741947844</xmin>
-            <ymin>-280.87921991456607884</ymin>
-            <xmax>285.15049565167259971</xmax>
-            <ymax>214.60924513992216589</ymax>
+            <xmin>-14.62559261221471729</xmin>
+            <ymin>-56.58067486291001558</ymin>
+            <xmax>80.08662857473535723</xmax>
+            <ymax>7.85218174651134859</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -23,19 +23,19 @@
             </spatialrefsys>
         </destinationsrs>
     </mapcanvas>
-    <legend updateDrawingOrder="true" activeLayer="cshapes20131101092233606">
+    <legend updateDrawingOrder="true" activeLayer="TM_WORLD_BORDERS_0_320131105083224301">
         <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
             <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="0"/>
             </filegroup>
         </legendlayer>
-        <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="ORIGINAL" showFeatureCount="0">
+        <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="ne_10m_admin_1_states_provinces" showFeatureCount="0">
             <filegroup open="true" hidden="false">
-                <legendlayerfile isInOverview="0" layerid="cshapes20131105113016569" visible="0"/>
+                <legendlayerfile isInOverview="0" layerid="ne_10m_admin_1_states_provinces20131109003355382" visible="0"/>
             </filegroup>
         </legendlayer>
-        <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="thenshapes" showFeatureCount="0">
-            <filegroup open="true" hidden="false">
+        <legendlayer drawingOrder="-1" open="false" checked="Qt::Checked" name="thenshapes" showFeatureCount="0">
+            <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="cshapes20131101092233606" visible="1"/>
             </filegroup>
         </legendlayer>
@@ -194,14 +194,14 @@
             <attributeactions/>
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
-            <id>cshapes20131105113016569</id>
-            <datasource>/home/leo/Världen/borders/shapes/cshapes.shp</datasource>
+            <id>ne_10m_admin_1_states_provinces20131109003355382</id>
+            <datasource>/home/leo/Downloads/can/ne_10m_admin_1_states_provinces.shp</datasource>
             <title></title>
             <abstract></abstract>
             <keywordList>
                 <value></value>
             </keywordList>
-            <layername>ORIGINAL</layername>
+            <layername>ne_10m_admin_1_states_provinces</layername>
             <srs>
                 <spatialrefsys>
                     <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
@@ -215,14 +215,14 @@
                 </spatialrefsys>
             </srs>
             <provider encoding="System">ogr</provider>
-            <previewExpression>COALESCE( "CNTRY_NAME", '&lt;NULL>' )</previewExpression>
+            <previewExpression>COALESCE( "name", '&lt;NULL>' )</previewExpression>
             <vectorjoins/>
             <renderer-v2 symbollevels="0" type="singleSymbol">
                 <symbols>
                     <symbol alpha="1" type="fill" name="0">
                         <layer pass="0" class="SimpleFill" locked="0">
                             <prop k="border_width_unit" v="MM"/>
-                            <prop k="color" v="100,167,59,255"/>
+                            <prop k="color" v="232,132,70,255"/>
                             <prop k="color_border" v="0,0,0,255"/>
                             <prop k="offset" v="0,0"/>
                             <prop k="offset_unit" v="MM"/>
@@ -239,7 +239,7 @@
             <blendMode>0</blendMode>
             <featureBlendMode>0</featureBlendMode>
             <layerTransparency>0</layerTransparency>
-            <displayfield>CNTRY_NAME</displayfield>
+            <displayfield>name</displayfield>
             <label>0</label>
             <labelattributes>
                 <label fieldname="" text="Label"/>
@@ -261,9 +261,9 @@
                 <multilineenabled fieldname="" on=""/>
                 <selectedonly on=""/>
             </labelattributes>
-            <editform>/home/leo/Världen</editform>
+            <editform>.</editform>
             <editforminit></editforminit>
-            <annotationform>/home/leo/Världen</annotationform>
+            <annotationform>.</annotationform>
             <editorlayout>generatedlayout</editorlayout>
             <excludeAttributesWMS/>
             <excludeAttributesWFS/>
