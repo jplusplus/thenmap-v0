@@ -466,7 +466,7 @@ function bindTooltips() {
         tip     = target.data("title");
 
         tooltip = $( '<div id="tooltip"></div>' );
- 
+ 	
         if( !tip || tip == '' )
             return false;
  

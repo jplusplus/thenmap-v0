@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>-14.62559261221471729</xmin>
-            <ymin>-56.58067486291001558</ymin>
-            <xmax>80.08662857473535723</xmax>
-            <ymax>7.85218174651134859</ymax>
+            <xmin>-18.6424768798448639</xmin>
+            <ymin>9.58456670307991132</ymin>
+            <xmax>10.79160612066343461</xmax>
+            <ymax>28.56654676055056896</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -23,7 +23,7 @@
             </spatialrefsys>
         </destinationsrs>
     </mapcanvas>
-    <legend updateDrawingOrder="true" activeLayer="TM_WORLD_BORDERS_0_320131105083224301">
+    <legend updateDrawingOrder="true" activeLayer="ne_10m_admin_1_states_provinces20131109003355382">
         <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
             <filegroup open="false" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="0"/>
@@ -338,6 +338,7 @@
         <WMSAccessConstraints type="QString"></WMSAccessConstraints>
         <SpatialRefSys>
             <ProjectCrs type="QString">EPSG:4326</ProjectCrs>
+            <ProjectCRSID type="int">3452</ProjectCRSID>
             <ProjectionsEnabled type="int">1</ProjectionsEnabled>
         </SpatialRefSys>
         <DefaultStyles>

@@ -87,7 +87,7 @@ config["export"] = {
 print ("Will try to create a %s map. This can take a very long time. Turn off all compressing during development." % mapType)
 
 K = Kartograph()
-#K.generate(config, outfile=fileAfterKartograph)
+K.generate(config, outfile=fileAfterKartograph)
 
 print ("Map created")
 
