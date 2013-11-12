@@ -7,6 +7,11 @@
  * http://legal.ovidiu.ch/licenses/MIT
  */
 
+// Patches:
+// https://code.google.com/p/dragdealer/issues/detail?id=11
+// https://code.google.com/p/dragdealer/issues/detail?id=10
+
+
 /* Cursor */
 
 var Cursor =
@@ -143,6 +148,71 @@ Dragdealer.prototype =
 		this.dragging = false;
 		this.tapping = false;
 	},
+    destroy : function(){
+        clearInterval(this.interval);
+        this.unBindAllEvents();
+        this.wrapper = null;
+        this.handle = null;
+        this.options = null;
+    },
+    bindEvent: function (target, eventName, method, owner, eventId){
+        var ev = null;
+        if ((typeof owner === 'string') && (typeof eventId === 'undefined')) {
+            eventId = owner;
+            owner = null;
+        }
+        if(this.events[eventId || eventName]) {
+            //console.log("ReBinding " + (eventId || eventName) + " is not allowed.");
+            return this.events[eventId || eventName];
+        }
+        
+        if(typeof method !== 'function' && target){
+            return target[eventName];
+        }
+        if(target[eventName] && target[eventName].method && this.events[target[eventName].eventId]){
+            return this.events[target[eventName].eventId];                        
+        }
+        ev = (function(self, method, original) {
+            return function(e){
+                var ret = null;
+                if(original) {
+                    ret = original(e);                                        
+                }
+                if(typeof method === 'function'){
+                    return ret || method.call(self, e);    
+                }                    
+            }           
+        })(
+            owner || this,
+            method,
+            target[eventName]
+        );
+        ev.original = target[eventName];
+        ev.target = target;
+        ev.eventName = eventName;
+        ev.eventId = eventId || eventName;
+        this.events[ev.eventId]  = target[eventName] = ev;
+        ev = null;
+        return this.events[eventId || eventName];
+    },
+    unBindEvent : function(eventId){
+        if(!this.events[eventId]) return;
+        var ev = this.events[eventId];
+        if(ev.target[ev.eventName] == ev){
+            ev.target[ev.eventName] = ev.original;
+        }            
+        ev.original = null;
+        ev.target = null;
+        ev.eventName = null;
+        this.events[eventId] = null;
+        ev = null;
+    },
+    unBindAllEvents : function(){
+        for(evnt in this.events){
+            this.unBindEvent(evnt);
+            delete this.events[evnt];
+        }
+    },    
 	getOption: function(name, defaultValue)
 	{
 		return this.options[name] !== undefined ? this.options[name] : defaultValue;
@@ -199,52 +269,44 @@ Dragdealer.prototype =
 	},
 	addListeners: function()
 	{
-		var self = this;
-		
-		this.wrapper.onselectstart = function()
-		{
-			return false;
-		}
-		this.handle.onmousedown = this.handle.ontouchstart = function(e)
-		{
-			self.handleDownHandler(e);
-		};
-		this.wrapper.onmousedown = this.wrapper.ontouchstart = function(e)
-		{
-			self.wrapperDownHandler(e);
-		};
-		var mouseUpHandler = document.onmouseup || function(){};
-		document.onmouseup = function(e)
-		{
-			mouseUpHandler(e);
-			self.documentUpHandler(e);
-		};
-		var touchEndHandler = document.ontouchend || function(){};
-		document.ontouchend = function(e)
-		{
-			touchEndHandler(e);
-			self.documentUpHandler(e);
-		};
-		var resizeHandler = window.onresize || function(){};
-		window.onresize = function(e)
-		{
-			resizeHandler(e);
-			self.documentResizeHandler(e);
-		};
-		this.wrapper.onmousemove = function(e)
-		{
-			self.activity = true;
-		}
-		this.wrapper.onclick = function(e)
-		{
-			return !self.activity;
-		}
-		
-		this.interval = setInterval(function(){ self.animate() }, 25);
-		self.animate(false, true);
+		//var self = this; <--Memory Leak Cause		
+		this.wrapper.onselectstart = function () {
+            return false;
+        }
+        
+        this.unBindAllEvents();
+        this.events = {};        
+        
+        this.handle.onmousedown = this.bindEvent(this.handle,"ontouchstart", function (e) {
+            if (!this.stopDrags) {
+                this.handleDownHandler(e);
+            }
+        },"handle.ontouchstart");
+        this.wrapper.onmousedown = this.bindEvent(this.wrapper, "ontouchstart", function (e) {
+            if (!this.stopDrags) {
+                this.wrapperDownHandler(e);
+            }
+        }, "wrapper.ontouchstart");        
+        //Binding to global Object such Document and Window can causes memory leak as well
+        this.bindEvent(document,"onmouseup",this.documentUpHandler, "document.onmouseup");
+        this.bindEvent(document,"ontouchend",this.documentUpHandler,"document.ontouchend");
+        this.bindEvent(window,"onresize",this.documentResizeHandler, "window.onresize");
+        
+        this.bindEvent(this.wrapper,"mousemove", function (e) {
+            this.activity = true;
+        },"wrapper.mousemove");        
+       
+        this.bindEvent(this.wrapper,"onclick", function (e) {
+                return !this.activity;
+        },"wrapper.onclick");
+
+        this.interval = setInterval(this.bindEvent({},"onanimate", this.animate), 25);
+        this.animate(false, true);
 	},
 	handleDownHandler: function(e)
 	{
+    var self = this;
+    this.interval = setInterval(function(){ self.animate() }, 25);
 		this.activity = false;
 		Cursor.refresh(e);
 		
@@ -379,9 +441,18 @@ Dragdealer.prototype =
 		{
 			this.callback(this.value.target[0], this.value.target[1]);
 		}
+    
+    if(typeof(this.interval) == 'number')
+    {
+      clearInterval(this.interval);
+      delete this.interval;
+    }
 	},
 	animate: function(direct, first)
 	{
+        if(!this.wrapper.parentNode || !this.handle.parentNode){
+            this.destroy();
+        }
 		if(direct && !this.dragging)
 		{
 			return;
