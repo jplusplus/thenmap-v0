@@ -13,7 +13,7 @@ $languages = array( "available"    => array ("sv","en","fi","fr","de","es","ru",
 					"type"         => Setting::LANGUAGE,
 					);
 
-$maps = array(	"available"    => array ('europe-ortho', 'world-robinson'),
+$maps = array(	"available"    => array ('europe-ortho', 'world-robinson', 'world-mollweide'),
 				"aliases"      => array ('europe' => 'europe-ortho',
 										 'world'  => 'world-robinson'),
 				"fallback"     => 'world-robinson',
@@ -47,7 +47,7 @@ if ( file_exists ( 'maps/' . $map->get() . '-' . $mapLanguage->get() . '.svg' ) 
 }
 
 /* Dates */
-$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1950 ) );
+$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1949 ) );
 $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
 $lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2013 ) );
 $lastYear->set( filter_input(INPUT_GET,"lYear",FILTER_SANITIZE_STRING) );
@@ -116,6 +116,11 @@ svg.thenmap-map {
 
 .limit {
 	fill:url("#diagonalHatch");
+}
+
+svg g#background {
+	fill: aliceblue;
+	opacity: .4;
 }
 
 .controlbar {
@@ -210,6 +215,7 @@ svg.thenmap-map {
 	<ul>
 	<li>Country names in <a href="http://www.leowallentin.se/thenmap?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.leowallentin.se/thenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
 	<li><a href="http://www.leowallentin.se/thenmap?map=europe">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>
+	<li><a href="http://www.leowallentin.se/thenmap?map=world-mollweide">A different projection</a>
 	<li>A dataset: <a href="http://www.leowallentin.se/thenmap?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
 	</ul>
 	<p><a href="https://trello.com/b/aqFu3s1d/thenmap">Report bugs here</a></p>

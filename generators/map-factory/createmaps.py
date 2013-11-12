@@ -8,7 +8,8 @@ import json
 #          SETTINGS                      #
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
-mapType     = "world-robinson"           #
+#mapType     = "world-mollweide"          #
+#mapType     = "world-robinson"           #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
@@ -26,12 +27,14 @@ mapSettings = {
 			"id": "mollweide",
 			"lon0": 20,
 		},
+		"simplify":  0.4
 	},
-	"world-wagner4": {
+	"world-gallpeters": {
 		"proj": {
-			"id": "wagner4",
+			"id": "gallpeters",
 			"lon0": 20,
 		},
+		"simplify":  0.2
 	},
 	"europe-ortho": {
 		"proj": {
@@ -65,6 +68,7 @@ config["layers"] = [{
     "class"    : "nations",
 	"src"      : shapesfile,
 	"filter"   : nationFilter,
+    "charset"  : "utf-8",
 	"attributes": {
 		"wikidata": "WIKIDATA",
 		"class"   : "CLASSES",
@@ -72,6 +76,9 @@ config["layers"] = [{
 		"start"   : "JSDATESTR",
 		"end"     : "JEDATESTR",
 	},
+},{
+	"id"		: "background",
+	"special"	: "sea",
 }]
 
 #Add simplification settings to first and only layer in config.layers
@@ -81,13 +88,13 @@ if "simplify" in mapSettings[mapType]:
 #Chose size by height
 config["export"] = {
 	"round": 1,
-	"height": 520
+	"height": 768,
 }
 
 print ("Will try to create a %s map. This can take a very long time. Turn off all compressing during development." % mapType)
 
 K = Kartograph()
-#K.generate(config, outfile=fileAfterKartograph)
+K.generate(config, outfile=fileAfterKartograph)
 
 print ("Map created")
 
@@ -123,6 +130,14 @@ path = ET.SubElement(pattern,"{%s}path" % SVG_NS)
 path.set("d","M -1,2 l 6,0")
 path.set("stroke","#888888")
 path.set("stroke-width","1")
+
+#Find and move the background to the top, so that all browsers can "see" the nations layer
+print "Moving background layer to the top, for browser compatibility...",
+background = root.find("{%s}g[@id='background']" % SVG_NS)
+root.remove(background)
+root.insert(2,background)
+#background = root.findall("{%s}g[@id='background']" % SVG_NS)
+print "done"
 
 #Find the nations
 nations = root.find("{%s}g[@id='nations']" % SVG_NS)
