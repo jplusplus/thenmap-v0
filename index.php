@@ -214,7 +214,7 @@ svg g#background {
 	<p>Try one of these:</p>
 	<ul>
 	<li>Country names in <a href="http://www.leowallentin.se/thenmap?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.leowallentin.se/thenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
-	<li><a href="http://www.leowallentin.se/thenmap?map=europe">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>
+	<li><a href="http://www.leowallentin.se/thenmap/?map=europe&fYear=1946&sYear=1946">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>
 	<li><a href="http://www.leowallentin.se/thenmap?map=world-mollweide">A different projection</a>
 	<li>A dataset: <a href="http://www.leowallentin.se/thenmap?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
 	</ul>

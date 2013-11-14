@@ -27,14 +27,14 @@ if (!isset($_SESSION['lang']) || isset($_GET['lang'])) {
   $langs[] = DEFAULT_LANG;
 
   foreach ($langs as $lang) {
-	if (file_exists(LANG_FILE_DIRECTORY .'/'. $lang . '.ini')) {
+	if (file_exists(LANG_FILE_DIRECTORY .'/'. $lang . '/i18n.ini')) {
 	  $_SESSION['lang'] = $lang;
 	  break;
 	}
   }
 }
 
-$langfile = LANG_FILE_DIRECTORY.'/'.$_SESSION['lang'].'.ini';
+$langfile = LANG_FILE_DIRECTORY.'/'.$_SESSION['lang'].'/i18n.ini';
 
 $cacheFilePath = sys_get_temp_dir() . '/php_i18n_' . md5(__FILE__) . '_' . $_SESSION['lang'] . '.cache';
 if (file_exists($cacheFilePath) == false || filemtime($cacheFilePath) < filemtime($langfile)) {
