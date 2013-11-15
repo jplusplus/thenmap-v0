@@ -2,17 +2,19 @@ from kartograph import Kartograph
 import os #Getting filepaths
 import xml.etree.ElementTree as ET #To parse svg
 import urllib2 #WikiData
+import urllib #Toolserver
 import json
 import csv
 from dbfpy import dbf
-
+#URI-encoding
+import re, urlparse
 
 ##########################################
 #          SETTINGS                      #
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
-#mapType     = "world-mollweide"          #
-#mapType     = "world-robinson"           #
+mapType     = "world-mollweide"          #
+mapType     = "world-robinson"           #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
@@ -101,9 +103,11 @@ config["export"] = {
 	"height": 768,
 }
 
-####################################################33
-# CLASSES
+####################################################
+# CLASSES AND FUCNTIONS
 #####################################################
+
+#Class for storing Wikidata id
 class Qid:
 	qid = ''
 	def __init__(self, code):
@@ -117,6 +121,17 @@ class Qid:
 	def get(self):
 		return self.qid
 
+#Uri-encoding
+def urlEncodeNonAscii(b):
+    return re.sub('[\x80-\xFF]', lambda c: '%%%02x' % ord(c.group(0)), b)
+
+def iriToUri(iri):
+    parts= urlparse.urlparse(iri)
+    return urlparse.urlunparse(
+        part.encode('idna') if parti==1 else urlEncodeNonAscii(part.encode('utf-8'))
+        for parti, part in enumerate(parts)
+    )
+    
 ###############################################################################################################################
 ###############################################################################################################################
 # START PROGRAM ###############################################################################################################
@@ -127,7 +142,7 @@ class Qid:
 print ("Will try to create a %s map. This can take a very long time. Turn off all compressing during development." % mapType)
 
 K = Kartograph()
-K.generate(config, outfile=fileAfterKartograph)
+#K.generate(config, outfile=fileAfterKartograph)
 
 print ("Map created as %s" % fileAfterKartograph)
 
@@ -291,7 +306,7 @@ for l in languages:
 		#Else use internal name
 		else:
 			nationTitle = internalNationName
-			print("Nation not found in WikiData or local translations. Defaulting to %s for %s" % (nationTitle,internalId))
+			print("Nation name not found in %s , defaulting to %s" % (l,nationTitle))
 
 		nationNames[l][internalId] = nationTitle;
 
@@ -302,17 +317,42 @@ for l in languages:
 		json.dump(nationNames[l], outfile)
 print "done"
 
-for i, flag in wikidataFlags
-	print wikidataFlags[i] = {flag, "HEJ HEJ"}
+#More info on flag images
+print "Getting image paths for %d flags" % len(wikidataFlags)
+
+#create and chunk list of flags
+wikidataFlagsList = []
+for i,f in wikidataFlags.items():
+	wikidataFlagsList.append(f)
+
+chunks=[wikidataFlagsList[x:x+45] for x in xrange(0, len(wikidataFlagsList), 45)]
+for c in chunks:
+		print "Asking toolserver for %d flags" % len(c)
+		cQueryString = '|'.join(c)
+		url = "https://toolserver.org/~magnus/commonsapi.php?image="+cQueryString+"&thumbwidth=80px"
+		print "Fetching flag data from %s " % url
+
+		response = urllib.urlopen(iriToUri(url))
+		tree = ET.parse(response)
+		root = tree.getroot()
+		
+		images = root.findall("image")
+		for i in images:
+			f = i.find("file")
+			if f is not None:
+				url = f.find("urls/thumbnail").text
+				name = f.find("name").text
+				#print "Found thumb url: %s" % url
+				if url is not None:
+					# For each flag we have to loop though all our nations and our flags, to find it again...
+					for rec in db:
+						qid = Qid(rec["WIKIDATA"])
+						if qid.get() in wikidataFlags:
+							if wikidataFlags[qid.get()] == name:
+								print "found flag for %s" % rec["CNTRY_NAME"]
+								nationFlags[int(round(float(rec["ID"])))] = {"name": name, "url": url}
 
 #Flags for each nation
-for rec in db:
-	internalId = int(round(rec["ID"]))
-	wikidataId = Qid(rec["WIKIDATA"])
-	if (wikidataId.get() in wikidataFlags):
-		nationFlag = wikidataFlags[wikidataId.get()]
-		nationFlags[internalId] = nationFlag
-
 print ("Writing flags file"),
 flagsFileName = outputDirectory + "/" + mapType + "-flags.json"
 with open(flagsFileName, 'w') as outfile:
