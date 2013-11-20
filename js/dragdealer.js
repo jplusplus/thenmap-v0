@@ -10,20 +10,20 @@
 // Patches:
 // https://code.google.com/p/dragdealer/issues/detail?id=11
 // https://code.google.com/p/dragdealer/issues/detail?id=10
+//
+// Removed all vertical functionality
 
 
 /* Cursor */
 
 var Cursor =
 {
-	x: 0, y: 0,
-	init: function()
-	{
+	x: 0,
+	init: function(){
 		this.setEvent('mouse');
 		this.setEvent('touch');
 	},
-	setEvent: function(type)
-	{
+	setEvent: function(type){
 		var moveHandler = document['on' + type + 'move'] || function(){};
 		document['on' + type + 'move'] = function(e)
 		{
@@ -31,32 +31,21 @@ var Cursor =
 			Cursor.refresh(e);
 		}
 	},
-	refresh: function(e)
-	{
-		if(!e)
-		{
+	refresh: function(e){
+		if(!e){
 			e = window.event;
 		}
-		if(e.type == 'mousemove')
-		{
+		if(e.type == 'mousemove'){
 			this.set(e);
-		}
-		else if(e.touches)
-		{
+		} else if(e.touches){
 			this.set(e.touches[0]);
 		}
 	},
-	set: function(e)
-	{
-		if(e.pageX || e.pageY)
-		{
+	set: function(e){
+		if(e.pageX)	{
 			this.x = e.pageX;
-			this.y = e.pageY;
-		}
-		else if(e.clientX || e.clientY)
-		{
+		} else if(e.clientX) {
 			this.x = e.clientX + document.body.scrollLeft + document.documentElement.scrollLeft;
-			this.y = e.clientY + document.body.scrollTop + document.documentElement.scrollTop;
 		}
 	}
 };
@@ -66,37 +55,29 @@ Cursor.init();
 
 var Position =
 {
-	get: function(obj)
-	{
-		var curleft = curtop = 0;
-		if(obj.offsetParent)
-		{
-			do
-			{
+	get: function(obj){
+		var curleft = 0;
+		if(obj.offsetParent){
+			do {
 				curleft += obj.offsetLeft;
-				curtop += obj.offsetTop;
 			}
-			while((obj = obj.offsetParent));
+			while(obj = obj.offsetParent);
 		}
-		return [curleft, curtop];
+		return curleft;
 	}
 };
 
 /* Dragdealer */
 
-var Dragdealer = function(wrapper, options)
-{
-	if(typeof(wrapper) == 'string')
-	{
+var Dragdealer = function(wrapper, options){
+	if(typeof(wrapper) == 'string')	{
 		wrapper = document.getElementById(wrapper);
 	}
-	if(!wrapper)
-	{
+	if(!wrapper){
 		return;
 	}
 	var handle = wrapper.getElementsByTagName('div')[0];
-	if(!handle || handle.className.search(/(^|\s)handle(\s|$)/) == -1)
-	{
+	if(!handle || handle.className.search(/(^|\s)handle(\s|$)/) == -1){
 		return;
 	}
 	this.init(wrapper, handle, options || {});
@@ -111,38 +92,33 @@ Dragdealer.prototype =
 		this.options = options;
 		
 		this.disabled = this.getOption('disabled', false);
-		this.horizontal = this.getOption('horizontal', true);
-		this.vertical = this.getOption('vertical', false);
 		this.slide = this.getOption('slide', true);
 		this.steps = this.getOption('steps', 0);
 		this.snap = this.getOption('snap', false);
 		this.loose = this.getOption('loose', false);
 		this.speed = this.getOption('speed', 10) / 100;
 		this.xPrecision = this.getOption('xPrecision', 0);
-		this.yPrecision = this.getOption('yPrecision', 0);
 		
 		this.callback = options.callback || null;
 		this.animationCallback = options.animationCallback || null;
 		
 		this.bounds = {
 			left: options.left || 0, right: -(options.right || 0),
-			top: options.top || 0, bottom: -(options.bottom || 0),
 			x0: 0, x1: 0, xRange: 0,
-			y0: 0, y1: 0, yRange: 0
 		};
 		this.value = {
-			prev: [-1, -1],
-			current: [options.x || 0, options.y || 0],
-			target: [options.x || 0, options.y || 0]
+			prev: -1,
+			current: options.x || 0,
+			target: options.x || 0
 		};
 		this.offset = {
-			wrapper: [0, 0],
-			mouse: [0, 0],
-			prev: [-999999, -999999],
-			current: [0, 0],
-			target: [0, 0]
+			wrapper: 0,
+			mouse: 0,
+			prev: -999999,
+			current: 0,
+			target: 0
 		};
-		this.change = [0, 0];
+		this.change = 0;
 		
 		this.activity = false;
 		this.dragging = false;
@@ -213,8 +189,7 @@ Dragdealer.prototype =
             delete this.events[evnt];
         }
     },    
-	getOption: function(name, defaultValue)
-	{
+	getOption: function(name, defaultValue){
 		return this.options[name] !== undefined ? this.options[name] : defaultValue;
 	},
 	setup: function()
@@ -226,40 +201,25 @@ Dragdealer.prototype =
 		
 		this.addListeners();
 	},
-	setWrapperOffset: function()
-	{
+	setWrapperOffset: function(){
 		this.offset.wrapper = Position.get(this.wrapper);
 	},
 	setBoundsPadding: function()
 	{
-		if(!this.bounds.left && !this.bounds.right)
-		{
-			this.bounds.left = Position.get(this.handle)[0] - this.offset.wrapper[0];
+		if(!this.bounds.left && !this.bounds.right)	{
+			this.bounds.left = Position.get(this.handle) - this.offset.wrapper;
 			this.bounds.right = -this.bounds.left;
 		}
-		if(!this.bounds.top && !this.bounds.bottom)
-		{
-			this.bounds.top = Position.get(this.handle)[1] - this.offset.wrapper[1];
-			this.bounds.bottom = -this.bounds.top;
-		}
 	},
-	setBounds: function()
-	{
+	setBounds: function(){
 		this.bounds.x0 = this.bounds.left;
 		this.bounds.x1 = this.wrapper.offsetWidth + this.bounds.right;
 		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - this.handle.offsetWidth;
-		
-		this.bounds.y0 = this.bounds.top;
-		this.bounds.y1 = this.wrapper.offsetHeight + this.bounds.bottom;
-		this.bounds.yRange = (this.bounds.y1 - this.bounds.y0) - this.handle.offsetHeight;
-		
+				
 		this.bounds.xStep = 1 / (this.xPrecision || Math.max(this.wrapper.offsetWidth, this.handle.offsetWidth));
-		this.bounds.yStep = 1 / (this.yPrecision || Math.max(this.wrapper.offsetHeight, this.handle.offsetHeight));
 	},
-	setSteps: function()
-	{
-		if(this.steps > 1)
-		{
+	setSteps: function(){
+		if(this.steps > 1){
 			this.stepRatios = [];
 			for(var i = 0; i <= this.steps - 1; i++)
 			{
@@ -344,35 +304,29 @@ Dragdealer.prototype =
 		this.disabled = true;
 		this.handle.className += ' disabled';
 	},
-	setStep: function(x, y, snap)
+	setStep: function(x, snap)
 	{
 		this.setValue(
-			this.steps && x > 1 ? (x - 1) / (this.steps - 1) : 0,
-			this.steps && y > 1 ? (y - 1) / (this.steps - 1) : 0,
-			snap
+			this.steps && x > 1 ? (x - 1) / (this.steps - 1) : 0
 		);
 	},
-	setValue: function(x, y, snap)
+	setValue: function(x, snap)
 	{
-		this.setTargetValue([x, y || 0]);
-		if(snap)
-		{
-			this.groupCopy(this.value.current, this.value.target);
+		this.setTargetValue(x);
+		if(snap){
+			this.value.current = this.value.target;
 		}
 	},
-	startTap: function(target)
-	{
-		if(this.disabled)
-		{
+	startTap: function(target){
+		if(this.disabled){
 			return;
 		}
 		this.tapping = true;
 		
-		if(target === undefined)
-		{
+		if(target === undefined){
 			target = [
-				Cursor.x - this.offset.wrapper[0] - (this.handle.offsetWidth / 2),
-				Cursor.y - this.offset.wrapper[1] - (this.handle.offsetHeight / 2)
+				Cursor.x - this.offset.wrapper - (this.handle.offsetWidth / 2),
+				0
 			];
 		}
 		this.setTargetOffset(target);
@@ -394,27 +348,21 @@ Dragdealer.prototype =
 		{
 			return;
 		}
-		this.offset.mouse = [
-			Cursor.x - Position.get(this.handle)[0],
-			Cursor.y - Position.get(this.handle)[1]
-		];
+		this.offset.mouse = Cursor.x - Position.get(this.handle);
 		
 		this.dragging = true;
 	},
 	stopDrag: function()
 	{
-		if(this.disabled || !this.dragging)
-		{
+		if(this.disabled || !this.dragging)	{
 			return;
 		}
 		this.dragging = false;
 		
-		var target = this.groupClone(this.value.current);
-		if(this.slide)
-		{
+		var target = this.value.current;
+		if(this.slide){
 			var ratioChange = this.change;
-			target[0] += ratioChange[0] * 4;
-			target[1] += ratioChange[1] * 4;
+			target += ratioChange * 4;
 		}
 		this.setTargetValue(target);
 		this.result();
@@ -422,24 +370,20 @@ Dragdealer.prototype =
 	feedback: function()
 	{
 		var value = this.value.current;
-		if(this.snap && this.steps > 1)
-		{
-			value = this.getClosestSteps(value);
+		if(this.snap && this.steps > 1)	{
+			value = this.getClosestStep(value);
 		}
-		if(!this.groupCompare(value, this.value.prev))
-		{
-			if(typeof(this.animationCallback) == 'function')
-			{
-				this.animationCallback(value[0], value[1]);
+		if(value !== this.value.prev){
+			if(typeof(this.animationCallback) == 'function'){
+				this.animationCallback(value, 0);
 			}
-			this.groupCopy(this.value.prev, value);
+			this.value.prev = value;
 		}
 	},
 	result: function()
 	{
-		if(typeof(this.callback) == 'function')
-		{
-			this.callback(this.value.target[0], this.value.target[1]);
+		if(typeof(this.callback) == 'function')	{
+			this.callback(this.value.target, 0);
 		}
     
     if(typeof(this.interval) == 'number')
@@ -459,175 +403,101 @@ Dragdealer.prototype =
 		}
 		if(this.dragging)
 		{
-			var prevTarget = this.groupClone(this.value.target);
+			var prevTarget = this.value.target;
 			
-			var offset = [
-				Cursor.x - this.offset.wrapper[0] - this.offset.mouse[0],
-				Cursor.y - this.offset.wrapper[1] - this.offset.mouse[1]
-			];
+			var offset = Cursor.x - this.offset.wrapper - this.offset.mouse;
 			this.setTargetOffset(offset, this.loose);
 			
-			this.change = [
-				this.value.target[0] - prevTarget[0],
-				this.value.target[1] - prevTarget[1]
-			];
+			this.change = this.value.target - prevTarget;
 		}
-		if(this.dragging || first)
-		{
-			this.groupCopy(this.value.current, this.value.target);
+		if(this.dragging || first){
+			this.value.current = this.value.target;
 		}
-		if(this.dragging || this.glide() || first)
-		{
+		if(this.dragging || this.glide() || first){
 			this.update();
 			this.feedback();
 		}
 	},
-	glide: function()
-	{
-		var diff = [
-			this.value.target[0] - this.value.current[0],
-			this.value.target[1] - this.value.current[1]
-		];
-		if(!diff[0] && !diff[1])
-		{
+	glide: function(){
+		var diff = this.value.target - this.value.current;
+		if (!diff) {
 			return false;
 		}
-		if(Math.abs(diff[0]) > this.bounds.xStep || Math.abs(diff[1]) > this.bounds.yStep)
-		{
-			this.value.current[0] += diff[0] * this.speed;
-			this.value.current[1] += diff[1] * this.speed;
-		}
-		else
-		{
-			this.groupCopy(this.value.current, this.value.target);
+		if( Math.abs(diff) > this.bounds.xStep ){
+			this.value.current += diff * this.speed;
+		} else {
+			this.value.current = this.value.target;
 		}
 		return true;
 	},
-	update: function()
-	{
-		if(!this.snap)
-		{
-			this.offset.current = this.getOffsetsByRatios(this.value.current);
-		}
-		else
-		{
-			this.offset.current = this.getOffsetsByRatios(
-				this.getClosestSteps(this.value.current)
+	update: function(){
+		if(!this.snap){
+			this.offset.current = this.getOffsetByRatio(this.value.current);
+		} else {
+			this.offset.current = this.getOffsetByRatio(
+				this.getClosestStep(this.value.current)
 			);
 		}
 		this.show();
 	},
-	show: function()
-	{
-		if(!this.groupCompare(this.offset.current, this.offset.prev))
-		{
-			if(this.horizontal)
-			{
-				this.handle.style.left = String(this.offset.current[0]) + 'px';
-			}
-			if(this.vertical)
-			{
-				this.handle.style.top = String(this.offset.current[1]) + 'px';
-			}
-			this.groupCopy(this.offset.prev, this.offset.current);
+	show: function(){
+		if(this.offset.current !== this.offset.prev){
+			this.handle.style.left = String(this.offset.current) + 'px';
+			this.offset.prev = this.offset.current;
 		}
 	},
 	setTargetValue: function(value, loose)
 	{
 		var target = loose ? this.getLooseValue(value) : this.getProperValue(value);
 		
-		this.groupCopy(this.value.target, target);
-		this.offset.target = this.getOffsetsByRatios(target);
+		this.value.target = target;
+		this.offset.target = this.getOffsetByRatio(target);
 	},
 	setTargetOffset: function(offset, loose)
 	{
-		var value = this.getRatiosByOffsets(offset);
+		var value = this.getRatioByOffset(offset);
 		var target = loose ? this.getLooseValue(value) : this.getProperValue(value);
 		
-		this.groupCopy(this.value.target, target);
-		this.offset.target = this.getOffsetsByRatios(target);
+		this.value.target = target;
+		this.offset.target = this.getOffsetByRatio(target);
 	},
 	getLooseValue: function(value)
 	{
 		var proper = this.getProperValue(value);
-		return [
-			proper[0] + ((value[0] - proper[0]) / 4),
-			proper[1] + ((value[1] - proper[1]) / 4)
-		];
+		return proper + ((value - proper) / 4);
 	},
 	getProperValue: function(value)
 	{
-		var proper = this.groupClone(value);
+		var proper = value;
 
-		proper[0] = Math.max(proper[0], 0);
-		proper[1] = Math.max(proper[1], 0);
-		proper[0] = Math.min(proper[0], 1);
-		proper[1] = Math.min(proper[1], 1);
+		proper = Math.max(proper, 0);
+		proper = Math.min(proper, 1);
 		
-		if((!this.dragging && !this.tapping) || this.snap)
-		{
-			if(this.steps > 1)
-			{
-				proper = this.getClosestSteps(proper);
+		if((!this.dragging && !this.tapping) || this.snap){
+			if(this.steps > 1){
+				proper = this.getClosestStep(proper,0);
 			}
 		}
 		return proper;
 	},
-	getRatiosByOffsets: function(group)
-	{
-		return [
-			this.getRatioByOffset(group[0], this.bounds.xRange, this.bounds.x0),
-			this.getRatioByOffset(group[1], this.bounds.yRange, this.bounds.y0)
-		];
+	getRatioByOffset: function(offset){
+		return this.bounds.xRange ? (offset - this.bounds.x0) / this.bounds.xRange : 0;
 	},
-	getRatioByOffset: function(offset, range, padding)
-	{
-		return range ? (offset - padding) / range : 0;
+	getOffsetByRatio: function(x){
+		return Math.round(x * this.bounds.xRange) + this.bounds.x0;
 	},
-	getOffsetsByRatios: function(group)
-	{
-		return [
-			this.getOffsetByRatio(group[0], this.bounds.xRange, this.bounds.x0),
-			this.getOffsetByRatio(group[1], this.bounds.yRange, this.bounds.y0)
-		];
-	},
-	getOffsetByRatio: function(ratio, range, padding)
-	{
-		return Math.round(ratio * range) + padding;
-	},
-	getClosestSteps: function(group)
-	{
-		return [
-			this.getClosestStep(group[0]),
-			this.getClosestStep(group[1])
-		];
-	},
-	getClosestStep: function(value)
-	{
+	getClosestStep: function(x)	{
 		var k = 0;
 		var min = 1;
 		for(var i = 0; i <= this.steps - 1; i++)
 		{
-			if(Math.abs(this.stepRatios[i] - value) < min)
+			if(Math.abs(this.stepRatios[i] - x) < min)
 			{
-				min = Math.abs(this.stepRatios[i] - value);
+				min = Math.abs(this.stepRatios[i] - x);
 				k = i;
 			}
 		}
 		return this.stepRatios[k];
-	},
-	groupCompare: function(a, b)
-	{
-		return a[0] == b[0] && a[1] == b[1];
-	},
-	groupCopy: function(a, b)
-	{
-		a[0] = b[0];
-		a[1] = b[1];
-	},
-	groupClone: function(a)
-	{
-		return [a[0], a[1]];
 	},
 	preventDefaults: function(e, selection)
 	{

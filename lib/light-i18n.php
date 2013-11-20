@@ -8,7 +8,7 @@ if (!defined('DETECT_LANGUAGE'))
   define('DETECT_LANGUAGE', true);
 
 if (!defined('DEFAULT_LANG'))
-  define('DEFAULT_LANG', 'en');
+  define('DEFAULT_LANG', 'sv');
 
 if (!isset($_SESSION['lang']) || isset($_GET['lang'])) {
   $langs = Array();
