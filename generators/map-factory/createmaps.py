@@ -14,8 +14,9 @@ import re, urlparse
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
 mapType     = "world-mollweide"          #
-mapType     = "world-robinson"           #
-mapType     = "africa-laea"              #
+#mapType     = "world-robinson"           #
+#mapType     = "africa-laea"              #  
+mapType     = "europe-caucasus-lcc"      #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
@@ -27,7 +28,7 @@ mapSettings = {
 			"id": "robinson",
 			"lon0": 20,
 		},
-		"simplify":  0.4,
+		"simplify":  0.6,
 		"circles":   3000
 	},
 	# Alternative projection for world maps
@@ -36,7 +37,7 @@ mapSettings = {
 			"id": "mollweide",
 			"lon0": 20,
 		},
-		"simplify":  0.4,
+		"simplify":  0.6,
 		"circles":   3000
 	},
 	# In case someone wants an equal area map
@@ -63,6 +64,24 @@ mapSettings = {
 		},
 		"simplify":  0.2,
 		"circles":   1000
+	},
+	# Europe, including Caucasus and Greenland. Lambert Conformal Conic
+	"europe-caucasus-lcc": {
+		"proj": {
+			"id": "lcc",
+			"lon0": 20,
+			"lat0": 40,
+			"lat1": 30,
+			"lat2": 50
+		},
+		"bounds": {
+#			"mode": "points",
+#			"data": [[-43,65],[34,33]]
+			"mode": "bbox",
+			"data": [-12,30,52,75]
+		},
+		"simplify":  0.2,
+		"circles":   1500
 	},
 	# Africa
 	"africa-laea": {
@@ -358,14 +377,15 @@ for c in chunks:
 						if l in e["labels"]:
 							wikidataNames[l][i] = e["labels"][l]["value"]
 
-			#Get all nation flags
-				for i,e in data["entities"].items():
-					if "claims" in e:
-						if "P41" in e["claims"]: #flag image
-							flag = e["claims"]["P41"][0]["mainsnak"]["datavalue"]["value"]
-							wikidataFlags[i] = flag
-						else:
-							print ("No flag found for %s" % i)
+		#Get all nation flags
+		if "entities" in data:
+			for i,e in data["entities"].items():
+				if "claims" in e:
+					if "P41" in e["claims"]: #flag image
+						flag = e["claims"]["P41"][0]["mainsnak"]["datavalue"]["value"]
+						wikidataFlags[i] = flag
+					else:
+						print ("No flag found for %s" % i)
 		print "done"
 	except (ValueError,urllib2.URLError) as e:
 		print "failed, no internet connection?"

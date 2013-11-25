@@ -25,8 +25,7 @@ var Cursor =
 	},
 	setEvent: function(type){
 		var moveHandler = document['on' + type + 'move'] || function(){};
-		document['on' + type + 'move'] = function(e)
-		{
+		document['on' + type + 'move'] = function(e){
 			moveHandler(e);
 			Cursor.refresh(e);
 		}
@@ -192,8 +191,7 @@ Dragdealer.prototype =
 	getOption: function(name, defaultValue){
 		return this.options[name] !== undefined ? this.options[name] : defaultValue;
 	},
-	setup: function()
-	{
+	setup: function(){
 		this.setWrapperOffset();
 		this.setBoundsPadding();
 		this.setBounds();
@@ -204,8 +202,7 @@ Dragdealer.prototype =
 	setWrapperOffset: function(){
 		this.offset.wrapper = Position.get(this.wrapper);
 	},
-	setBoundsPadding: function()
-	{
+	setBoundsPadding: function(){
 		if(!this.bounds.left && !this.bounds.right)	{
 			this.bounds.left = Position.get(this.handle) - this.offset.wrapper;
 			this.bounds.right = -this.bounds.left;
@@ -221,8 +218,7 @@ Dragdealer.prototype =
 	setSteps: function(){
 		if(this.steps > 1){
 			this.stepRatios = [];
-			for(var i = 0; i <= this.steps - 1; i++)
-			{
+			for(var i = 0; i <= this.steps - 1; i++){
 				this.stepRatios[i] = i / (this.steps - 1);
 			}
 		}
@@ -263,8 +259,7 @@ Dragdealer.prototype =
         this.interval = setInterval(this.bindEvent({},"onanimate", this.animate), 25);
         this.animate(false, true);
 	},
-	handleDownHandler: function(e)
-	{
+	handleDownHandler: function(e){
     var self = this;
     this.interval = setInterval(function(){ self.animate() }, 25);
 		this.activity = false;
@@ -274,44 +269,37 @@ Dragdealer.prototype =
 		this.startDrag();
 		this.cancelEvent(e);
 	},
-	wrapperDownHandler: function(e)
-	{
+	wrapperDownHandler: function(e){
 		Cursor.refresh(e);
 		
 		this.preventDefaults(e, true);
 		this.startTap();
 	},
-	documentUpHandler: function(e)
-	{
+	documentUpHandler: function(e){
 		this.stopDrag();
 		this.stopTap();
 		//this.cancelEvent(e);
 	},
-	documentResizeHandler: function(e)
-	{
+	documentResizeHandler: function(e){
 		this.setWrapperOffset();
 		this.setBounds();
 		
 		this.update();
 	},
-	enable: function()
-	{
+	enable: function(){
 		this.disabled = false;
 		this.handle.className = this.handle.className.replace(/\s?disabled/g, '');
 	},
-	disable: function()
-	{
+	disable: function()	{
 		this.disabled = true;
 		this.handle.className += ' disabled';
 	},
-	setStep: function(x, snap)
-	{
+	setStep: function(x, snap){
 		this.setValue(
 			this.steps && x > 1 ? (x - 1) / (this.steps - 1) : 0
 		);
 	},
-	setValue: function(x, snap)
-	{
+	setValue: function(x, snap)	{
 		this.setTargetValue(x);
 		if(snap){
 			this.value.current = this.value.target;
@@ -324,17 +312,12 @@ Dragdealer.prototype =
 		this.tapping = true;
 		
 		if(target === undefined){
-			target = [
-				Cursor.x - this.offset.wrapper - (this.handle.offsetWidth / 2),
-				0
-			];
+			target = Cursor.x - this.offset.wrapper - (this.handle.offsetWidth / 2);
 		}
 		this.setTargetOffset(target);
 	},
-	stopTap: function()
-	{
-		if(this.disabled || !this.tapping)
-		{
+	stopTap: function()	{
+		if(this.disabled || !this.tapping){
 			return;
 		}
 		this.tapping = false;
@@ -342,18 +325,15 @@ Dragdealer.prototype =
 		this.setTargetValue(this.value.current);
 		this.result();
 	},
-	startDrag: function()
-	{
-		if(this.disabled)
-		{
+	startDrag: function(){
+		if(this.disabled){
 			return;
 		}
 		this.offset.mouse = Cursor.x - Position.get(this.handle);
 		
 		this.dragging = true;
 	},
-	stopDrag: function()
-	{
+	stopDrag: function(){
 		if(this.disabled || !this.dragging)	{
 			return;
 		}
@@ -374,23 +354,21 @@ Dragdealer.prototype =
 			value = this.getClosestStep(value);
 		}
 		if(value !== this.value.prev){
-			if(typeof(this.animationCallback) == 'function'){
-				this.animationCallback(value, 0);
-			}
+//			if(typeof(this.animationCallback) == 'function'){
+				this.animationCallback(value);
+//			}
 			this.value.prev = value;
 		}
 	},
 	result: function()
 	{
-		if(typeof(this.callback) == 'function')	{
-			this.callback(this.value.target, 0);
+//		if(typeof(this.callback) == 'function')	{
+			this.callback(this.value.target);
+//		}
+		if(typeof(this.interval) == 'number'){
+			clearInterval(this.interval);
+			delete this.interval;
 		}
-    
-    if(typeof(this.interval) == 'number')
-    {
-      clearInterval(this.interval);
-      delete this.interval;
-    }
 	},
 	animate: function(direct, first)
 	{

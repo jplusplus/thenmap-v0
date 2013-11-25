@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>meters</units>
         <extent>
-            <xmin>-207.01463524433529528</xmin>
-            <ymin>-24.53340143670176587</ymin>
-            <xmax>9.63643135378902116</xmax>
-            <ymax>115.18442926739474785</ymax>
+            <xmin>-11.1100732856350195</xmin>
+            <ymin>28.16487629675400939</ymin>
+            <xmax>-8.02994006965265505</xmax>
+            <ymax>30.15124792175488011</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -24,14 +24,19 @@
         </destinationsrs>
     </mapcanvas>
     <legend updateDrawingOrder="true" activeLayer="cshapes20131101092233606">
-        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
-            <filegroup open="false" hidden="false">
+        <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
+            <filegroup open="true" hidden="false">
                 <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="0"/>
             </filegroup>
         </legendlayer>
-        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="683px-Hyderabad_princely_state_1909.svg" showFeatureCount="0">
+        <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="transnistrien" showFeatureCount="0">
+            <filegroup open="true" hidden="false">
+                <legendlayerfile isInOverview="0" layerid="transnistrien20131122103640931" visible="0"/>
+            </filegroup>
+        </legendlayer>
+        <legendlayer drawingOrder="-1" open="false" checked="Qt::Unchecked" name="tmp" showFeatureCount="0">
             <filegroup open="false" hidden="false">
-                <legendlayerfile isInOverview="0" layerid="683px_Hyderabad_princely_state_1909_svg20131112120911920" visible="0"/>
+                <legendlayerfile isInOverview="0" layerid="tmp20131122130658586" visible="0"/>
             </filegroup>
         </legendlayer>
         <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="ne_10m_admin_1_states_provinces" showFeatureCount="0">
@@ -45,42 +50,7 @@
             </filegroup>
         </legendlayer>
     </legend>
-    <projectlayers layercount="4">
-        <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
-            <id>683px_Hyderabad_princely_state_1909_svg20131112120911920</id>
-            <datasource>/home/leo/Downloads/683px-Hyderabad_princely_state_1909.svg.png</datasource>
-            <title></title>
-            <abstract></abstract>
-            <keywordList>
-                <value></value>
-            </keywordList>
-            <layername>683px-Hyderabad_princely_state_1909.svg</layername>
-            <srs>
-                <spatialrefsys>
-                    <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
-                    <srsid>3452</srsid>
-                    <srid>4326</srid>
-                    <authid>EPSG:4326</authid>
-                    <description>WGS 84</description>
-                    <projectionacronym>longlat</projectionacronym>
-                    <ellipsoidacronym>WGS84</ellipsoidacronym>
-                    <geographicflag>true</geographicflag>
-                </spatialrefsys>
-            </srs>
-            <customproperties>
-                <property key="identify/format" value="Value"/>
-            </customproperties>
-            <provider>gdal</provider>
-            <pipe>
-                <rasterrenderer opacity="1" alphaBand="4" blueBand="3" greenBand="2" type="multibandcolor" redBand="1">
-                    <rasterTransparency/>
-                </rasterrenderer>
-                <brightnesscontrast brightness="0" contrast="0"/>
-                <huesaturation colorizeGreen="128" colorizeOn="0" colorizeRed="255" colorizeBlue="128" grayscaleMode="0" saturation="0" colorizeStrength="100"/>
-                <rasterresampler maxOversampling="2"/>
-            </pipe>
-            <blendMode>0</blendMode>
-        </maplayer>
+    <projectlayers layercount="5">
         <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
             <id>TM_WORLD_BORDERS_0_320131105083224301</id>
             <datasource>/home/leo/Downloads/shapes/TM_WORLD_BORDERS-0.3.shp</datasource>
@@ -309,6 +279,158 @@
             <excludeAttributesWFS/>
             <attributeactions/>
         </maplayer>
+        <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
+            <id>tmp20131122130658586</id>
+            <datasource>/home/leo/Downloads/transnistria/tmp.shp</datasource>
+            <title></title>
+            <abstract></abstract>
+            <keywordList>
+                <value></value>
+            </keywordList>
+            <layername>tmp</layername>
+            <srs>
+                <spatialrefsys>
+                    <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+                    <srsid>3452</srsid>
+                    <srid>4326</srid>
+                    <authid>EPSG:4326</authid>
+                    <description>WGS 84</description>
+                    <projectionacronym>longlat</projectionacronym>
+                    <ellipsoidacronym>WGS84</ellipsoidacronym>
+                    <geographicflag>true</geographicflag>
+                </spatialrefsys>
+            </srs>
+            <provider encoding="System">ogr</provider>
+            <previewExpression></previewExpression>
+            <vectorjoins/>
+            <renderer-v2 symbollevels="0" type="singleSymbol">
+                <symbols>
+                    <symbol alpha="1" type="fill" name="0">
+                        <layer pass="0" class="SimpleFill" locked="0">
+                            <prop k="border_width_unit" v="MM"/>
+                            <prop k="color" v="107,171,70,255"/>
+                            <prop k="color_border" v="0,0,0,255"/>
+                            <prop k="offset" v="0,0"/>
+                            <prop k="offset_unit" v="MM"/>
+                            <prop k="style" v="solid"/>
+                            <prop k="style_border" v="solid"/>
+                            <prop k="width_border" v="0.26"/>
+                        </layer>
+                    </symbol>
+                </symbols>
+                <rotation field=""/>
+                <sizescale field="" scalemethod="area"/>
+            </renderer-v2>
+            <customproperties/>
+            <blendMode>0</blendMode>
+            <featureBlendMode>0</featureBlendMode>
+            <layerTransparency>0</layerTransparency>
+            <displayfield>id</displayfield>
+            <label>0</label>
+            <labelattributes>
+                <label fieldname="" text="Label"/>
+                <family fieldname="" name="Ubuntu"/>
+                <size fieldname="" units="pt" value="12"/>
+                <bold fieldname="" on="0"/>
+                <italic fieldname="" on="0"/>
+                <underline fieldname="" on="0"/>
+                <strikeout fieldname="" on="0"/>
+                <color fieldname="" red="0" blue="0" green="0"/>
+                <x fieldname=""/>
+                <y fieldname=""/>
+                <offset x="0" y="0" units="pt" yfieldname="" xfieldname=""/>
+                <angle fieldname="" value="0" auto="0"/>
+                <alignment fieldname="" value="center"/>
+                <buffercolor fieldname="" red="255" blue="255" green="255"/>
+                <buffersize fieldname="" units="pt" value="1"/>
+                <bufferenabled fieldname="" on=""/>
+                <multilineenabled fieldname="" on=""/>
+                <selectedonly on=""/>
+            </labelattributes>
+            <editform>.</editform>
+            <editforminit></editforminit>
+            <annotationform>.</annotationform>
+            <editorlayout>generatedlayout</editorlayout>
+            <excludeAttributesWMS/>
+            <excludeAttributesWFS/>
+            <attributeactions/>
+        </maplayer>
+        <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
+            <id>transnistrien20131122103640931</id>
+            <datasource>/home/leo/Downloads/transnistria/transnistrien.shp</datasource>
+            <title></title>
+            <abstract></abstract>
+            <keywordList>
+                <value></value>
+            </keywordList>
+            <layername>transnistrien</layername>
+            <srs>
+                <spatialrefsys>
+                    <proj4>+proj=longlat +datum=WGS84 +no_defs</proj4>
+                    <srsid>3452</srsid>
+                    <srid>4326</srid>
+                    <authid>EPSG:4326</authid>
+                    <description>WGS 84</description>
+                    <projectionacronym>longlat</projectionacronym>
+                    <ellipsoidacronym>WGS84</ellipsoidacronym>
+                    <geographicflag>true</geographicflag>
+                </spatialrefsys>
+            </srs>
+            <provider encoding="System">ogr</provider>
+            <previewExpression></previewExpression>
+            <vectorjoins/>
+            <renderer-v2 symbollevels="0" type="singleSymbol">
+                <symbols>
+                    <symbol alpha="1" type="fill" name="0">
+                        <layer pass="0" class="SimpleFill" locked="0">
+                            <prop k="border_width_unit" v="MM"/>
+                            <prop k="color" v="11,110,140,255"/>
+                            <prop k="color_border" v="0,0,0,255"/>
+                            <prop k="offset" v="0,0"/>
+                            <prop k="offset_unit" v="MM"/>
+                            <prop k="style" v="solid"/>
+                            <prop k="style_border" v="solid"/>
+                            <prop k="width_border" v="0.26"/>
+                        </layer>
+                    </symbol>
+                </symbols>
+                <rotation field=""/>
+                <sizescale field="" scalemethod="area"/>
+            </renderer-v2>
+            <customproperties/>
+            <blendMode>0</blendMode>
+            <featureBlendMode>0</featureBlendMode>
+            <layerTransparency>0</layerTransparency>
+            <displayfield>id</displayfield>
+            <label>0</label>
+            <labelattributes>
+                <label fieldname="" text="Label"/>
+                <family fieldname="" name="Ubuntu"/>
+                <size fieldname="" units="pt" value="12"/>
+                <bold fieldname="" on="0"/>
+                <italic fieldname="" on="0"/>
+                <underline fieldname="" on="0"/>
+                <strikeout fieldname="" on="0"/>
+                <color fieldname="" red="0" blue="0" green="0"/>
+                <x fieldname=""/>
+                <y fieldname=""/>
+                <offset x="0" y="0" units="pt" yfieldname="" xfieldname=""/>
+                <angle fieldname="" value="0" auto="0"/>
+                <alignment fieldname="" value="center"/>
+                <buffercolor fieldname="" red="255" blue="255" green="255"/>
+                <buffersize fieldname="" units="pt" value="1"/>
+                <bufferenabled fieldname="" on=""/>
+                <multilineenabled fieldname="" on=""/>
+                <selectedonly on=""/>
+            </labelattributes>
+            <editform>.</editform>
+            <editforminit></editforminit>
+            <annotationform>.</annotationform>
+            <editorlayout>generatedlayout</editorlayout>
+            <excludeAttributesWMS/>
+            <excludeAttributesWFS/>
+            <attributeactions/>
+        </maplayer>
     </projectlayers>
     <properties>
         <WMSContactPerson type="QString"></WMSContactPerson>
@@ -329,8 +451,8 @@
             <Automatic type="bool">true</Automatic>
             <DegreeFormat type="QString">D</DegreeFormat>
         </PositionPrecision>
-        <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
         <WMSContactPhone type="QString"></WMSContactPhone>
+        <WMSServiceCapabilities type="bool">false</WMSServiceCapabilities>
         <WMSServiceAbstract type="QString"></WMSServiceAbstract>
         <WMSAddWktGeometry type="bool">false</WMSAddWktGeometry>
         <Measure>
@@ -352,21 +474,51 @@
         </Gui>
         <Digitizing>
             <LayerSnappingList type="QStringList">
+                <value>TM_WORLD_BORDERS_0_320131105083224301</value>
                 <value>cshapes20131101092233606</value>
+                <value>ne_10m_admin_1_states_provinces20131109003355382</value>
+                <value>transnistria_administrative20131122103416031</value>
+                <value>transnistrien20131122103640931</value>
+                <value>ockupied_austria20131122113542037</value>
+                <value>tmp20131122130658586</value>
             </LayerSnappingList>
             <LayerSnappingEnabledList type="QStringList">
+                <value>disabled</value>
                 <value>enabled</value>
+                <value>disabled</value>
+                <value>disabled</value>
+                <value>disabled</value>
+                <value>enabled</value>
+                <value>disabled</value>
             </LayerSnappingEnabledList>
             <AvoidIntersectionsList type="QStringList"/>
             <LayerSnappingToleranceUnitList type="QStringList">
+                <value>0</value>
                 <value>1</value>
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
+                <value>0</value>
             </LayerSnappingToleranceUnitList>
             <LayerSnapToList type="QStringList">
+                <value>to_vertex_and_segment</value>
+                <value>to_vertex_and_segment</value>
+                <value>to_vertex_and_segment</value>
+                <value>to_vertex_and_segment</value>
+                <value>to_vertex_and_segment</value>
+                <value>to_vertex_and_segment</value>
                 <value>to_vertex_and_segment</value>
             </LayerSnapToList>
             <TopologicalEditing type="bool">true</TopologicalEditing>
             <LayerSnappingToleranceList type="QStringList">
+                <value>0.000000</value>
                 <value>10.000000</value>
+                <value>0.000000</value>
+                <value>0.000000</value>
+                <value>0.000000</value>
+                <value>5.000000</value>
+                <value>0.000000</value>
             </LayerSnappingToleranceList>
         </Digitizing>
         <Identify>

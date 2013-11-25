@@ -3,6 +3,15 @@
 /* $mySetting = new Setting( array( "available"    => array ('sv', 'en'),      */
 /*									"fallback"     => 'en',                    */
 /*									"type"         => Setting::LANGUAGE, ) );  */
+
+// Hack for old php versions to use boolval()
+
+if (!function_exists('boolval')) {
+        function boolval($val) {
+                return (bool) $val;
+        }
+}
+
 class Setting {
 
 	const LANGUAGE = 1;
