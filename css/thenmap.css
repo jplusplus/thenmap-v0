@@ -1,0 +1,245 @@
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+#thenmap a {
+    background: transparent;
+}
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+#thenmap a:focus {
+    outline: thin dotted;
+}
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+#thenmap a:active,
+#thenmap a:hover {
+    outline: 0;
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+svg:not(:root) {
+    overflow: hidden;
+}
+
+/*
+ * qTip2 - Pretty powerful tooltips - v2.1.1
+ * http://qtip2.com
+ *
+ * Copyright (c) 2013 Craig Michael Thompson
+ * Released under the MIT, GPL licenses
+ * http://jquery.org/license
+ *
+ * Date: Thu Jul 11 2013 02:03 GMT+0100+0100
+ * Plugins: None
+ * Styles: None
+ */
+.qtip{
+	position: absolute;
+	left: -28000px;
+	top: -28000px;
+	display: none;
+
+	max-width: 280px;
+	min-width: 50px;
+	
+	font-size: 10.5px;
+	line-height: 12px;
+
+	direction: ltr;
+
+	box-shadow: none;
+	padding: 0;
+}
+
+.qtip img.flag {
+	float:	right;
+}
+
+.qtip h3 {
+	font-size: 1.2em;
+	margin-top:0;
+}
+
+.qtip-content{
+	position: relative;
+	padding: 5px 9px;
+	overflow: hidden;
+
+	text-align: left;
+	word-wrap: break-word;
+}
+
+	/* Default close button class */
+	.qtip-close{
+		position: absolute;
+		right: -9px; top: -9px;
+
+		cursor: pointer;
+		outline: medium none;
+
+		border-width: 1px;
+		border-style: solid;
+		border-color: transparent;
+	}
+	
+		.qtip-icon, .qtip-icon .ui-icon{
+			-moz-border-radius: 3px;
+			-webkit-border-radius: 3px;
+			border-radius: 3px;
+			text-decoration: none;
+		}
+
+			.qtip-icon .ui-icon{
+				width: 18px;
+				height: 14px;
+
+				line-height: 14px;
+				text-align: center;
+				text-indent: 0;
+				font: normal bold 10px/13px Tahoma,sans-serif;
+
+				color: inherit;
+				background: transparent none no-repeat -100em -100em;
+			}
+
+/* Applied to 'focused' tooltips e.g. most recently displayed/interacted with */
+.qtip-focus{}
+
+/* Applied on hover of tooltips i.e. added/removed on mouseenter/mouseleave respectively */
+.qtip-hover{}
+
+/* Default tooltip style */
+.qtip-default{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #F1D031;
+
+	background-color: #FFFFA3;
+	color: #555;
+}
+
+.loading:after {
+	content: 'laddar...'
+}
+
+#thenmap-map-container{
+	margin-left:auto;margin-right:auto;
+	msx-width:1800px;
+}
+
+#thenmap-slider {
+	margin-top:.4em;
+}
+
+/* SVG */
+svg#thenmap-map {
+	width:100%;
+	height:100%;
+	height:none\9; /* Height needed for FF, but breaks IE. Hide from IE<9. TODO needs testing in IE10*/
+	height:none \0/; /*Height needed for FF, but breaks IE. Hide from IE<9. TODO needs testing in IE10*/
+	border:1px solid whitesmoke;
+}
+
+.land {
+	fill:lightgray;
+	stroke:white;
+	stroke-width:1px;
+}
+
+.limit {
+	fill:url("#diagonalHatch");
+}
+
+.circle{
+	opacity:.4;
+	fill:none;
+}
+
+/* Sea */
+svg g#background {
+	fill: aliceblue;
+	opacity: .4;
+}
+
+/* Control bar */
+.controlbar {
+	margin-left:auto;margin-right:auto;
+	max-width:280px;
+	padding:0;
+}
+
+/* Normalize buttons */
+.controlbar input[type="button"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+}
+
+.controlbar html input[disabled] {
+    cursor: default;
+}
+
+.control {
+	font-family: Arial, "sans-serif";
+	font-weight: bold;
+	cursor: pointer;
+	background-color:#C00;
+	color: #fff;
+	padding: 4px 8px;
+	margin: 4px 2px;
+	border-radius: 3px;
+	display: inline-block;
+	text-align: center;
+	outline:0;border:0;
+}
+.control:hover {
+	background-color: #8A0000;
+}
+#thenmap-play {width: 100px;}
+#thenmap-stepback,#thenmap-stepforward, #thenmap-rewind,#thenmap-rewind {width: 30px;}
+
+.dragdealer {
+	position: relative;
+	height: 30px;
+	background: #EEE;
+	max-width: 1800px
+	margin-left:auto;margin-right:auto;
+}
+.dragdealer .handle {
+	position: absolute;
+	cursor: pointer;
+	width: 100px;
+	height: 30px;
+	background: #C00;
+	color: #FFF;
+	line-height: 30px;
+	text-align: center;
+}
+.dragdealer .disabled {
+	background: #898989;
+}
+
+@media (pointer:coarse) {
+	.dragdealer, .dragdealer .handle {
+		height: 50px !important;
+		font-size:1.2em !important;
+	}
+}
