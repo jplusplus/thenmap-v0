@@ -81,6 +81,7 @@ var Dragdealer = function(wrapper, options){
 	}
 	this.init(wrapper, handle, options || {});
 	this.setup();
+	
 };
 Dragdealer.prototype =
 {

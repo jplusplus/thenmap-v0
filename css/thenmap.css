@@ -165,11 +165,11 @@ svg#thenmap-map {
 	stroke-width:1px;
 }
 
-.limit {
+.limit > * {
 	fill:url("#diagonalHatch");
 }
 
-.circle{
+.circle {
 	opacity:.4;
 	fill:none;
 }
@@ -235,6 +235,10 @@ svg g#background {
 }
 .dragdealer .disabled {
 	background: #898989;
+}
+
+.dragdealer .handle:active {
+	background-color: #8A0000;
 }
 
 @media (pointer:coarse) {

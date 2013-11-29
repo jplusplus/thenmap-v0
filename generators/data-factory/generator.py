@@ -30,7 +30,7 @@ try:
 					for c in row:
 						if not(i == nationColumn):
 							if c:
-								outStr = outStr + ".y" + headers[i] + " ." + row[nationColumn] + " {fill:#900} "
+								outStr = outStr + ".y" + headers[i] + " ." + row[nationColumn] + " > * {fill:#900} "
 						i += 1
 	
 except IOError:

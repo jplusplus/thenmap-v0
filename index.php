@@ -1,5 +1,6 @@
 <?php
 header('Cache-Control: public');
+
 $modify_time = filemtime(__FILE__);  
 header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");  
 
@@ -35,7 +36,7 @@ $map = new Setting( $maps );
 $map->set( filter_input(INPUT_GET,"map",FILTER_SANITIZE_STRING) );
 
 /* Dates */
-$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1949 ) );
+$firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1946 ) );
 $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
 $lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2013 ) );
 $lastYear->set( filter_input(INPUT_GET,"lYear",FILTER_SANITIZE_STRING) );
@@ -65,7 +66,7 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 
 	</head>
 
-<body>
+<body ontouchstart="" onmouseover="">
 	<section id="thenmap">
 	 	<div id="thenmap-map-container">
 	 	</div>
@@ -86,6 +87,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	</article>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js"></script>
-		<script src="thenmap.js?map=<?php echo $map->get(); ?>&dataCss=<?php echo $dataCss->get(); ?>&fYear=<?php echo $firstYear->get(); ?>&sYear=<?php echo $startingYear->get(); ?>&lYear=<?php echo $lastYear->get(); ?>&controls=true&mlang=<?php echo $mapLanguage->get(); ?>&unCache=x21xx1"></script>
+		<script src="thenmap.js?map=<?php echo $map->get(); ?>&dataCss=<?php echo $dataCss->get(); ?>&fYear=<?php echo $firstYear->get(); ?>&sYear=<?php echo $startingYear->get(); ?>&lYear=<?php echo $lastYear->get(); ?>&controls=true&mlang=<?php echo $mapLanguage->get(); ?>&unCache=18"></script>
 	</body>
 </html>
