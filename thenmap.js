@@ -1,5 +1,4 @@
 <?php
-/* HEADERS */
 header("content-type: application/x-javascript; charset=utf-8");
 //header('Cache-Control: public');
 
@@ -7,12 +6,9 @@ $modify_time = filemtime(__FILE__);
 header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");
 
 /* LIBRARIES */
-/* Class for handling all settings */
-require_once('lib/setting.php');
-/* i18n for controls */
-require_once('lib/light-i18n.php');
-/* JShrink minifyer */
-include_once('lib/Minifier.php');
+require_once('lib/setting.php');	/* 	 for handling all settings */
+require_once('lib/light-i18n.php');	/* i18n for controls */
+include_once('lib/Minifier.php');	/* JShrink minifyer */
 
 /* SETTINGS */
 /* Paths */
@@ -117,11 +113,12 @@ ob_start();
 /***********************************************************************************************/
 /***********************************************************************************************/
 /***********************************************************************************************/
-/* includedragdealer */
-echo (file_get_contents('js/dragdealer.js'));
 ?>
 
 (function() {
+	/* Add lazyloader to load js and css */
+	<?php
+	echo (file_get_contents('js/lazyload.js')); ?>
 	/* ADD THENMAP CSS */
 	var url = "<?php echo $thenmapUrl; ?>/css/thenmap.css?c=<?php echo $cacheHash; ?>";
 	if(document.createStyleSheet) {
@@ -158,43 +155,19 @@ echo (file_get_contents('js/dragdealer.js'));
 	/* ONLY IF NOT ALREADY LOADED */
 	if (typeof jQuery === 'undefined') {
 		// Load the script
-	    var script = document.createElement("SCRIPT");
-	    <?php
-		    if ( $debugMode ) { ?>
-	    script.src = 'js/jquery.min.js';
-		<?php } else { ?>
-	    script.src = '//ajax.googleapis.com/ajax/libs/jquery/1/jquery.min.js';
-	    <?php } ?>
-	    script.type = 'text/javascript';
-	    document.getElementsByTagName("head")[0].appendChild(script);
-	} else {
-		console.log("JQuery already loaded with version "+jQuery.fn.jquery);
-	}
-
-	// Poll for jQuery to come into existance
-	var checkReady = function(callback) {
-		if (window.jQuery) {
-			callback(jQuery);
-		} else {
-			window.setTimeout(function() { checkReady(callback); }, 30);
-		}
-	};
-	
-	// Start...
-	checkReady(function($) {
-
-/***********************************************************************************************/
-
-		/* DOCUMENT READY */
-		$(document).ready(function(){
-
+		LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
 			Thenmap.init("thenmap");
-
 		});
-	});
+	} else {
+		Thenmap.init("thenmap");
+	}
 	<?php } ?>
 })();
 
+<?php
+/* include dragdealer */
+echo (file_get_contents('js/dragdealer.js'));
+?>
 /**********************************************************************************************************************/
 var Thenmap = {
 
@@ -249,62 +222,59 @@ var Thenmap = {
 		/* LOAD SVG IMAGE */
 		/* Fetch file */
 		$.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) {
+
 			// Get the SVG tag, ignore the rest
-			var svg = $(data).find('svg');
+			var svg = data.getElementsByTagName('svg')[0];
 
 			// Add attributes
-			svg.attr("id", "thenmap-map");
-			svg.attr("preserveAspectRatio", "xMinYMin slice");
-
-			/* Move width and height to container, so that the map scales */
-			var mapWidth = svg.attr('width');
-			var mapHeight = svg.attr('height');
-			$(self.mapcontainer).css("max-width",mapWidth)
-			$(self.mapcontainer).css("max-height",mapHeight)
+			svg.id = "thenmap-map";
+			svg.preserveAspectRatio = "xMinYMin slice";
 
 			/* Append image */
-			/* Each is used for callback functionality */
-			svg.appendTo(self.mapcontainer).each(function() {
-				self.svg = this;
-				
-				/*Cache path styles and elements for performance*/
-				for (var pid in self.paths) {
-					var elem = document.getElementById(pid);
-					if (elem) {
-						self.paths[pid]["e"] = elem;
-						self.paths[pid]["s"] = elem.style;
-					} else {
-						console.log("Error caching path "+pid)
-					}
+			self.svg = self.mapcontainer[0].appendChild(svg);
+
+			/* Move width and height to container, so that the map scales nicely to the browser  */
+			/* Can only be done reliabily after svg is inserted */
+			var bBox = svg.getBBox();
+			self.mapcontainer[0].style["max-width"] = bBox.width;
+			self.mapcontainer[0].style["max-height"] = bBox.height;
+
+			/*Cache path styles and elements for performance*/
+			for (var pid in self.paths) {
+				var elem = document.getElementById(pid);
+				if (elem) {
+					self.paths[pid]["e"] = elem;
+				} else {
+					console.log("Error caching path "+pid)
 				}
+			}
 
-				self.initTimeline('thenmap-slider');
-				$(self.container).removeClass("loading");
-				
-				self.loadQtip();
+			self.initTimeline('thenmap-slider');
+			$(self.container).removeClass("loading");
+			
+			self.loadQtip();
 
-			});
 		}, 'xml');//END loading svg
 		// Keyboard commands
-	$(window).keydown(function(e){
-		if(e.which === 37){
-			self.moveLeft();
-			return false;
-		} else if(e.which === 39){
-			self.moveRight();
-			return false;
-		} else if(e.which === 35){
-			self.moveToEnd();
-			return false;
-		} else if(e.which === 36){
-			self.moveToStart();
-			return false;
-		} else if(e.which === 8){
-			self.togglePlayPause();
-			return false;
-		}
-	});
-	return this;
+		$(window).keydown(function(e){
+			if(e.which === 37){
+				self.moveLeft();
+				return false;
+			} else if(e.which === 39){
+				self.moveRight();
+				return false;
+			} else if(e.which === 35){
+				self.moveToEnd();
+				return false;
+			} else if(e.which === 36){
+				self.moveToStart();
+				return false;
+			} else if(e.which === 8){
+				self.togglePlayPause();
+				return false;
+			}
+		});
+		return this;
 	},
 
 	playTimeline: function() {
@@ -359,8 +329,9 @@ var Thenmap = {
 	printMap: function (){
 		
 		// Set year to container
-		this.svg.setAttribute("class", "y"+this.currentYear);
-
+        this.svg.setAttribute("class", "y"+this.currentYear);
+//		this.svg.className = "y"+this.currentYear;
+		
 		// Offset date
 		var yy = this.currentYear+"-<?php echo $dateOffset->get(); ?>";
 		
@@ -374,16 +345,18 @@ var Thenmap = {
 			i = this.paths[pid].length;
 			while(i-- && unknown){
 				if ( (this.paths[pid][i].f <= yy) && (yy <= this.paths[pid][i].t) ) {
-					this.paths[pid]["s"].visibility = "visible";
-					this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c);
+					this.paths[pid]["e"].style.visibility = "visible";
+//					this.paths[pid]["e"].className = this.paths[pid][i].c;
+                    this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c);
+
 					unknown = false;
 	    		}
 	    	}
 	    	if (unknown) {
-				if ("undefined" === typeof(this.paths[pid]["s"])) {
+				if ("undefined" === typeof(this.paths[pid]["e"])) {
 					console.log( "pid problem: "+pid );
 				} else {
-					this.paths[pid]["s"].visibility = "hidden";
+					this.paths[pid]["e"].style.visibility = "hidden";
 				}
 	    	}
 
@@ -443,7 +416,7 @@ var Thenmap = {
 		
 			/* Create control bar, if asked */
 	<?php 
-	if ( $printControlbar->get() ) { ?>
+		if ( $printControlbar->get() ) { ?>
 		var self = this;
 		var controlbar = $('<menu/>', {
 			class: 'controlbar'
@@ -488,83 +461,66 @@ var Thenmap = {
 	<?php } ?>
 	},
 	loadQtip: function() { /* LOADER FOR QTIP */
-		if (typeof $(document).qtip === 'undefined') {
-			// Load the script
-		    var script = document.createElement("SCRIPT");
-			<?php if ( $debugMode ) { ?>
-			script.src = 'js/jquery.qtip.min.js';
-			<?php } else { ?>
-		    script.src = '//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js';
-			<?php } ?>
-    		script.type = 'text/javascript';
-		    document.getElementsByTagName("head")[0].appendChild(script);
-		} else {
-			console.log("Qtip already loaded");
-		}
-
 		var self = this;
-		// Poll for qtip to come into existance
-		var qtipReady = function(callback) {
-			if ($(document).qtip) {
-				callback();
-			} else {
-				window.setTimeout(function() { qtipReady(callback); }, 30);
-			}
-		};
-
-		// Start...
-		qtipReady(function() {
-			var	$nations = $(self.svg).find("g.nations > *");
-			$($nations).qtip({ 
-				prerender: false,
-				content: {
-					text: function(event, api) {
-						pid = api.target[0].id;
-						i = self.paths[pid].length;
-						while(i--){
-							var yy = self.currentYear+"-<?php echo $dateOffset->get(); ?>";
-							if ( (self.paths[pid][i].f <= yy) && (yy <= self.paths[pid][i].t) ) {
-								var s = "<h3>"+self.paths[pid][i].n+"</h3>";
-								var q;
-								if ( q = self.paths[pid][i].q ) {
-									if (self.flags[q]) {
-										s += '<a href="//commons.wikimedia.org/wiki/File:'+self.flags[q].n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+self.flags[q].i+'/'+self.flags[q].n+'/80px-'+self.flags[q].n+self.flags[q].s+'"/></a>';
-									}
-								}
-								
-								if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
-									s += '<p>'+nationDescriptions[q]+'</p>';
-								}
-								return s;
-							}
-						}
-
-					}
-				},
-				position: {
-					target: 'mouse', // Use the mouse position as the position origin
-					adjust: {
-						mouse: false, //Follow the mouse?
-						x: -40,
-						y: 15
-					},
-					corner: {
-						tooltip: 'bottomMiddle'
-					},
-					effect: false,
-				},
-				hide: {
-					fixed: true, // Let the user mouse into the tip
-					delay: 120 // Don't hide right away so that they can mouse into it
-				},
-				show: {
-		             solo: true
-				}
+		if ("undefined" === typeof($.qtip)) {
+			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js', function () {
+				self.attachQtip();
 			});
+		} else {
+			self.attachQtip();
+		}
+	},
+	attachQtip: function() {
+		var	nations = $(this.svg).find("g.nations > *");
+		var self = this;
+		$(nations).qtip({ 
+			prerender: false,
+			content: {
+				text: function(event, api) {
+					pid = api.target[0].id;
+					i = self.paths[pid].length;
+					while(i--){
+						var yy = self.currentYear+"-<?php echo $dateOffset->get(); ?>";
+						if ( (self.paths[pid][i].f <= yy) && (yy <= self.paths[pid][i].t) ) {
+							var s = "<h3>"+self.paths[pid][i].n+"</h3>";
+							var q;
+							if ( q = self.paths[pid][i].q ) {
+								if (self.flags[q]) {
+									s += '<a href="//commons.wikimedia.org/wiki/File:'+self.flags[q].n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+self.flags[q].i+'/'+self.flags[q].n+'/80px-'+self.flags[q].n+self.flags[q].s+'"/></a>';
+								}
+							}
+							if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
+								s += '<p>'+nationDescriptions[q]+'</p>';
+							}
+							return s;
+						}
+					}
 
-		});//qtipReady
+				}
+			},
+			position: {
+				target: 'mouse', // Use the mouse position as the position origin
+				adjust: {
+					mouse: false, //Follow the mouse?
+					x: -40,
+					y: 15
+				},
+				corner: {
+					tooltip: 'bottomMiddle'
+				},
+				effect: false,
+			},
+			hide: {
+				fixed: true, // Let the user mouse into the tip
+				delay: 120 // Don't hide right away so that they can mouse into it
+			},
+			show: {
+		         solo: true
+			}
+		});
 
-    }
+	}
+
 }
 
 <?php

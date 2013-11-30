@@ -137,10 +137,6 @@ svg:not(:root) {
 	color: #555;
 }
 
-.loading:after {
-	content: 'laddar...'
-}
-
 #thenmap-map-container{
 	margin-left:auto;margin-right:auto;
 	msx-width:1800px;
