@@ -139,7 +139,13 @@ svg:not(:root) {
 
 #thenmap-map-container{
 	margin-left:auto;margin-right:auto;
-	msx-width:1800px;
+	max-width:1800px;
+	max-height:768px;
+}
+
+#thenmap-map-container.loading{
+	min-height: 300px;
+	min-width: 300px;
 }
 
 #thenmap-slider {
@@ -213,7 +219,7 @@ svg g#background {
 #thenmap-stepback,#thenmap-stepforward, #thenmap-rewind,#thenmap-rewind {width: 30px;}
 
 .dragdealer {
-	position: relative;
+/*	position: relative;*/
 	height: 30px;
 	background: #EEE;
 	max-width: 1800px
@@ -243,3 +249,58 @@ svg g#background {
 		font-size:1.2em !important;
 	}
 }
+
+/* http://www.sitepoint.com/css3-ajax-loading-icon/ */
+#thenmap-map-container.loading .ajaxloader {
+	position: absolute;
+	top:10%;
+	left:45%;
+	width: 30px;
+	height: 30px;
+	border: 8px solid #933;
+	border-right-color: transparent;
+	border-right: 0 none;
+	border-radius: 50%;
+	box-shadow: 0 0 25px 2px #633;
+	-webkit-animation: spin 1s linear infinite;
+	-moz-animation: spin 1s linear infinite;
+	-ms-animation: spin 1s linear infinite;
+	-o-animation: spin 1s linear infinite;
+	animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin
+{
+	from { -webkit-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -webkit-transform: rotate(180deg); opacity: 1; }
+	to   { -webkit-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-moz-keyframes spin
+{
+	from { -moz-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -moz-transform: rotate(180deg); opacity: 1; }
+	to   { -moz-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-ms-keyframes spin
+{
+	from { -ms-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -ms-transform: rotate(180deg); opacity: 1; }
+	to   { -ms-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-o-keyframes spin
+{
+	from { -o-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -o-transform: rotate(180deg); opacity: 1; }
+	to   { -o-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@keyframes spin
+{
+	from { transform: rotate(0deg); opacity: 0.2; }
+	50%  { transform: rotate(180deg); opacity: 1; }
+	to   { transform: rotate(360deg); opacity: 0.2; }
+}
+

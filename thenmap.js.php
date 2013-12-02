@@ -114,60 +114,13 @@ ob_start();
 /***********************************************************************************************/
 /***********************************************************************************************/
 ?>
-
-(function() {
-	/* Add lazyloader to load js and css */
-	<?php
-	echo (file_get_contents('js/lazyload.js')); ?>
-	/* ADD THENMAP CSS */
-	var url = "<?php echo $thenmapUrl; ?>/css/thenmap.css?c=<?php echo $cacheHash; ?>";
-	if(document.createStyleSheet) {
-		try { document.createStyleSheet(url); } catch (e) { }
-	} else {
-		var css = document.createElement('link');
-		css.rel     = 'stylesheet';
-		css.type    = 'text/css';
-		css.href    = url;
-		document.getElementsByTagName("head")[0].appendChild(css);
-	}
-	/* ADD PREDEFINED DATA CSS, IF ANY.  */
-	<?php
-	if ( $val = $dataCss->get() ) {
-		$CssUrl = '"'.$thenmapUrl . '/css/' . $val . ".css?c=" . $cacheHash . '"'
-	 ?>
-	var url = <?php echo ($CssUrl); ?>;
-		if(document.createStyleSheet) {
-		try { document.createStyleSheet(url); } catch (e) { }
-	} else {
-		var css = document.createElement('link');
-		css.rel     = 'stylesheet';
-		css.type    = 'text/css';
-		css.href    = url;
-		document.getElementsByTagName("head")[0].appendChild(css);
-	}
-	<?php } ?>
-
-	/* SHOULD WE AUTOLOAD EVERYTHING FOR THE USER? */
-	/* This will autoload jQuery, if not rpesent, and then attach the map to an element with the id "thenmap" */
-	<?php
-	if ($autoInit->get() ) { ?>
-	/* JQUERY LOADER, TO ALLOW US TO LOAD JQUERY */
-	/* ONLY IF NOT ALREADY LOADED */
-	if (typeof jQuery === 'undefined') {
-		// Load the script
-		LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
-			Thenmap.init("thenmap");
-		});
-	} else {
-		Thenmap.init("thenmap");
-	}
-	<?php } ?>
-})();
-
 <?php
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
+/* include svg2vml for IE*/
+//echo (file_get_contents('js/svg2vml.js'));
 ?>
+
 /**********************************************************************************************************************/
 var Thenmap = {
 
@@ -201,12 +154,13 @@ var Thenmap = {
 	section: false,// root element
 
 	timelineHandle:false,	//element
-	timelineHandleText:false,	//element
 	svg:false,		//element
 	mapcontainer: false, //element
 	
 	callback: false,	// extra callback function for animation (normally for updating custom buttons, etc)
 						// Will be called like this: callback(currentYear)
+						
+	textPropName: false,
 	
 	init: function(e,callback) {
 		var self = this;
@@ -214,30 +168,80 @@ var Thenmap = {
 		if (callback) {
 			this.callback = callback;
 		}
+		/* Check if we will be able to use textContent for updating text in dragdealer handle. IE<9 only understand innerText */
+		self.textPropName = this.section.textContent === undefined ? 'innerText' : 'textContent';
+		
+		/* Polluting the environment a bit here, for our own convenience. Sorry for that. */
+		if (!document.getElementsByClassName) {
+			document.getElementsByClassName=function(cn) {
+				var allT=document.getElementsByTagName('*'), allCN=[], i=0, a;
+				while(a=allT[i++]) {
+					a.className==cn ? allCN[allCN.length]=a : null;
+				}
+				return allCN
+			}
+		}
 
-		/* Add map html, if not present */
-		/* Users can choose to include all elements from start */
-		this.buildHtml();
+		/* Create map container, if it do not already exist */
+		this.mapcontainer = document.getElementById('thenmap-map-container');
+		if ( !(this.mapcontainer) ) {
+			this.mapcontainer = document.createElement('div');
+			this.mapcontainer.id = 'thenmap-map-container';
+			this.mapcontainer.className = 'loading';
 			
+			var ajaxloader  = document.createElement('div');
+			ajaxloader.className = 'ajaxloader';
+			
+			var unsupported = document.createComment("[if lte IE 8]><i><?php echo(L::nosupport);?></i><![endif]");
+			
+			this.mapcontainer.appendChild(ajaxloader);
+			this.mapcontainer.appendChild(unsupported);
+			this.section.appendChild(this.mapcontainer);
+		}
+		/* Create slider bar, if it do not already exist */
+		var sliderElement = document.getElementById('thenmap-slider');
+		if ( !(sliderElement) ) {
+			sliderElement = document.createElement('div');
+			sliderElement.id = 'thenmap-slider';
+			sliderElement.className = 'dragdealer';
+
+			this.timelineHandle = document.createElement('div');
+			this.timelineHandle.className = 'handle';
+
+			sliderElement.appendChild(this.timelineHandle);
+			this.section.appendChild(sliderElement);
+		} else {
+			this.timelineHandle = sliderElement.getElementsByClassName("handle")[0];
+		}
+
 		/* LOAD SVG IMAGE */
 		/* Fetch file */
-		$.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) {
+		this.ajax.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) { //	equivalent of $.get("url", function(data) {
 
-			// Get the SVG tag, ignore the rest
-			var svg = data.getElementsByTagName('svg')[0];
+			//SVG polyfill for IE<9
+			//var vectorModel = new VectorModel();
+			// Extract the SVG tag from the reply
+			var tmp =  document.createElement('div');
+			tmp.innerHTML = data;
+			var svg = tmp.getElementsByTagName('svg')[0];
 
 			// Add attributes
 			svg.id = "thenmap-map";
 			svg.preserveAspectRatio = "xMinYMin slice";
 
 			/* Append image */
-			self.svg = self.mapcontainer[0].appendChild(svg);
+			self.svg = self.mapcontainer.appendChild(svg);
 
 			/* Move width and height to container, so that the map scales nicely to the browser  */
 			/* Can only be done reliabily after svg is inserted */
-			var bBox = svg.getBBox();
-			self.mapcontainer[0].style["max-width"] = bBox.width;
-			self.mapcontainer[0].style["max-height"] = bBox.height;
+			var bBox = self.svg.getBBox();
+			console.log(bBox);
+			if (bBox.width) {
+				self.mapcontainer.style["max-width"] = bBox.width + "px";
+			}
+			if (bBox.height) {
+				self.mapcontainer.style["max-height"] = bBox.height + "px";
+			}
 
 			/*Cache path styles and elements for performance*/
 			for (var pid in self.paths) {
@@ -250,13 +254,14 @@ var Thenmap = {
 			}
 
 			self.initTimeline('thenmap-slider');
-			$(self.container).removeClass("loading");
+			self.mapcontainer.className = "";
 			
-			self.loadQtip();
+			self.loadJQueryAndQtip();
 
-		}, 'xml');//END loading svg
+		});//		}, 'xml');//END loading svg
+
 		// Keyboard commands
-		$(window).keydown(function(e){
+/*		$(window).keydown(function(e){
 			if(e.which === 37){
 				self.moveLeft();
 				return false;
@@ -273,7 +278,7 @@ var Thenmap = {
 				self.togglePlayPause();
 				return false;
 			}
-		});
+		});*/
 		return this;
 	},
 
@@ -329,9 +334,8 @@ var Thenmap = {
 	printMap: function (){
 		
 		// Set year to container
-        this.svg.setAttribute("class", "y"+this.currentYear);
-//		this.svg.className = "y"+this.currentYear;
-		
+        this.svg.setAttribute("class", "y"+this.currentYear); //.className does not work for svg in Chrome
+
 		// Offset date
 		var yy = this.currentYear+"-<?php echo $dateOffset->get(); ?>";
 		
@@ -346,8 +350,7 @@ var Thenmap = {
 			while(i-- && unknown){
 				if ( (this.paths[pid][i].f <= yy) && (yy <= this.paths[pid][i].t) ) {
 					this.paths[pid]["e"].style.visibility = "visible";
-//					this.paths[pid]["e"].className = this.paths[pid][i].c;
-                    this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c);
+                    this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
 
 					unknown = false;
 	    		}
@@ -373,7 +376,7 @@ var Thenmap = {
 			animationCallback: function(x) {
 				// Update handle and map
 				self.currentYear = self.firstYear + x * yearSpan; // Get selected year
-				self.timelineHandle[0].textContent = self.currentYear;
+				self.timelineHandle[self.textPropName] = self.currentYear;
 				self.printMap();
 				if (self.callback) {
 					self.callback(self.currentYear);
@@ -388,32 +391,6 @@ var Thenmap = {
 		});
 	},
 	buildHtml: function() {	/* CREATE HTML MARKUP */	
-		/* Create map container, if it do not already exist */
-		this.mapcontainer = $(this.section).find('#thenmap-map-container');
-		if ( !this.mapcontainer.length ) {
-			this.mapcontainer =
-			$('<div/>', {
-				id:   'thenmap-map-container',
-				class: 'loading'
-			}).prependTo(this.section);
-		} 
-		/* Create slider bar, if it do not already exist */
-		var sliderElement = $(this.section).find('#thenmap-slider');
-		if ( !(sliderElement.length) ) {
-			sliderElement =
-			$('<div/>', {
-				id:   'thenmap-slider',
-				class: 'dragdealer'
-			});
-			this.timelineHandle = 
-			$('<div/>', {
-				class: 'handle'
-			}).appendTo(sliderElement);
-			$(sliderElement).insertAfter(this.mapcontainer);
-		} else {
-			this.timelineHandle = sliderElement.find(".handle");
-		}
-		
 			/* Create control bar, if asked */
 	<?php 
 		if ( $printControlbar->get() ) { ?>
@@ -459,6 +436,16 @@ var Thenmap = {
 		$(self.section).append(controlbar);
 	
 	<?php } ?>
+	},
+	loadJQueryAndQtip: function() {
+		var self = this;
+		if ("undefined" === typeof(jQuery)) {
+			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
+				self.loadQtip();
+			});
+		} else {
+			self.loadQtip();
+		}
 	},
 	loadQtip: function() { /* LOADER FOR QTIP */
 		var self = this;
@@ -519,9 +506,69 @@ var Thenmap = {
 			}
 		});
 
+	},
+	ajax: {
+		get: function(url, callback, queryString) {
+			var ids = ['MSXML2.XMLHTTP.3.0',
+					   'MSXML2.XMLHTTP',
+					   'Microsoft.XMLHTTP'],
+				xhr;
+
+			if (window.XMLHttpRequest) {
+				xhr = new XMLHttpRequest();
+			} else {
+				for (var i = 0; i < ids.length; i++) {
+					try {
+						xhr = new ActiveXObject(ids[i]);
+						break;
+					} catch(e) {}
+				}
+			}
+			xhr.onreadystatechange = function() {
+				if (xhr.readyState==4 && xhr.status==200) {
+					callback(xhr.responseText);
+				}
+			};
+			xhr.open('GET', url, true);
+			xhr.send();
+		}
+	},
+	svgSupported: function() {
+		return !! document.createElementNS &&
+			   !! document.createElementNS(SVG.ns,'svg').createSVGRect
 	}
 
-}
+};
+
+(function() {
+	/* Add lazyloader to load js and css */
+	<?php echo (file_get_contents('js/lazyload.js')); ?>
+
+	/* ADD THENMAP CSS */
+	LazyLoad.css("<?php echo $thenmapUrl; ?>/css/thenmap.css?c=<?php echo $cacheHash; ?>");
+
+	/* ADD PREDEFINED DATA CSS, IF ANY.  */
+	<?php
+	if ( $val = $dataCss->get() ) {
+		$CssUrl = '"'.$thenmapUrl . '/css/' . $val . ".css?c=" . $cacheHash . '"'
+	 ?>
+	LazyLoad.css("<?php echo $thenmapUrl; ?>/css/<?php echo $val; ?>.css?c=<?php echo $cacheHash; ?>");
+	<?php } ?>
+
+	/* SHOULD WE AUTOLOAD EVERYTHING FOR THE USER? */
+	/* This will autoload jQuery, if not rpesent, and then attach the map to an element with the id "thenmap" */
+	<?php
+	if ($autoInit->get() ) { ?>
+	/* If in autoinit mode, load JQuery if not already loaded */
+//	if (typeof jQuery === 'undefined') {
+//		LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
+			Thenmap.init("thenmap");
+//		});
+//	} else {
+//		Thenmap.init("thenmap");
+//	}
+	<?php } ?>
+})();
 
 <?php
 /* Minify and send content */
