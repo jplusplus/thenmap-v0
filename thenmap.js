@@ -117,6 +117,9 @@ ob_start();
 <?php
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
+if ( $debugMode ) {
+	echo (file_get_contents('js/consolelog.js'));
+}
 /* include svg2vml for IE*/
 //echo (file_get_contents('js/svg2vml.js'));
 ?>
@@ -235,7 +238,6 @@ var Thenmap = {
 			/* Move width and height to container, so that the map scales nicely to the browser  */
 			/* Can only be done reliabily after svg is inserted */
 			var bBox = self.svg.getBBox();
-			console.log(bBox);
 			if (bBox.width) {
 				self.mapcontainer.style["max-width"] = bBox.width + "px";
 			}
@@ -249,7 +251,8 @@ var Thenmap = {
 				if (elem) {
 					self.paths[pid]["e"] = elem;
 				} else {
-					console.log("Error caching path "+pid)
+					self.debug("Error caching path "+pid+", map is probably not up to date with data file");
+					delete self.paths[pid];
 				}
 			}
 
@@ -338,7 +341,7 @@ var Thenmap = {
 	    	}
 	    	if (unknown) {
 				if ("undefined" === typeof(this.paths[pid]["e"])) {
-					console.log( "pid problem: "+pid );
+					self.debug( "pid problem: "+pid+". This should never happen.");
 				} else {
 					this.paths[pid]["e"].style.visibility = "hidden";
 				}
@@ -538,6 +541,13 @@ var Thenmap = {
 	svgSupported: function() {
 		return !! document.createElementNS &&
 			   !! document.createElementNS(SVG.ns,'svg').createSVGRect
+	},
+	debug: function(mes) {
+		<?php
+		if ( $debugMode ) { ?>
+		console.log(mes + "\nIn function:"+arguments.callee.caller.toString());	
+		<?php } ?>
+	
 	}
 
 };
@@ -581,6 +591,7 @@ var Thenmap = {
 <?php
 /* Minify and send content */
 if ( $debugMode ) {
+	console.log("Running in debug mode");
 	echo ob_get_clean();
 } else {
 	echo JShrink\Minifier::minify(ob_get_clean());
