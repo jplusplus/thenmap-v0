@@ -304,3 +304,9 @@ svg g#background {
 	to   { transform: rotate(360deg); opacity: 0.2; }
 }
 
+svg#thenmap-map .nations .land, svg#thenmap-map .nations .circle {
+  -webkit-transition: fill 150ms cubic-bezier(0.42, 0, 0.8, 1);/*något snabbare ut än in*/
+  -moz-transition: fill 150ms cubic-bezier(0.42, 0, 0.8, 1);
+  -o-transition: fill 150ms cubic-bezier(0.42, 0, 0.8, 1);
+  transition: fill 150ms cubic-bezier(0.42, 0, 0.8, 1);
+}

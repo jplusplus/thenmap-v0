@@ -13,10 +13,10 @@ import hashlib #md5 for svg paths, to find duplicates
 ##########################################
 #          SETTINGS                      #
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
-mapType     = "europe-ortho"             #
-#mapType     = "world-mollweide"          #
+#mapType     = "europe-ortho"             #
+mapType     = "world-mollweide"          #
 #mapType     = "world-robinson"           #
-mapType     = "africa-laea"              #  
+#mapType     = "africa-laea"              #  
 #mapType     = "europe-caucasus-lcc"      #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #

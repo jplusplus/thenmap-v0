@@ -260,25 +260,6 @@ var Thenmap = {
 
 		});//		}, 'xml');//END loading svg
 
-		// Keyboard commands
-/*		$(window).keydown(function(e){
-			if(e.which === 37){
-				self.moveLeft();
-				return false;
-			} else if(e.which === 39){
-				self.moveRight();
-				return false;
-			} else if(e.which === 35){
-				self.moveToEnd();
-				return false;
-			} else if(e.which === 36){
-				self.moveToStart();
-				return false;
-			} else if(e.which === 8){
-				self.togglePlayPause();
-				return false;
-			}
-		});*/
 		return this;
 	},
 
@@ -390,7 +371,7 @@ var Thenmap = {
 			}
 		});
 	},
-	buildHtml: function() {	/* CREATE HTML MARKUP */	
+	buildControlbar: function() {	/* CREATE HTML MARKUP */	
 			/* Create control bar, if asked */
 	<?php 
 		if ( $printControlbar->get() ) { ?>
@@ -449,6 +430,27 @@ var Thenmap = {
 	},
 	loadQtip: function() { /* LOADER FOR QTIP */
 		var self = this;
+		this.buildControlbar(); //Build controlbar here, just for now (as we have JQuery)
+				// Keyboard commands
+		$(window).keydown(function(e){
+			if(e.which === 37){
+				self.moveLeft();
+				return false;
+			} else if(e.which === 39){
+				self.moveRight();
+				return false;
+			} else if(e.which === 35){
+				self.moveToEnd();
+				return false;
+			} else if(e.which === 36){
+				self.moveToStart();
+				return false;
+			} else if(e.which === 8){
+				self.togglePlayPause();
+				return false;
+			}
+		});
+
 		if ("undefined" === typeof($.qtip)) {
 			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js', function () {
 				self.attachQtip();
@@ -543,9 +545,15 @@ var Thenmap = {
 (function() {
 	/* Add lazyloader to load js and css */
 	<?php echo (file_get_contents('js/lazyload.js')); ?>
-
+<?php
 	/* ADD THENMAP CSS */
-	LazyLoad.css("<?php echo $thenmapUrl; ?>/css/thenmap.css?c=<?php echo $cacheHash; ?>");
+	if ( $debugMode ) { ?>
+		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/thenmap.css?c=<?php echo $cacheHash; ?>");
+<?php	
+	} else { ?>
+		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/thenmap.min.css?c=<?php echo $cacheHash; ?>");
+<?php
+	} ?>
 
 	/* ADD PREDEFINED DATA CSS, IF ANY.  */
 	<?php
