@@ -49,7 +49,7 @@ $autoInit->set( filter_input(INPUT_GET,"autoinit",FILTER_SANITIZE_STRING) );
 
 /* Debug mode? */
 $debugMode = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "false" ) );
-$debugMode->set( filter_input(INPUT_GET,"debug",FILTER_SANITIZE_STRING) || "localhost" === $_SERVER["HTTP_HOST"]);
+$debugMode->set( filter_input(INPUT_GET,"debug",FILTER_SANITIZE_STRING) /*|| "localhost" === $_SERVER["HTTP_HOST"]*/);
 if ( $debugMode->get() ) {
 	$thenmapUrl = '/thenmap';
 }
@@ -107,14 +107,12 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 /***********************************************************************************************/
 /* Start buffer */
 /***********************************************************************************************/
-
 ob_start();
 
 /***********************************************************************************************/
+/************************************* JAVASCRIPT OUTPUT STARTS HERE ***************************/
 /***********************************************************************************************/
-/***********************************************************************************************/
-?>
-<?php
+
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
 if ( $debugMode ) {
@@ -235,14 +233,13 @@ var Thenmap = {
 			/* Append image */
 			self.svg = self.mapcontainer.appendChild(svg);
 
-			/* Move width and height to container, so that the map scales nicely to the browser  */
-			/* Can only be done reliabily after svg is inserted */
+			/* This can only be done reliabily after svg is inserted */
 			var bBox = self.svg.getBBox();
 			if (bBox.width) {
-				self.mapcontainer.style["max-width"] = bBox.width + "px";
+				self.svg.style["max-width"] = Math.min(bBox.width,1080) + "px";
 			}
 			if (bBox.height) {
-				self.mapcontainer.style["max-height"] = bBox.height + "px";
+				self.svg.style["max-height"] = Math.min(bBox.height,768) + "px";
 			}
 
 			/*Cache path styles and elements for performance*/
@@ -350,6 +347,8 @@ var Thenmap = {
 		}
 
 	},
+	animationCallback: function(x) {
+	},
 	initTimeline: function (elementId) {
 		var self = this;
 		var yearSpan = this.lastYear - this.firstYear;
@@ -361,16 +360,36 @@ var Thenmap = {
 				// Update handle and map
 				self.currentYear = self.firstYear + x * yearSpan; // Get selected year
 				self.timelineHandle[self.textPropName] = self.currentYear;
-				self.printMap();
+
+				//Don't render the map on every step if we still have a long way to go
+				var distance = this.steps * Math.abs(this.value.target-this.value.current);
+				
+				if (distance > 30) {
+					/* Don't print map */
+				} else if (distance > 15) {
+					/* Only print every third map*/
+					if ( distance % 3 == 0 ) {
+						self.printMap();
+					}
+				} else if (distance > 5) {
+					/* Only print every second map */
+					if ( distance % 2) {
+						self.printMap();
+					}
+				} else {
+					/* Print every single second map */
+					self.printMap();
+				}
 				if (self.callback) {
 					self.callback(self.currentYear);
 				}
 			},
 			callback: function(x) {
-				self.printMap();
-				if (self.callback) {
-					self.callback(self.currentYear);
-				}
+			//Called at the end, but then anomationCallback will already have been called
+//				self.printMap();
+//				if (self.callback) {
+//					self.callback(self.currentYear);
+//				}
 			}
 		});
 	},
@@ -545,7 +564,7 @@ var Thenmap = {
 	debug: function(mes) {
 		<?php
 		if ( $debugMode ) { ?>
-		console.log(mes + "\nIn function:"+arguments.callee.caller.toString());	
+		console.log(mes + "\nIn function:"+arguments.callee.caller.name);
 		<?php } ?>
 	
 	}
@@ -590,7 +609,7 @@ var Thenmap = {
 
 <?php
 /* Minify and send content */
-if ( $debugMode ) {
+if ( $debugMode->get() ) {
 	console.log("Running in debug mode");
 	echo ob_get_clean();
 } else {

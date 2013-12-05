@@ -56,7 +56,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 		<title>Thenmap</title>
 
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
-		<link rel="dns-prefetch" href="cdnjs.cloudflare.com" />
 
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
 		<script>window.jquery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
@@ -77,16 +76,16 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	<article>
 	<p>Try one of these:</p>
 	<ul>
-	<li>Country names in <a href="http://www.leowallentin.se/thenmap?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.leowallentin.se/thenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
-	<li><a href="http://www.leowallentin.se/thenmap/?map=europe&fYear=1946&sYear=1946">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>. Or an <a href="http://www.leowallentin.se/thenmap/?map=africa&fYear=1948&sYear=1948">African map</a>.
-	<li><a href="http://www.leowallentin.se/thenmap?map=world-mollweide">A different projection</a>
-	<li>A dataset: <a href="http://www.leowallentin.se/thenmap?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
+	<li>Country names in <a href="http://www.thenmap.net?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.thenmap.net?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.thenmap.netthenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
+	<li><a href="http://www.thenmap.net?map=europe&fYear=1946&sYear=1946">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>. Or an <a href="http://www.leowallentin.se/thenmap/?map=africa&fYear=1948&sYear=1948">African map</a>.
+	<li><a href="http://www.thenmap.net?map=world-mollweide">A different projection</a>
+	<li>A dataset: <a href="http://www.thenmap.net?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
 	</ul>
 	<p><a href="https://trello.com/b/aqFu3s1d/thenmap">Report bugs here</a></p>
 	<p>Work in progress by <a href="http://leowallentin.se">Leo Wallentin</a> and Jens Finnäs, J++.<p>
 	</article>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js"></script>
 		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js"></script>
-		<script src="thenmap.js?map=<?php echo $map->get(); ?>&dataCss=<?php echo $dataCss->get(); ?>&fYear=<?php echo $firstYear->get(); ?>&sYear=<?php echo $startingYear->get(); ?>&lYear=<?php echo $lastYear->get(); ?>&controls=true&mlang=<?php echo $mapLanguage->get(); ?>&unCache=23"></script>
+		<script src="thenmap.js?map=<?php echo $map->get(); ?>&dataCss=<?php echo $dataCss->get(); ?>&fYear=<?php echo $firstYear->get(); ?>&sYear=<?php echo $startingYear->get(); ?>&lYear=<?php echo $lastYear->get(); ?>&controls=true&mlang=<?php echo $mapLanguage->get(); ?>&unCache=30"></script>
 	</body>
 </html>

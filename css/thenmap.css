@@ -40,6 +40,12 @@ svg:not(:root) {
     overflow: hidden;
 }
 
+#thenmap {
+	max-width:1080px;
+	margin-left:auto;
+	margin-right:auto;
+}
+
 /*
  * qTip2 - Pretty powerful tooltips - v2.1.1
  * http://qtip2.com
@@ -139,7 +145,7 @@ svg:not(:root) {
 
 #thenmap-map-container{
 	margin-left:auto;margin-right:auto;
-	max-width:1800px;
+	max-width:1080px;
 	max-height:768px;
 }
 
@@ -219,7 +225,7 @@ svg g#background {
 #thenmap-stepback,#thenmap-stepforward, #thenmap-rewind,#thenmap-rewind {width: 30px;}
 
 .dragdealer {
-/*	position: relative;*/
+	position: relative;
 	height: 30px;
 	background: #EEE;
 	max-width: 1800px

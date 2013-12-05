@@ -3,7 +3,7 @@ ThenShapes
 
 These are the shape files for thenmap (https://github.com/rotsee/thenmap)
 
-They are mostly based on CSHAPES by Nils B. Weidmann, Doreen Kuse, Kristian Skrede Gleditsch, especially from 1975 and on, see cshapes_shapefile_documentation.txt for more information.
+They are partly based on CSHAPES by Nils B. Weidmann, Doreen Kuse, Kristian Skrede Gleditsch, especially from 1975 and on
 
 Feature
 
