@@ -8,46 +8,14 @@ Post war political world map
 *      -- 1920 will require _a lot_ of research
 
 
-WikiData integration
-====================
-The map has tooltip windows for each nation, that can contain additional data. By default the nation's name and flag is displayed. Flags and names are fetched from WikiData when the maps are created. Basically every nation that has a Wikipedia article in _any_ language also has a WikiData entry. When WikiData entries are missing (yes, there are actually a few such examples!), we go there to create one. The advantages of using WikiData are plenty:
- * Translations to all languages with major Wikipedia editions, using the <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principle of least astonishment</a>. This works very well for us, as these are the names that are most likely used in mainstream media. When names are missing, or we are unhappy about the name forms, we can override them with local translations.
- * We get additional data, such as flags, relatively well referenced with sources.
- * We can use images from Wikimedia Commons.
- * The nation data is kept up to date by a huge community.
- * All data is CC0
- * As each nation has a WikiData ID, more data (e.g. Wikipedia link) can easily be requested
-On the flipside:
- * Flags (the actual images from WikiMedia Commons, not the WikiData entry) can sometimes have more restrictive licenses. We should probably add an option to filter out CC0 and public domain images only.
- * We can only be as granular as WikiData. We will, in other words, not be able to display every flag, capital, etc, unless we create a local repository for such data
-
-Roadmap (non-technical version)
-===============================
-Coming next
-* Support for older Internet Explorer versions (<= IE8)
-* Lot's of bug fixes (e.g. hash pattern for disputed territories looking weird in many browsers)
-* Some territorial fixes
-* Better looking control panel
-* Better performance (it's currently quite sluggish in old smart phones)
-Coming later:
-* Border going back to 1920
-* More accurate flags and nation titles
-* More maps and projections
-* Shorter loading times
-* functions for plotting data on the map (other than just coloring it)
-
-Roadmap (slightly more technical version)
-===============================
-Coming next
-* The map generator (server side) should create vml files, as well as svg files, to be served to IE6-8
-
-
-
-Script to generate svg maps is in generators/map-factory
-
 Example with dataset: [Unemployment in EU](http://www.leowallentin.se/thenmap/?map=europe&fYear=2001&lYear=2012&dataCss=unemployment-eu)
 
 Available map languages: sv,en,fi,fr,de,es,ru,it,nl,pl,zh,pt,ar,ja,fa,no,he,tr,da,uk,ca,id,hu,vi,ko,et,cs,hi,sr,bg
+
+Script to generate svg maps is in generators/map-factory
+
+How to use
+----------
 
 The easiest way to implement thenmap is by creating a <&#060;div> or <&#060;section> element with the id "thenmap", and then include the following piece of code:
 
@@ -109,8 +77,36 @@ Values:
  * Thenmap.isPlaying (true/false)
  * Thenmap.svg (the map svg element)
 
-Credits
-=======
+WikiData integration
+--------------------
+The map has tooltip windows for each nation, that can contain additional data. By default the nation's name and flag is displayed. Flags and names are fetched from WikiData when the maps are created. Basically every nation that has a Wikipedia article in _any_ language also has a WikiData entry. When WikiData entries are missing (yes, there are actually a few such examples!), we go there to create one. The advantages of using WikiData are plenty:
+ * Translations to all languages with major Wikipedia editions, using the <a href="https://en.wikipedia.org/wiki/Principle_of_least_astonishment">principle of least astonishment</a>. This works very well for us, as these are the names that are most likely used in mainstream media. When names are missing, or we are unhappy about the name forms, we can override them with local translations.
+ * We get additional data, such as flags, relatively well referenced with sources.
+ * We can use images from Wikimedia Commons.
+ * The nation data is kept up to date by a huge community.
+ * All data is CC0
+ * As each nation has a WikiData ID, more data (e.g. Wikipedia link) can easily be requested
+On the flipside:
+ * Flags (the actual images from WikiMedia Commons, not the WikiData entry) can sometimes have more restrictive licenses. We should probably add an option to filter out CC0 and public domain images only.
+ * We can only be as granular as WikiData. We will, in other words, not be able to display every flag, capital, etc, unless we create a local repository for such data
+
+Roadmap (non-technical version)
+-------------------------------
+Coming next
+* Support for older Internet Explorer versions (<= IE8), by serving vml files to those browsers
+* Lot's of bug fixes (e.g. hash pattern for disputed territories looking weird in many browsers)
+* Some territorial fixes
+* Better looking control panel
+* Better performance (it's currently quite sluggish in old smart phones)
+Coming later:
+* Border going back to 1920
+* More accurate flags and nation titles
+* More maps and projections
+* Shorter loading times
+* functions for plotting data on the map (other than just coloring it)
+
+Credits, copyright and licensing
+--------------------------------
 Thenmap is Copyright © 2013 [Leo Wallentin](http://leowallentin.se) and Jens Finnäs, and free to reuse, modify and distribute under the [MIT license](http://opensource.org/licenses/MIT) (see below).
 
 JS minification is done with [JShrink](https://github.com/tedivm/JShrink), copyright © 2009 by Robert Hafner.
