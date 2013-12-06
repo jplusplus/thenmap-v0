@@ -363,23 +363,26 @@ var Thenmap = {
 				self.timelineHandle[self.textPropName] = self.currentYear;
 
 				//Don't render the map on every step if we still have a long way to go
-				var distance = this.steps * Math.abs(this.value.target-this.value.current);
-				
+				var distance = Math.floor(this.steps * Math.abs(this.value.target-this.value.current));
+
 				if (distance > 30) {
-					/* Don't print map */
-					/* TODO unless in the beginning, when moving slowly?*/
-				} else if (distance > 15) {
-					/* Only print every third map*/
-					if ( distance % 3 == 0 ) {
+					/* 31-: Only print every tenth map*/
+					if ( distance % 10 === 0 ) {
+						self.printMap();
+					}
+				} else if (distance > 12) {
+					/* 13-30: Only print every fifth map*/
+					if ( distance % 5 === 0 ) {
 						self.printMap();
 					}
 				} else if (distance > 3) {
-					/* Only print every second map */
-					if ( distance % 2) {
+					/* 4 - 12: Only print every third map */
+
+					if ( distance % 3 == 0 ) {
 						self.printMap();
 					}
 				} else {
-					/* Print every single second map */
+					/* 0 - 4: Print every map */
 					self.printMap();
 				}
 				if (self.callback) {
