@@ -57,17 +57,21 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
 
-		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js"></script>
-		<script>window.jquery || document.write('<script src="js/jquery.min.js"><\/script>')</script>
+		<script src=//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js></script>
+		<script>window.jquery || document.write('<script src=js/jquery.min.js><\/script>')</script>
 		<!--[if lt IE 9]>
-			<script src="http://html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+			<script src=http://html5shiv.googlecode.com/svn/trunk/html5.js></script>
 		<![endif]-->
 
 	</head>
 
 <body ontouchstart="" onmouseover="">
+<?php /* http://stackoverflow.com/questions/8330559/hover-effects-using-css3-touch-events */ ?>
 	<section id="thenmap">
-	 	<div id="thenmap-map-container">
+	 	<div id="thenmap-map-container" class="loading">
+	 			<div class="placeholder"></div>
+	 			<div class="ajaxloader"></div>
+	 			<!--[if lt IE 9]>Sorry, Thenmap does not (yet) work in older versions of Internet Explorer. Please upgrade, or use (any) another browser.<![endif]-->
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="handle"></div>
@@ -76,16 +80,16 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	<article>
 	<p>Try one of these:</p>
 	<ul>
-	<li>Country names in <a href="http://www.thenmap.net?mlang=ar">Arabic</a>, <a href="http://www.leowallentin.se/thenmap?mlang=fr">French</a>, <a href="http://www.thenmap.net?mlang=fi">Finnish</a>, <a href="http://www.leowallentin.se/thenmap?mlang=de">German</a>, <a href="http://www.thenmap.netthenmap?mlang=en">English</a> or <a href="http://www.leowallentin.se/thenmap?mlang=sv">Swedish</a>
-	<li><a href="http://www.thenmap.net?map=europe&fYear=1946&sYear=1946">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>. Or an <a href="http://www.leowallentin.se/thenmap/?map=africa&fYear=1948&sYear=1948">African map</a>.
+	<li>Country names in <a href="http://www.thenmap.net?mlang=ar">Arabic</a>, <a href="http://www.thenmap.net?mlang=fr">French</a>, <a href="http://www.thenmap.net?mlang=fi">Finnish</a>, <a href="http://www.thenmap.net?mlang=de">German</a>, <a href="http://www.thenmap.net?mlang=en">English</a> or <a href="http://www.thenmap.net?mlang=sv">Swedish</a>
+	<li><a href="http://www.thenmap.net?map=europe&amp;fYear=1946&amp;sYear=1946">A European map</a> or a <a href="http://www.leowallentin.se/thenmap?map=world">world map</a>. Or an <a href="http://www.leowallentin.se/thenmap/?map=africa&amp;fYear=1948&amp;sYear=1948">African map</a>.
 	<li><a href="http://www.thenmap.net?map=world-mollweide">A different projection</a>
 	<li>A dataset: <a href="http://www.thenmap.net?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
 	</ul>
 	<p><a href="https://trello.com/b/aqFu3s1d/thenmap">Report bugs here</a></p>
 	<p>Work in progress by <a href="http://leowallentin.se">Leo Wallentin</a> and Jens Finnäs, J++.<p>
 	</article>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js"></script>
-		<script src="//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js"></script>
-		<script src="thenmap.js?map=<?php echo $map->get(); ?>&dataCss=<?php echo $dataCss->get(); ?>&fYear=<?php echo $firstYear->get(); ?>&sYear=<?php echo $startingYear->get(); ?>&lYear=<?php echo $lastYear->get(); ?>&controls=true&mlang=<?php echo $mapLanguage->get(); ?>&unCache=30"></script>
+		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
+		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
+		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache2&debug=true"></script>
 	</body>
 </html>
