@@ -7,6 +7,8 @@ Post war political world map
 * 1920 -- 1945 will require more work, as a lot of shapes need to be created from scratch
 *      -- 1920 will require _a lot_ of research
 
+The code is not even a beta, so use at you own risk. Feel free to report any bugs in [the Trello board](https://trello.com/b/aqFu3s1d/thenmap)
+
 
 Example with dataset: [Unemployment in EU](http://www.leowallentin.se/thenmap/?map=europe&fYear=2001&lYear=2012&dataCss=unemployment-eu)
 
@@ -17,9 +19,9 @@ Script to generate svg maps is in generators/map-factory
 How to use
 ----------
 
-The easiest way to implement thenmap is by creating a <&#060;div> or <&#060;section> element with the id "thenmap", and then include the following piece of code:
+The easiest way to implement thenmap is by creating a `<div>` or `<section>` element with the id "thenmap", and then include the following piece of code:
 
-    <&#060;script src="//thenmap.net/thenmap.js"><&#060;/script>
+    <script src="//thenmap.net/thenmap.js"></script>
 
 Nations are now colored with css classes. The css can also be hosted, like here (decolonization of the world):
 http://www.leowallentin.se/thenmap/demo2.html
@@ -90,8 +92,8 @@ On the flipside:
  * Flags (the actual images from WikiMedia Commons, not the WikiData entry) can sometimes have more restrictive licenses. We should probably add an option to filter out CC0 and public domain images only.
  * We can only be as granular as WikiData. We will, in other words, not be able to display every flag, capital, etc, unless we create a local repository for such data
 
-Roadmap (non-technical version)
--------------------------------
+Roadmap
+-------
 Coming next
 * Support for older Internet Explorer versions (<= IE8), by serving vml files to those browsers
 * Lot's of bug fixes (e.g. hash pattern for disputed territories looking weird in many browsers)
