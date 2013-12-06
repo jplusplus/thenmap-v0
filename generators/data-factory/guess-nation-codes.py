@@ -3,14 +3,14 @@
 #Try and create nation codes (class names) from nation names in a csv
 import csv
 
-inputFile = "/home/leo/esc.csv"
-outputFile = "/home/leo/esc-out.csv"
+inputFile = "/home/leo/Världen/demo/patents/raw-pre.csv"
+outputFile = "/home/leo/Världen/demo/patents/raw-post.csv"
 indataColumn = 0
 outdataColumn = 0
 
 keyDict = {}
 try:
-	with open('nations keys.csv', 'rb') as csvfile:
+	with open('nation-keys.csv', 'rb') as csvfile:
 		keyreader = csv.reader(csvfile,delimiter=',',quotechar='"')
 		for row in keyreader:
 			#Swedish name -> code
@@ -24,6 +24,13 @@ try:
 				aliases = row[3].split(",")
 				for a in aliases:
 					keyDict[a] = row[0]
+			#ISO alpha 3 ("CHE")
+			if row[4]:
+				keyDict[row[4]] = row[0]
+			#OECD ("CHE: Switzerland")
+			if row[5]:
+				keyDict[row[5]] = row[0]
+
 except IOError:
     print ("Could not open key file")
 

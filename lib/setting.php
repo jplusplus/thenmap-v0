@@ -73,7 +73,7 @@ class Setting {
 		if ( $this->validate( $val ) ) {
 			$this->_value = self::clean($val);
 		} else {
-			$this->_value = $this->fallback;
+			$this->_value = self::clean($this->fallback);
 		}
 
 	}
