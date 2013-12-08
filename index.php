@@ -58,7 +58,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
 
 		<script src=//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js></script>
-		<script>window.jquery || document.write('<script src=js/jquery.min.js><\/script>')</script>
 		<!--[if lt IE 9]>
 			<script src=http://html5shiv.googlecode.com/svn/trunk/html5.js></script>
 		<![endif]-->
@@ -71,7 +70,8 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	 	<div id="thenmap-map-container" class="loading">
 	 			<div class="placeholder"></div>
 	 			<div class="ajaxloader"></div>
-	 			<!--[if lt IE 9]>Sorry, Thenmap does not (yet) work in older versions of Internet Explorer. Please upgrade, or use (any) another browser.<![endif]-->
+	 			<!--[if lt IE 9]><em>Sorry, Thenmap does not (yet) work in older versions of Internet Explorer. Please upgrade, or use (any) another browser.</em><![endif]-->
+	 			<noscript><em>Sorry, you will need javascript to view this map!</em></noscript>
 	 	</div>
 		<div id="thenmap-slider" class="dragdealer">
 			<div class="handle"></div>
@@ -90,6 +90,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	</article>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
-		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache3"></script>
+		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache9"></script>
 	</body>
 </html>

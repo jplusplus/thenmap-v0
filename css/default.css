@@ -145,8 +145,8 @@ svg:not(:root) {
 
 #thenmap-map-container{
 	margin-left:auto;margin-right:auto;
-	max-width:1080px;
-	max-height:768px;
+/*	max-width:1080px;
+	max-height:640px;*/
 }
 
 #thenmap-slider {
@@ -155,10 +155,12 @@ svg:not(:root) {
 
 /* SVG */
 svg#thenmap-map {
-	width:100%;
-/*	height:100%;
-/*	height:none\9; /* Height needed for FF, but breaks IE. Hide from IE<9. TODO needs testing in IE10*/
-/*	height:none \0/; /*Height needed for FF, but breaks IE. Hide from IE<9. TODO needs testing in IE10*/
+	width:auto;/* For FF. Will use nominal svg width, possibly displaying clipped content (e.g. Russia in europe-ortho) otherwise */
+	max-width:100%;
+	height:auto;/* For FF. Will use nominal svg height (768px) otherwise */
+	max-height:640px;
+	height:none\9;   /* Setting a height breaks display in IE */
+	height:none \0/; /* Setting a height breaks display in IE */
 	border:1px solid whitesmoke;
 }
 
@@ -168,8 +170,13 @@ svg#thenmap-map {
 	stroke-width:1px;
 }
 
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.limit > * {
+		fill:url("#diagonalHatch") !important;
+	}
+}
 .limit > * {
-	fill:url("#diagonalHatch");
+	fill:url("/maps/styles.svg#diagonalHatch");
 }
 
 .circle {

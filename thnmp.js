@@ -1,7 +1,6 @@
 <?php
-header("content-type: application/x-javascript; charset=utf-8");
+header("Content-Type: application/javascript; charset=utf-8");
 //header('Cache-Control: public');
-
 $modify_time = filemtime(__FILE__);
 header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");
 
@@ -115,11 +114,10 @@ ob_start();
 
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
+/* include croww browser console.log in debug mode */
 if ( $debugMode ) {
 	echo (file_get_contents('js/consolelog.js'));
 }
-/* include svg2vml for IE*/
-//echo (file_get_contents('js/svg2vml.js'));
 ?>
 
 /**********************************************************************************************************************/
@@ -220,8 +218,6 @@ var Thenmap = {
 		/* Fetch file */
 		this.ajax.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) { //	equivalent of $.get("url", function(data) {
 
-			//SVG polyfill for IE<9
-			//var vectorModel = new VectorModel();
 			// Extract the SVG tag from the reply
 			var tmp =  document.createElement('div');
 			tmp.innerHTML = data;
@@ -235,13 +231,21 @@ var Thenmap = {
 			self.svg = self.mapcontainer.appendChild(svg);
 
 			/* Firefox will not let us do this before svg is inserted */
-			var bBox = self.svg.getBBox();
-			if (bBox.width) {
-				self.svg.style["max-width"] = Math.min(bBox.width,1080) + "px";
-			}
-			if (bBox.height) {
-				self.svg.style["max-height"] = Math.min(bBox.height,768) + "px";
-			}
+//			var bBox = self.svg.getBBox();
+//			if (bBox.width) {
+//				self.svg.style["max-width"] = Math.min(bBox.width,1080) + "px";
+//			}
+//			if (bBox.height) {
+				/* There has to be a less hackish way to get the svg's real height... */
+/*				var height = Math.min(bBox.height,768) + "px";
+				self.svg.style["max-height"] = height;
+				var height = Math.min(self.svg.offsetHeight || self.svg.clientHeight,768)+"px";*/
+
+				/* FIXME FF doesn't see a clientHeight here... */
+/*				self.svg.style["max-height"] = "768px";*/
+//				self.svg.style["height"] = "auto";
+/*				self.mapcontainer.style["max-height"] = height;*/
+//			}
 
 			/*Cache path styles and elements for performance*/
 			for (var pid in self.paths) {
@@ -581,7 +585,7 @@ var Thenmap = {
 	<?php echo (file_get_contents('js/lazyload.js')); ?>
 <?php
 	/* ADD THENMAP CSS */
-	if ( $debugMode ) { ?>
+	if ( $debugMode->get() ) { ?>
 		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/default.css?c=<?php echo $cacheHash; ?>");
 <?php	
 	} else { ?>
