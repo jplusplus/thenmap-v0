@@ -14,7 +14,7 @@ import hashlib #md5 for svg paths, to find duplicates
 #          SETTINGS                      #
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 #mapType     = "europe-ortho"             #
-mapType     = "world-mollweide"          #
+#mapType     = "world-mollweide"          #
 mapType     = "world-robinson"           #
 #mapType     = "africa-laea"              #  
 #mapType     = "europe-caucasus-lcc"      #
@@ -30,7 +30,8 @@ mapSettings = {
 			"lon0": 20,
 		},
 		"simplify":  0.6,
-		"circles":   3000
+		"circles":   3000,
+		"hashWidth": 2,
 	},
 	# Alternative projection for world maps
 	"world-mollweide": {
@@ -39,7 +40,8 @@ mapSettings = {
 			"lon0": 20,
 		},
 		"simplify":  0.6,
-		"circles":   3000
+		"circles":   3000,
+		"hashWidth": 2,
 	},
 	# In case someone wants an equal area map
 	"world-gallpeters": {
@@ -48,7 +50,8 @@ mapSettings = {
 			"lon0": 20,
 		},
 		"simplify":  0.2,
-		"circles":   3000
+		"circles":   3000,
+		"hashWidth": 2,
 	},
 	# Europe, not including Caucasus or Greenland
 	"europe-ortho": {
@@ -64,7 +67,8 @@ mapSettings = {
 			"data": [-15,34,35,71]
 		},
 		"simplify":  0.2,
-		"circles":   1000
+		"circles":   1000,
+		"hashWidth": 1,
 	},
 	# Europe, including Caucasus and Greenland. Lambert Conformal Conic
 	"europe-caucasus-lcc": {
@@ -82,7 +86,8 @@ mapSettings = {
 			"data": [-12,30,52,75]
 		},
 		"simplify":  0.2,
-		"circles":   1500
+		"circles":   1500,
+		"hashWidth": 1,
 	},
 	# Africa
 	"africa-laea": {
@@ -96,7 +101,8 @@ mapSettings = {
 			"data": [[-26,37],[62,-36]]
 		},
 		"simplify":  0.2,
-		"circles":   1000
+		"circles":   1000,
+		"hashWidth": 1,
 	},
 }
 
@@ -162,6 +168,7 @@ def iriToUri(iri):
         part.encode('idna') if parti==1 else urlEncodeNonAscii(part.encode('utf-8'))
         for parti, part in enumerate(parts)
     )
+
 
 ###############################################################################################################################
 ###############################################################################################################################
@@ -230,7 +237,7 @@ print ("done")
 #Find the nations
 nations = root.find("{%s}g[@id='nations']" % SVG_NS)
 
-#Remove duplicate paths (where classes are also the same) and create a dictionary of {nationid:pathid}
+#Remove duplicate paths and create a dictionary of {nationid:pathid}
 nationsInSvg         = [] # [nid]
 pathsInSvg           = [] # [pid]
 dictOfNationsInPaths = {} #pid: [nid]
@@ -277,7 +284,7 @@ pattern.set("patternTransform","rotate(45 2 2)")
 path = ET.SubElement(pattern,"{%s}path" % SVG_NS)
 path.set("d","M -1,2 l 6,0")
 path.set("stroke","#888888")
-path.set("stroke-width","1")
+path.set("stroke-width",str(1 * mapSettings[mapType]["hashWidth"]))
 print "done"
 
 #Find and move the background to the top, so that all browsers can "see" the nations layer
@@ -303,10 +310,19 @@ for nation in nations.findall('{%s}path' % SVG_NS):
 		iid = str(int(round(float(nation.get("data-id")))))
 	else:
 		iid = str("9999")
-		print "found nation with missing id, check your shapes! Classes: %s" % classes
+		print "found nation with missing id, check your shapes!"
 
+	#Put circled groups at bottom, so that circles are always on top!
+	hasCircle = (0 < float(area) < mapSettings[mapType]["circles"])
+	
 	#create group, and copy attributes from nation
-	g = ET.SubElement(nations,"{%s}g" % SVG_NS)
+#	g = ET.SubElement(nations,"{%s}g" % SVG_NS)
+	g = ET.Element("{%s}g" % SVG_NS)
+	if hasCircle:
+		nations.append(g)
+	else:
+		nations.insert(0,g)
+		
 	g.set("id","n"+iid) #valid html id
 
 	#Create new path under that group
@@ -314,15 +330,23 @@ for nation in nations.findall('{%s}path' % SVG_NS):
 	d = nation.attrib["d"]
 	path.set("d",d)
 	path.set("class","land")
+	
+#	if (classes.find("limit") > -1):
+#		print "setting limit style for %s" % iid,
+#		path.set("style","fill:url('#diagonalHatch');")
+#		print path.attrib["style"]
+
 	nations.remove(nation)
 			
 	#add circles to small nations
-	if 0 < float(area) < mapSettings[mapType]["circles"]:
+	if hasCircle:
 		print "creating circle for %s, smaller than %d km2" % (iid,mapSettings[mapType]["circles"])
 
-		#Use first point in path to position circle. Very ugly, but works, as nations are so small
+		#Use first point in path to position circle. Very ugly, but works, as circled nations are so small
 		#We do have the coordinates of the capital in the dbf file, if we wanted to do this properly,
 		#but then we would have to map them to the proper position for each projection. kartograph.py does not do this
+		#
+		#There are a few cases where this prodouced less than ideal results: Kiribati, Portugese India and French India
 		dlist = re.split('[A-Z]', d)
 		pos = dlist[1].split(",")
 		circle = ET.SubElement(g,"{%s}circle" % SVG_NS)
@@ -484,9 +508,8 @@ for l in languages:
 	localTranslations = {}
 	i18nNations[l] = {}
 	try:
-		## FIXME remove " around nationnames
 		with open(translationsDirectory+'/'+l+'/nations.csv', 'rb') as csvfile:
-			reader = csv.reader(csvfile,delimiter=',',quotechar='"')
+			reader = csv.reader(csvfile)
 			for row in reader:
 				localTranslations[row[0]] = row[1].strip('" ')
 	except IOError:
@@ -497,7 +520,7 @@ for l in languages:
 		if "q" in nation:
 			qid = nation["q"]
 			if nation["n"] in localTranslations:
-				nation["n"] = localTranslations[nation["n"]].decode('ISO-8859-1')
+				nation["n"] = localTranslations[nation["n"]].decode('UTF-8') #'ISO-8859-1')
 			elif qid in wikidataTranslations[l]:
 				nation["n"] = wikidataTranslations[l][qid]
 
