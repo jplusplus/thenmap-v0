@@ -17,7 +17,7 @@ mapType     = "europe-ortho"             #
 mapType     = "world-mollweide"          #
 mapType     = "world-robinson"           #
 mapType     = "africa-laea"              #  
-mapType     = "europe-caucasus-lcc"      #
+#mapType     = "europe-caucasus-lcc"      #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
