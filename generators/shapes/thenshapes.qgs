@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>meters</units>
         <extent>
-            <xmin>-23.4852714564925904</xmin>
-            <ymin>19.9074753067768242</ymin>
-            <xmax>1.10004494976839773</xmax>
-            <ymax>35.76249568305942006</ymax>
+            <xmin>-154.86619188464442232</xmin>
+            <ymin>-20.50777441820937952</ymin>
+            <xmax>-130.28087547838339333</xmax>
+            <ymax>-4.65275404192675612</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -23,10 +23,10 @@
             </spatialrefsys>
         </destinationsrs>
     </mapcanvas>
-    <legend updateDrawingOrder="true" activeLayer="thenshapes20131125133036343">
-        <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
+    <legend updateDrawingOrder="true" activeLayer="TM_WORLD_BORDERS_0_320131105083224301">
+        <legendlayer drawingOrder="-1" open="true" checked="Qt::Checked" name="TM_WORLD_BORDERS-0.3" showFeatureCount="0">
             <filegroup open="true" hidden="false">
-                <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="0"/>
+                <legendlayerfile isInOverview="0" layerid="TM_WORLD_BORDERS_0_320131105083224301" visible="1"/>
             </filegroup>
         </legendlayer>
         <legendlayer drawingOrder="-1" open="true" checked="Qt::Unchecked" name="transnistrien" showFeatureCount="0">
