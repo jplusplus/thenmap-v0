@@ -56,7 +56,21 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 		<title>Thenmap</title>
 
 		<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/normalize/2.1.3/normalize.min.css">
-
+		<style>
+			article {
+				font-family: goudy, schoolbook, serif;
+				font-size: 150%;
+				margin: 0 1em;
+			}
+			h1 {
+				border-top:1px solid gray;
+				margin-top:1.5em;
+				padding:.4em;
+				font-family:sans-serif;
+				font-weight:100;
+				letter-spacing:2px;
+			}
+		</style>
 		<script src=//ajax.googleapis.com/ajax/libs/jquery/1.10.2/jquery.min.js></script>
 		<!--[if lt IE 9]>
 			<script src=http://html5shiv.googlecode.com/svn/trunk/html5.js></script>
@@ -78,6 +92,8 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 		</div>
 	</section>
 	<article>
+	<h1>Thenmap</h1>
+	<p>Thenmap is a framework for creating historical map visualizations. Read more about it <a href="http://jplusplus.se/?p=276">at jplusplus.se</a>.</p>
 	<p>Try one of these:</p>
 	<ul>
 	<li>Country names in <a href="http://www.thenmap.net?mlang=ar">Arabic</a>, <a href="http://www.thenmap.net?mlang=fr">French</a>, <a href="http://www.thenmap.net?mlang=fi">Finnish</a>, <a href="http://www.thenmap.net?mlang=de">German</a>, <a href="http://www.thenmap.net?mlang=en">English</a> or <a href="http://www.thenmap.net?mlang=sv">Swedish</a>
@@ -86,10 +102,10 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	<li>A dataset: <a href="http://www.thenmap.net?map=europe&amp;fYear=2001&amp;lYear=2012&amp;dataCss=unemployment-eu">Unemployment in EU during one decade</a>
 	</ul>
 	<p><a href="https://trello.com/b/aqFu3s1d/thenmap">Report bugs here</a></p>
-	<p>Work in progress by <a href="http://leowallentin.se">Leo Wallentin</a> and Jens Finnäs, J++.<p>
+	<p>Work in progress by <a href="http://leowallentin.se">Leo Wallentin</a> and <a href="http://www.twitter.com/jensfinnas">Jens Finnäs</a>, J++.<p>
 	</article>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
-		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache9"></script>
+		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=212"></script>
 	</body>
 </html>

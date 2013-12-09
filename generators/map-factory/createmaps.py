@@ -13,11 +13,11 @@ import hashlib #md5 for svg paths, to find duplicates
 ##########################################
 #          SETTINGS                      #
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
-#mapType     = "europe-ortho"             #
-#mapType     = "world-mollweide"          #
+mapType     = "europe-ortho"             #
+mapType     = "world-mollweide"          #
 mapType     = "world-robinson"           #
-#mapType     = "africa-laea"              #  
-#mapType     = "europe-caucasus-lcc"      #
+mapType     = "africa-laea"              #  
+mapType     = "europe-caucasus-lcc"      #
 startDate   = "1945-01-01"               #
 endDate     = "2013-12-31"               #
 ##########################################
@@ -31,7 +31,6 @@ mapSettings = {
 		},
 		"simplify":  0.6,
 		"circles":   3000,
-		"hashWidth": 2,
 	},
 	# Alternative projection for world maps
 	"world-mollweide": {
@@ -41,7 +40,6 @@ mapSettings = {
 		},
 		"simplify":  0.6,
 		"circles":   3000,
-		"hashWidth": 2,
 	},
 	# In case someone wants an equal area map
 	"world-gallpeters": {
@@ -51,7 +49,6 @@ mapSettings = {
 		},
 		"simplify":  0.2,
 		"circles":   3000,
-		"hashWidth": 2,
 	},
 	# Europe, not including Caucasus or Greenland
 	"europe-ortho": {
@@ -68,7 +65,6 @@ mapSettings = {
 		},
 		"simplify":  0.2,
 		"circles":   1000,
-		"hashWidth": 1,
 	},
 	# Europe, including Caucasus and Greenland. Lambert Conformal Conic
 	"europe-caucasus-lcc": {
@@ -87,7 +83,6 @@ mapSettings = {
 		},
 		"simplify":  0.2,
 		"circles":   1500,
-		"hashWidth": 1,
 	},
 	# Africa
 	"africa-laea": {
@@ -102,7 +97,6 @@ mapSettings = {
 		},
 		"simplify":  0.2,
 		"circles":   1000,
-		"hashWidth": 1,
 	},
 }
 
@@ -170,11 +164,11 @@ def iriToUri(iri):
     )
 
 
-###############################################################################################################################
-###############################################################################################################################
-# START PROGRAM ###############################################################################################################
-###############################################################################################################################
-###############################################################################################################################
+###########################################################################################################################
+###########################################################################################################################
+# START PROGRAM ###########################################################################################################
+###########################################################################################################################
+###########################################################################################################################
 
 #Read dbf file, we will use this data a lot through out the process
 print "Reading dbf file...",
@@ -222,7 +216,7 @@ K.generate(config, outfile=fileAfterKartograph)
 
 print ("Map created as %s" % fileAfterKartograph)
 
-############################################################################################################################
+###########################################################################################################################
 
 #Prepare for svg processing
 print ("Processing svg file")
@@ -284,7 +278,7 @@ pattern.set("patternTransform","rotate(45 2 2)")
 path = ET.SubElement(pattern,"{%s}path" % SVG_NS)
 path.set("d","M -1,2 l 6,0")
 path.set("stroke","#888888")
-path.set("stroke-width",str(1 * mapSettings[mapType]["hashWidth"]))
+path.set("stroke-width","1")
 print "done"
 
 #Find and move the background to the top, so that all browsers can "see" the nations layer

@@ -1,3 +1,10 @@
+/* Some hacks need to be reapplied after using css minificators */
+/* http://cssminifier.com/ will remove svg#thenmap-map {height:auto} */
+/* http://www.csscompressor.com/ will remove svg#thenmap-map {height:auto; height:none\9;} */ 
+/* http://www.minifycss.com/ will remove svg#thenmap-map {height:auto; height:none\9;} */ 
+/**/
+/* http://refresh-sf.com/ seem to work out of the box */
+
 article,
 aside,
 details,
@@ -155,6 +162,8 @@ svg:not(:root) {
 
 /* SVG */
 svg#thenmap-map {
+	display:block;
+	margin-left:auto;margin-right:auto;
 	width:auto;/* For FF. Will use nominal svg width, possibly displaying clipped content (e.g. Russia in europe-ortho) otherwise */
 	max-width:100%;
 	height:auto;/* For FF. Will use nominal svg height (768px) otherwise */
@@ -171,11 +180,11 @@ svg#thenmap-map {
 }
 
 @media screen and (-webkit-min-device-pixel-ratio:0) {
-	.limit > * {
+	.limit .land {
 		fill:url("#diagonalHatch") !important;
 	}
 }
-.limit > * {
+.limit .land {
 	fill:url("/maps/styles.svg#diagonalHatch");
 }
 
