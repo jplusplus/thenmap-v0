@@ -168,12 +168,15 @@ svg#thenmap-map {
 	max-width:100%;
 	height:auto;/* For FF. Will use nominal svg height (768px) otherwise */
 	max-height:640px;
-	height:none\9;   /* Setting a height breaks display in IE */
-	height:none \0/; /* Setting a height breaks display in IE */
 	border:1px solid whitesmoke;
 }
 
-.land {
+/*#thenmap-map-container.loading*/ .land {
+	fill:#eee;
+	stroke:none;
+}
+
+#thenmap-map .land {
 	fill:lightgray;
 	stroke:white;
 	stroke-width:1px;
@@ -184,6 +187,7 @@ svg#thenmap-map {
 		fill:url("#diagonalHatch") !important;
 	}
 }
+
 .limit .land {
 	fill:url("/maps/styles.svg#diagonalHatch");
 }
@@ -271,10 +275,6 @@ svg g#background {
 #thenmap-map-container.loading .placeholder {height:350px;}
 #thenmap-map-container.loading {max-height:100%;}
 
-#thenmap-map-container.loading .land {
-	fill:#eee;
-	stroke:none;
-}
 
 /* http://www.sitepoint.com/css3-ajax-loading-icon/ */
 #thenmap-map-container.loading .ajaxloader {
