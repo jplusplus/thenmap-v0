@@ -171,6 +171,7 @@ var Thenmap = {
 		self.textPropName = this.section.textContent === undefined ? 'innerText' : 'textContent';
 		
 		/* Polluting the environment a bit here, for our own convenience. Sorry for that. */
+		/* Adding a global getElementsByClassName function*/
 		if (!document.getElementsByClassName) {
 			document.getElementsByClassName=function(cn) {
 				var allT=document.getElementsByTagName('*'), allCN=[], i=0, a;
@@ -230,21 +231,10 @@ var Thenmap = {
 			/* Append image */
 			self.svg = self.mapcontainer.appendChild(svg);
 
-			/* Firefox will not let us do this before svg is inserted */
+			/* Fix clipping problems in IE, by explicitly setting max-width */
 //			var bBox = self.svg.getBBox();
 //			if (bBox.width) {
 //				self.svg.style["max-width"] = Math.min(bBox.width,1080) + "px";
-//			}
-//			if (bBox.height) {
-				/* There has to be a less hackish way to get the svg's real height... */
-/*				var height = Math.min(bBox.height,768) + "px";
-				self.svg.style["max-height"] = height;
-				var height = Math.min(self.svg.offsetHeight || self.svg.clientHeight,768)+"px";*/
-
-				/* FIXME FF doesn't see a clientHeight here... */
-/*				self.svg.style["max-height"] = "768px";*/
-//				self.svg.style["height"] = "auto";
-/*				self.mapcontainer.style["max-height"] = height;*/
 //			}
 
 			/*Cache path styles and elements for performance*/
@@ -258,9 +248,9 @@ var Thenmap = {
 				}
 			}
 
-			self.initTimeline('thenmap-slider');
 			self.mapcontainer.className = "";
-			
+			self.initTimeline('thenmap-slider');
+						
 			self.loadJQueryAndQtip();
 
 		});//		}, 'xml');//END loading svg
@@ -357,7 +347,7 @@ var Thenmap = {
 	initTimeline: function (elementId) {
 		var self = this;
 		var yearSpan = this.lastYear - this.firstYear;
-		this.timeline = new Dragdealer(elementId, {
+		this.timeline = new Dragdealer(document.getElementById(elementId), this.timelineHandle, {
 			x: 1 - (this.lastYear - this.startingYear) / yearSpan, // Set selected position
 			snap: true,
 			steps: yearSpan+1, // Number of steps
@@ -586,33 +576,34 @@ var Thenmap = {
 <?php
 	/* ADD THENMAP CSS */
 	if ( $debugMode->get() ) { ?>
-		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/default.css?c=<?php echo $cacheHash; ?>");
+		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/default.css?c<?php echo $cacheHash; ?>");
 <?php	
 	} else { ?>
-		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/default.min.css?c=<?php echo $cacheHash; ?>");
+		LazyLoad.css("<?php echo $thenmapUrl; ?>/css/default.min.css?c<?php echo $cacheHash; ?>");
 <?php
 	} ?>
+	
+	/* Add IE specific stylesheet */
+	/* alternative approach: http://stackoverflow.com/questions/2041495/create-dynamic-inline-stylesheet */
+	/*      var el= document.createElement('style'); */
+	/*      el.type= "text/css";*/ 
+	/*     if(el.styleSheet) { el.styleSheet.... = ...};//IE only */
+	if (document.styleSheets[0].addImport) {
+		 document.styleSheets[0].addImport("//www.thenmap.net/css/ie.css");
+	}
 
 	/* ADD PREDEFINED DATA CSS, IF ANY.  */
 	<?php
 	if ( $val = $dataCss->get() ) {
-		$CssUrl = '"'.$thenmapUrl . '/css/' . $val . ".css?c=" . $cacheHash . '"'
+		$CssUrl = '"'.$thenmapUrl . '/css/' . $val . ".css?c" . $cacheHash . '"'
 	 ?>
-	LazyLoad.css("<?php echo $thenmapUrl; ?>/css/<?php echo $val; ?>.css?c=<?php echo $cacheHash; ?>");
+	LazyLoad.css("<?php echo $thenmapUrl; ?>/css/<?php echo $val; ?>.css?c<?php echo $cacheHash; ?>");
 	<?php } ?>
 
 	/* SHOULD WE AUTOLOAD EVERYTHING FOR THE USER? */
-	/* This will autoload jQuery, if not rpesent, and then attach the map to an element with the id "thenmap" */
 	<?php
 	if ($autoInit->get() ) { ?>
-	/* If in autoinit mode, load JQuery if not already loaded */
-//	if (typeof jQuery === 'undefined') {
-//		LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
-			Thenmap.init("thenmap");
-//		});
-//	} else {
-//		Thenmap.init("thenmap");
-//	}
+		Thenmap.init("thenmap");
 	<?php } ?>
 })();
 

@@ -68,17 +68,17 @@ var Position =
 
 /* Dragdealer */
 
-var Dragdealer = function(wrapper, options){
-	if(typeof(wrapper) == 'string')	{
-		wrapper = document.getElementById(wrapper);
-	}
-	if(!wrapper){
-		return;
-	}
-	var handle = wrapper.getElementsByTagName('div')[0];
-	if(!handle || handle.className.search(/(^|\s)handle(\s|$)/) == -1){
-		return;
-	}
+var Dragdealer = function(wrapper, handle, options){
+//	if(typeof(wrapper) == 'string')	{
+//		wrapper = document.getElementById(wrapper);
+//	}
+//	if(!wrapper){
+//		return;
+//	}
+//	var handle = wrapper.getElementsByTagName('div')[0];
+//	if(!handle || handle.className.search(/(^|\s)handle(\s|$)/) == -1){
+//		return;
+//	}
 	this.init(wrapper, handle, options || {});
 	this.setup();
 	
@@ -212,9 +212,10 @@ Dragdealer.prototype =
 	setBounds: function(){
 		this.bounds.x0 = this.bounds.left;
 		this.bounds.x1 = this.wrapper.offsetWidth + this.bounds.right;
-		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - this.handle.offsetWidth;
-				
-		this.bounds.xStep = 1 / (this.xPrecision || Math.max(this.wrapper.offsetWidth, this.handle.offsetWidth));
+		var ow = /*this.handle.offsetWidth*/ 100;
+		/* FIXME offsetwidth blir fel i IE */
+		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - 100;
+		this.bounds.xStep = 1 / (this.xPrecision || Math.max(this.wrapper.offsetWidth, 100));
 	},
 	setSteps: function(){
 		if(this.steps > 1){

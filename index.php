@@ -48,7 +48,7 @@ $dataCss = new Setting ( array ( "type" => Setting::STRING ) );
 $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 
 ?><!DOCTYPE html>
-<html lang="<?php $interfaceLanguage ?>" class="nojs">
+<html lang="<?php echo $interfaceLanguage->get() ?>" class="nojs">
 	<head>
 		<meta charset=utf-8 />
 		<meta name="viewport" content="width=device-width">
@@ -106,6 +106,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	</article>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
-		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=212&debug=true"></script>
+		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=227&debug=true"></script>
 	</body>
 </html>
