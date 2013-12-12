@@ -1,0 +1,8 @@
+svg#thenmap-map {
+	width:100% !important;
+	width:100% !important;
+}
+#thenmap-container {
+	height:400px; /*We need to set an explicit height here. Will look stupid on small Windows phone displays */
+}
+.limit .land {fill:url("#diagonalHatch") !important;}
