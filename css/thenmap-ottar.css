@@ -1,0 +1,32 @@
+.qtip.qtip-default h3 {
+	font-family: "museo-slab-1","museo-slab-2",Georgia,"Times New Roman","DejaVu Serif",serif;
+}
+
+.qtip.qtip-default {
+	border-color: #E3FFFB;
+	background-color: #7CC8BA;
+	color: #101918;
+}
+
+body {
+	font-family: Georgia,"Times New Roman","DejaVu Serif",serif;
+}
+#thenmap .control {
+	font-family: Arial,Helvetica,"Nimbus Sans L",sans-serif;
+	background-color: #E98CAE;
+	color: #fff;
+	padding: 4px 8px;
+	margin: 4px 2px;
+	border: 3px double white;
+	border-radius: 6px;
+}
+#thenmap .control:hover {
+	background-color: #3D252E;
+}
+#thenmap .dragdealer .handle {
+	background: #E98CAE;
+}
+
+#thenmap .dragdealer .disabled {
+	background: #898989;
+}
