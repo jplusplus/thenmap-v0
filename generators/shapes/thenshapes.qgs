@@ -4,10 +4,10 @@
     <mapcanvas>
         <units>meters</units>
         <extent>
-            <xmin>58.49811802837044183</xmin>
-            <ymin>-12.00663789790668545</ymin>
-            <xmax>198.51048222951084199</xmax>
-            <ymax>78.28705003588997613</ymax>
+            <xmin>62.1412968927878353</xmin>
+            <ymin>-15.72125164201858638</ymin>
+            <xmax>202.15366109392826388</xmax>
+            <ymax>74.5724362917780752</ymax>
         </extent>
         <projections>1</projections>
         <destinationsrs>
@@ -58,10 +58,10 @@
     <mapcanvas>
         <units>degrees</units>
         <extent>
-            <xmin>63.38702580046907542</xmin>
-            <ymin>75.53457958199690836</ymin>
-            <xmax>104.34590077000785868</xmax>
-            <ymax>93.78145784410800445</ymax>
+            <xmin>-705990.239664634806104</xmin>
+            <ymin>-1430698.05164163699373603</ymin>
+            <xmax>2392742.09989131055772305</xmax>
+            <ymax>-50235.53139920857211109</ymax>
         </extent>
         <projections>0</projections>
         <destinationsrs>
@@ -77,7 +77,7 @@
             </spatialrefsys>
         </destinationsrs>
     </mapcanvas>
-    <projectlayers layercount="7">
+    <projectlayers layercount="6">
         <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
             <id>PN20131127165650771</id>
             <datasource>/home/leo/Downloads/PN.shp</datasource>
@@ -153,41 +153,6 @@
             <excludeAttributesWMS/>
             <excludeAttributesWFS/>
             <attributeactions/>
-        </maplayer>
-        <maplayer minimumScale="0" maximumScale="1e+08" type="raster" hasScaleBasedVisibilityFlag="0">
-            <id>Raster20131212092207885</id>
-            <datasource>/home/leo/manchukoku</datasource>
-            <title></title>
-            <abstract></abstract>
-            <keywordList>
-                <value></value>
-            </keywordList>
-            <layername>Raster</layername>
-            <srs>
-                <spatialrefsys>
-                    <proj4>+proj=merc +lon_0=0 +k=1 +x_0=0 +y_0=0 +datum=WGS84 +units=m +no_defs</proj4>
-                    <srsid>27594</srsid>
-                    <srid>54004</srid>
-                    <authid>EPSG:54004</authid>
-                    <description>World_Mercator</description>
-                    <projectionacronym>merc</projectionacronym>
-                    <ellipsoidacronym></ellipsoidacronym>
-                    <geographicflag>false</geographicflag>
-                </spatialrefsys>
-            </srs>
-            <customproperties>
-                <property key="identify/format" value="Value"/>
-            </customproperties>
-            <provider>gdal</provider>
-            <pipe>
-                <rasterrenderer opacity="1" alphaBand="4" blueBand="3" greenBand="2" type="multibandcolor" redBand="1">
-                    <rasterTransparency/>
-                </rasterrenderer>
-                <brightnesscontrast brightness="0" contrast="0"/>
-                <huesaturation colorizeGreen="128" colorizeOn="0" colorizeRed="255" colorizeBlue="128" grayscaleMode="0" saturation="0" colorizeStrength="100"/>
-                <rasterresampler maxOversampling="2"/>
-            </pipe>
-            <blendMode>0</blendMode>
         </maplayer>
         <maplayer minimumScale="0" maximumScale="1e+08" minLabelScale="0" maxLabelScale="1e+08" geometry="Polygon" type="vector" hasScaleBasedVisibilityFlag="0" scaleBasedLabelVisibilityFlag="0">
             <id>TM_WORLD_BORDERS_0_320131105083224301</id>
