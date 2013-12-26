@@ -2,6 +2,7 @@ import csv
 import argparse
 import os.path
 import sys
+import brewer2mpl
 
 
 # From http://danieljlewis.org/files/2010/06/Jenks.pdf
@@ -122,6 +123,7 @@ else:
 
 
 numberOfJenksBreaks = 8
+colorMap = 'YlOrRd' #https://github.com/jiffyclub/brewer2mpl/wiki/Sequential
 
 #####################################################################################
 
@@ -138,12 +140,33 @@ try:
 				for col in row:
 					if is_number(col):
 						values.append(col)
-
-except IOError:
-    print ("Could not open key file")
     
+except IOError:
+    print ("Could not open input file")
+
+# Calculate breaks    
 jenksBreaks = getJenksBreaks( values, numberOfJenksBreaks )
-print jenksBreaks
+print "JenkBreaks:",
+print jenksBreaks # [0, '0.308', '0.396', '0.489', '0.584', '0.674', '0.755', '0.843', 0.955]
 
 #Loop through all rows and cols and convert any numerical values to a color
-#https://pypi.python.org/pypi/colorbrewer
+bmap = brewer2mpl.get_map(colorMap, 'sequential', numberOfJenksBreaks)
+colors = bmap.hex_colors
+#bmap.colorbrewer2()
+
+try:
+	with open(inputFile, 'rb') as csvfile:
+		datacsv = csv.reader(csvfile,delimiter=',',quotechar='"')
+
+		for row in datacsv:
+			for col in row:
+				if is_number(col):
+					for x in range(0, numberOfJenksBreaks-1):
+						if float(col) > float(jenksBreaks[x]):
+							code = colors[x]
+							print "val: %f => col: %s" % (float(col),code)
+						
+		#https://pypi.python.org/pypi/colorbrewer
+
+except IOError:
+    print ("Could not open input file")
