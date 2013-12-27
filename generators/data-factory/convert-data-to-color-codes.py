@@ -3,7 +3,7 @@ import argparse
 import os.path
 import sys
 import brewer2mpl
-
+import pyssed
 
 # From http://danieljlewis.org/files/2010/06/Jenks.pdf
 def getJenksBreaks( dataList, numClass ): 
@@ -89,6 +89,14 @@ def is_number(s):
     except ValueError:
         return False
 
+# Add fill color to dict
+fillColors = {} # save all css rules here
+css = {}
+def addFillColor(year,land,color):
+	if color not in fillColors:
+		fillColors[color] = []
+	fillColors[color].append(".y{0} land.{1}".format(year, land))
+	
 ################################################################################################333
 
 #Define command line arguments
@@ -108,19 +116,16 @@ args = parser.parse_args()
 inputFile = args.infile
 
 if args.outfile is None:
-	print "No output file given. Really overwrite input file? [y/N]"
+	outputFile = os.path.splitext(inputFile)[0] + ".css"
+	print "No output file given, using %s" % outputFile
+else:
+	outputFile = args.outfile
+
+if os.path.isfile(outputFile):
+	print "File %s already exists. Overwrite? [y/N]" % args.outfile
 	choice = raw_input().lower()
 	if not choice in ('y', 'yes'):
 		sys.exit()
-	outputFile = inputFile
-else:
-	if os.path.isfile(args.outfile):
-		print "File %s already exists. Overwrite? [y/N]" % args.outfile
-		choice = raw_input().lower()
-		if not choice in ('y', 'yes'):
-			sys.exit()
-	outputFile = args.outfile
-
 
 numberOfJenksBreaks = 8
 colorMap = 'YlOrRd' #https://github.com/jiffyclub/brewer2mpl/wiki/Sequential
@@ -128,6 +133,7 @@ colorMap = 'YlOrRd' #https://github.com/jiffyclub/brewer2mpl/wiki/Sequential
 #####################################################################################
 
 values = []
+headers = []
 #Open file
 try:
 	with open(inputFile, 'rb') as csvfile:
@@ -136,6 +142,8 @@ try:
 		for row in datacsv:
 			if firstRow:
 				firstRow = False
+				for col in row:
+					headers.append(col)
 			else:
 				for col in row:
 					if is_number(col):
@@ -159,14 +167,30 @@ try:
 		datacsv = csv.reader(csvfile,delimiter=',',quotechar='"')
 
 		for row in datacsv:
+			c = 0
 			for col in row:
 				if is_number(col):
 					for x in range(0, numberOfJenksBreaks-1):
 						if float(col) > float(jenksBreaks[x]):
 							code = colors[x]
-							print "val: %f => col: %s" % (float(col),code)
+							addFillColor(headers[c] ,row[0],code) # year,land,color
+				c = c +1
 						
 		#https://pypi.python.org/pypi/colorbrewer
 
 except IOError:
     print ("Could not open input file")
+    
+for color in fillColors:
+	classes = ",".join(fillColors[color])
+	css[classes] = { 'fill': color }
+
+# Write to file
+try:
+	f = open(outputFile, "w")
+	try:
+		f.write('\n'.join(pyssed.generate(css))) # Write a string to a file
+	finally:
+		f.close()
+except IOError:
+	print "Could not write to css file (%s)" % outputFile
