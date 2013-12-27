@@ -442,7 +442,9 @@ var Thenmap = {
 	loadJQueryAndQtip: function() {
 		var self = this;
 		if ("undefined" === typeof(jQuery)) {
+			console.log("loading jQuery...");
 			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
+				console.log("done");
 				self.loadQtip();
 			});
 		} else {

@@ -19,8 +19,8 @@ import pprint
 
 # ---- START HERE ---
 delimiter = ";" 				# Set CSV delimiter
-csvToOpen = "sample_data.csv" 	# File to open
-cssFile = "thenmap.css" 		# Set name of output file
+csvToOpen = "in.csv"			# File to open
+cssFile = "test.css"			# Set name of output file
 
 pp = pprint.PrettyPrinter(indent=2)
 
