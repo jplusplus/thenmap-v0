@@ -13,11 +13,11 @@
 "bi","Burundi","Burundi",,"BDI",
 "be","Belgien","Belgium",,"BEL","BEL: Belgium"
 "bj","Benin","Benin",,"BEN",
-"bf","Burkina Faso","Burkina Faso",,"BFA",
+"bf","Burkina Faso","Burkina Faso","Upper Volta, hv, HVO, HVBF","BFA",
 "bd","Bangladesh","Bangladesh",,"BGD",
 "bg","Bulgarien","Bulgaria",,"BGR","BGR: Bulgaria"
 "bh","Bahrain","Bahrain",,"BHR",
-"bs","Bahamas","Bahamas",,"BHS",
+"bs","Bahamas","Bahamas","""Bahamas, The""","BHS",
 "ba","Bosnien och Hercegovina","Bosnia and Herzegovina","Bosnien-Hercegovina","BIH",
 "by","Vitryssland","Belarus",,"BLR",
 "bz","Belize","Belize",,"BLZ",
@@ -32,10 +32,10 @@
 "ch","Schweiz","Switzerland",,"CHE","CHE: Switzerland"
 "cl","Chile","Chile",,"CHL","CHL: Chile"
 "cn","Kina","China",,"CHN","CHN: China"
-"ci","Elfenbenskusten","Cote D'Ivoire","Cote d'Ivoire, Côte d'Ivoire, Ivory Coast, Côte d'Ivoire","CIV",
+"ci","Elfenbenskusten","Cote D'Ivoire","""Cote d'Ivoire"", ""Côte d'Ivoire"", Ivory Coast","CIV",
 "cm","Kamerun","Cameroon",,"CMR",
-"cd","Kongo-Kinshasa","Democratic republic of Congo","DRC, Demokratiska republiken Kongo, DR Congo (Zaire), DR Congo, Zaire, Zaïre, Kongo-Léopoldville, Democratic Republic of the Congo, Congo (Democratic Republic of the)","COD",
-"cg","Kongo-Brazzaville","Republic of Congo","Republiken Kongo","COG",
+"cd","Kongo-Kinshasa","Democratic republic of Congo","DRC, Demokratiska republiken Kongo, DR Congo (Zaire), DR Congo, Zaire, Zaïre, Kongo-Léopoldville, Democratic Republic of the Congo, Congo (Democratic Republic of the), ZRE, ""Congo, Dem. Rep.""","COD",
+"cg","Kongo-Brazzaville","Republic of Congo","Republiken Kongo, ""Congo, Rep."", Republic of Congo","COG",
 "co","Colombia","Colombia",,"COL",
 "km","Komorerna","Comoros",,"COM",
 "cv","Kap Verde","Cape Verde",,"CPV",
@@ -50,7 +50,7 @@
 "do","Dominikanska republiken","Dominican Republic",,"DOM",
 "dz","Algeriet","Algeria",,"DZA",
 "ec","Ecuador","Ecuador",,"ECU",
-"eg","Egypten","Egypt",,"EGY",
+"eg","Egypten","Egypt","""Egypt, Arab Rep.""","EGY",
 "er","Eritrea","Eritrea",,"ERI",
 "es","Spanien","Spain",,"ESP","ESP: Spain"
 "ee","Estland","Estonia",,"EST","EST: Estonia"
@@ -58,13 +58,13 @@
 "fi","Finland","Finland",,"FIN","FIN: Finland"
 "fj","Fiji","Fiji",,"FJI",
 "fr","Frankrike","France",,"FRA","FRA: France"
-"ko","Mikronesiska federationen","Micronesia","Mikronesien, Micronesia (Federated States of), Federated States of Micronesia","FSM",
+"ko","Mikronesiska federationen","Micronesia","Mikronesien, Micronesia (Federated States of), Federated States of Micronesia, ""Micronesia, Fed. Sts.""","FSM",
 "ga","Gabon","Gabon",,"GAB",
-"gb","Storbritannien","United Kingdom of Great Britain","United Kingdom, United Kingdom of Great Britain and Northern Irelan","GBR","GBR: United Kingdom"
+"gb","Storbritannien","United Kingdom of Great Britain","United Kingdom, United Kingdom of Great Britain and Northern Ireland","GBR","GBR: United Kingdom"
 "ge","Georgien","Georgia",,"GEO",
 "gh","Ghana","Ghana",,"GHA",
 "gn","Guinea","Guinea","Guinea-Conakry","GIN",
-"gm","Gambia","Gambia",,"GMB",
+"gm","Gambia","The Gambia","""Gambia, The""","GMB",
 "gw","Guinea-Bissau","Guinea-Bissau",,"GNB",
 "gq","Ekvatorialguinea","Equatorial Guinea",,"GNQ",
 "gr","Grekland","Greece",,"GRC","GRC: Greece"
@@ -78,13 +78,13 @@
 "id","Indonesien","Indonesia",,"IDN",
 "in","Indien","India",,"IND","IND: India"
 "ie","Irland","Ireland",,"IRL","IRL: Ireland"
-"ir","Iran","Iran","Iran (Islamic Republic of), Islamic Republic of Iran","IRN",
+"ir","Iran","Iran","Iran (Islamic Republic of), Islamic Republic of Iran, ""Iran, Islamic Rep.""","IRN",
 "iq","Irak","Iraq",,"IRQ",
 "is","Island","Iceland",,"ISL","ISL: Iceland"
 "il","Israel","Israel",,"ISR","ISR: Israel"
 "it","Italien","Italy",,"ITA","ITA: Italy"
 "jm","Jamaica","Jamaica",,"JAM",
-"yu","Jugoslavien","Yugoslavia",,"JOR",
+"yu","Jugoslavien","Yugoslavia","YUCS","YUG",
 "jp","Japan","Japan",,"JPN","JPN: Japan"
 "kz","Kazakstan","Kazakhstan",,"KAZ",
 "ke","Kenya","Kenya",,"KEN",
@@ -92,10 +92,10 @@
 "kh","Kambodja","Cambodia","Cambodia (Kampuchea,Kampuchea","KHM",
 "ki","Kiribati","Kiribati",,"KIR",
 "kn","Saint Kitts och Nevis","St. Kitts and Nevis","Saint Kitts and Nevis","KNA",
-"kr","Sydkorea","Korea","Korea (Republic of), Republic of Korea","KOR","KOR: Korea"
+"kr","Sydkorea","Korea","Korea (Republic of), Republic of Korea, ""Korea, Rep.""","KOR","KOR: Korea"
 "xk","Kosovo","Kosovo",,"KOS",
 "kw","Kuwait","Kuwait",,"KWT",
-"la","Laos","Lao People's Democratic Republic",,"LAO",
+"la","Laos","Lao People's Democratic Republic","Lao PDR","LAO",
 "lb","Libanon","Lebanon",,"LBN",
 "lr","Liberia","Liberia",,"LBR",
 "ly","Libyen","Libya",,"LBY",
@@ -113,7 +113,7 @@
 "mv","Maldiverna","Maldives",,"MDV",
 "mx","Mexiko","Mexico",,"MEX","MEX: Mexico"
 "mh","Marshallöarna","Marshall Islands",,"MHL",
-"mk","Makedonien","Macedonia","The former Yugoslav Republic of Macedonia, FYROM","MKD",
+"mk","Makedonien","Macedonia","The former Yugoslav Republic of Macedonia, FYROM, ""Macedonia, FYR""","MKD",
 "ml","Mali","Mali",,"MLI",
 "mt","Malta","Malta",,"MLT","MLT: Malta"
 "mm","Burma","Myanmar",,"MMR",
@@ -141,12 +141,12 @@
 "pw","Palau","Palau",,"PLW",
 "pg","Papua Nya Guinea","Papua New Guinea",,"PNG",
 "pl","Polen","Poland",,"POL","POL: Poland"
-"kp","Nordkorea","North Korea","Democratic People's Republic of Korea, DPRK, Korea (Democratic People's Rep. of)","PRK",
+"kp","Nordkorea","North Korea","""Democratic People's Republic of Korea"", DPRK, ""Korea (Democratic People's Rep. of)"", ""Korea, Dem. Rep.""","PRK",
 "pt","Portugal","Portugal",,"PRT","PRT: Portugal"
 "py","Paraguay","Paraguay",,"PRY",
 "qa","Qatar","Qatar",,"QAT",
 "ro","Rumänien","Romania",,"ROU","ROU: Romania"
-"ru","Ryssland","Russian Federation",,"RUS","RUS: Russian Federation"
+"ru","Ryssland","Russian Federation","Russia","RUS","RUS: Russian Federation"
 "rw","Rwanda","Rwanda",,"RWA",
 "sa","Saudiarabien","Saudi Arabia",,"SAU",
 "sd","Sudan","Sudan",,"SDN",
@@ -161,18 +161,18 @@
 "ss","Sydsudan","South Sudan",,"SSD",
 "st","São Tomé och Príncipe","Sao Tome and Principe","Sao Tomé and Principe, São Tomé and Príncipe","STP",
 "sr","Surinam","Suriname",,"SUR",
-"sk","Slovakien","Slovakia",,"SVK","SVK: Slovak Republic"
+"sk","Slovakien","Slovakia","Slovak Republic","SVK","SVK: Slovak Republic"
 "si","Slovenien","Slovenia",,"SVN","SVN: Slovenia"
 "se","Sverige","Sweden",,"SWE","SWE: Sweden"
 "sz","Swaziland","Swaziland",,"SWZ",
 "sc","Seychellerna","Seychelles",,"SYC",
-"sy","Syrien","Syrian Arab Republic",,"SYR",
+"sy","Syrien","Syrian Arab Republic","Syria","SYR",
 "td","Tchad","Chad",,"TCD",
 "tg","Togo","Togo",,"TGO",
 "th","Thailand","Thailand",,"THA",
 "tj","Tadzjikistan","Tajikistan",,"TJK",
 "tm","Turkmenistan","Turkmenistan",,"TKM",
-"tl","Östtimor","Timor-Leste",,"TLS",
+"tl","Östtimor","Timor-Leste","East Timor, Timor Leste","TLS",
 "to","Tonga","Tonga",,"TON",
 "tt","Trinidad och Tobago","Trinidad and Tobago",,"TTO",
 "tn","Tunisien","Tunisia",,"TUN",
@@ -187,11 +187,11 @@
 "uz","Uzbekistan","Uzbekistan",,"UZB",
 "va","Vatikanstaten","Holy See",,"VAT",
 "vc","Saint Vincent och Grenadinerna","St. Vincent and the Grenadines","Saint Vincent and the Grenadines","VCT",
-"ve","Venezuela","Venezuela","Venezuela (Bolivarian Republic of), Bolivarian Republic of Venezuela ","VEN",
+"ve","Venezuela","Venezuela","Venezuela (Bolivarian Republic of), Bolivarian Republic of Venezuela , ""Venezuela, RB""","VEN",
 "vn","Vietnam","Viet Nam",,"VNM",
 "vu","Vanuatu","Vanuatu",,"VUT",
 "ws","Samoa","Samoa",,"WSM",
-"ye","Jemen","Yemen","Kingdom of Yemen, Nordyemen, North Yemen, Yemen Arab Republic","YEM",
+"ye","Jemen","Yemen","Kingdom of Yemen, Nordyemen, North Yemen, Yemen Arab Republic, ""Yemen, Rep.""","YEM",
 "za","Sydafrika","South Africa",,"ZAF","ZAF: South Africa"
 "zm","Zambia","Zambia",,"ZMB",
 "zw","Zimbabwe","Zimbabwe","Zimbabwe (Rhodesia), Rhodesia","ZWE",
@@ -199,7 +199,30 @@
 "dd","Östtyskland","East Germany","DDR",,
 "cs","Serbien och Montenegro","Serbia and Montenegro","Serbien-Montenegro",,
 "su","Sovjetunionen","Soviet Union","Sovjet",,
-"yd","Sydjemen","South Yemen",,,
+"yd","Sydjemen","South Yemen","""Yemen, Democratic"", YMD, YDYE",,
 "an","Nederländska Antillerna","Netherlands Antilles",,,
-"ps","Palestina","Palestine","“Palestine, State of”",,
-"hk","Hongkong","Hong Kong","""Hong Kong, China (SAR)""",,
+"ps","Palestina","Palestine","""Palestine, State of"", West Bank and Gaza",,
+"hk","Hongkong","Hong Kong","""Hong Kong, China (SAR)"", ""Hong Kong SAR, China"", ""Hong Kong SAR""",,
+"as","Amerikanska Samoa","American Samoa","Western Samoa, Amerika Sāmoa, Sāmoa Amelika","ASM",
+"vd","Nordvietnam","North Vietnam","""Viet-Nam, Democratic Republic of"", Democratic Republic of Vietnam","VDR",
+"gb-cha","Kanalöarna","Channel Islands",,,
+"sikkim","Sikkim","Sikkim","Protectorate of Sikkim, SKIN","SKM",
+"cw","Curaçao","Curaçao","Curacao, Country of Curaçao","CUW",
+"eu","Europeiska unionen","European Union",,,
+"fo","Färöarna","Faroe Islands","Faeroe Islands","FRO",
+"im","Isle of Man","Isle of Man",,"IMY",
+"mo","Macao","Macau","""Macao SAR, China"", Macao SAR, Macao","MAC",
+"nc","Nya Kaledonien","New Caledonia",,"NCL",
+"mp","Nordmarianerna","Northern Mariana Islands","CNMI","MNP",
+"sx","Sint Maarten","Sint Maarten","Sint Maarten (Dutch part)","SXM",
+"mf","Saint Martin","Saint Martin","St. Martin, St. Martin (French part)","MAF",
+"tc","Turks- och Caicosöarna","Turks and Caicos Islands",,"TCA",
+"vi","Amerikanska Jungfruöarna","United States Virgin Islands","Virgin Islands (U.S.), Virgin Islands of the United States, U.S. Virgin Islands, American Virgin Islands, ""Virgin Islands, U.S.""","VIR",
+"vg","Brittiska Jungfruöarna","Brittish Virgin Islands","""Virgin Islands, British""","VGB",
+"pr","Puerto Rico","Puerto Rico",,"PRI",
+"gu","Guam","Guam",,"GUM",
+"gl","Grönland","Greenland",,"GRL",
+"pf","Franska Polynesien","French Polynesia",,"PYF",
+"ky","Caymanöarna","Cayman Islands",,"CYM",
+"bm","Bermuda","Bermuda",,"BMU",
+"aw","Aruba","Aruba",,"ABW",
