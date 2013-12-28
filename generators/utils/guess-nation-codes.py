@@ -6,6 +6,7 @@ import csv
 import argparse
 import os.path
 import sys
+import shlex
 
 #Check if file exists
 def is_valid_file(parser, arg):
@@ -64,8 +65,9 @@ try:
 				keyDict[row[2]] = row[0]
 			#Alisases -> code
 			if row[3]:
-				aliases = row[3].split(",")
-				for a in aliases:
+				#Use csv module to split string by comma, respecting quotes
+				aliases = csv.reader([row[3]],skipinitialspace=True)
+				for a in aliases.next():
 					keyDict[a] = row[0]
 			#ISO alpha 3 ("CHE")
 			if row[4]:
@@ -93,6 +95,8 @@ try:
 				nationname = row[indataColumn].strip()
 				if nationname in keyDict:
 					row[outdataColumn] = keyDict[nationname]
+				else:
+					print "Could not find %s" % nationname
 			outdata.append(row)
 
 		try:
