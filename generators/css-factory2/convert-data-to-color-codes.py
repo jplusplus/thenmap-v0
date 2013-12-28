@@ -87,7 +87,7 @@ except IOError:
     print ("Could not open input file")
 
 # Calculate breaks    
-jenksBreaks = getJenksBreaks( values, numberOfJenksBreaks )
+jenksBreaks = jenks.getJenksBreaks( values, numberOfJenksBreaks )
 print "JenkBreaks:",
 print jenksBreaks # [0, '0.308', '0.396', '0.489', '0.584', '0.674', '0.755', '0.843', 0.955]
 
