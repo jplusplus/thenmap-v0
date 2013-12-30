@@ -115,15 +115,21 @@ JS minification is done with [JShrink](https://github.com/tedivm/JShrink), copyr
 
 The slider uses a [patched](https://code.google.com/p/dragdealer/issues/list?q=type=Patch) and stripped down version of [Dragdealer JS v0.9.5](http://code.ovidiu.ch/dragdealer-js), copyright © 2010 by Ovidiu Chereches, and released under the [MIT License](http://legal.ovidiu.ch/licenses/MIT).
 
-Dynamic CSS and JS loading is handled by [LazyLoad](https://github.com/rgrove/lazyload/), copyright © 2011 by Ryan Grove <ryan@wonko.com>
+Dynamic CSS and JS loading is handled by [LazyLoad](https://github.com/rgrove/lazyload/), copyright © 2011 by Ryan Grove <ryan@wonko.com>.
 
-Internationalization by [Light-i18n](https://github.com/ahfeel/php-light-i18n) by Jérémie Bordier
+Internationalization by [Light-i18n](https://github.com/ahfeel/php-light-i18n) by Jérémie Bordier.
 
 Nation names are provided by tens of thousand of Wikipedia editors, thanks to the [WikiData project](https://www.wikidata.org) and community, [CC-0](http://creativecommons.org/publicdomain/zero/1.0/), when no local translation is available.
 
 Maps are prerendered  with [Kartograph.py](https://github.com/kartograph/kartograph.py), licensed under [AGPL](http://www.gnu.org/licenses/agpl-3.0.txt), by Gregor Aisch
 
-Shapefiles are primarily based on [Natural Earth](http://www.naturalearthdata.com/about/), but also borrowing from [DIVA-GIS free spatial data](http://www.diva-gis.org/Data) and [CSHAPES](http://nils.weidmann.ws/projects/cshapes), Weidmann, Nils B., Doreen Kuse, and Kristian Skrede Gleditsch. 2010. [The Geography of the International System: The CShapes Dataset. International Interactions 36 (1)](http://www.tandfonline.com/doi/abs/10.1080/03050620903554614#.UqAvJrXtkWM), especially after 1975. Hyderabad borders are from [sharemap.org](http://sharemap.org/public/Hyderabad) by anonymous users, [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/). Countless old, public domain maps have been used to recreate old borders when needed. We would appreciate a line of credit if you find them useful and reuse them!
+Jenks breaks algorithm for choropleth maps by [Daniel J Lewis](http://danieljlewis.org/files/2010/06/Jenks.pdf)
+
+Colors schemes are from [ColorBrewer2](http://colorbrewer2.org/) by Cynthia A. Brewer, Geography, Pennsylvania State University; imported with [brewer2mpl](https://github.com/jiffyclub/brewer2mpl), copyright © 2012 by Matt Davis, and released under the [MIT License](http://legal.ovidiu.ch/licenses/MIT).
+
+The icon font was generated with [IcoMoon](http://icomoon.io/).
+
+Shapefiles are primarily based on [Natural Earth](http://www.naturalearthdata.com/about/), but also borrowing from [DIVA-GIS free spatial data](http://www.diva-gis.org/Data) and [CSHAPES](http://nils.weidmann.ws/projects/cshapes), Weidmann, Nils B., Doreen Kuse, and Kristian Skrede Gleditsch. 2010. [The Geography of the International System: The CShapes Dataset. International Interactions 36 (1)](http://www.tandfonline.com/doi/abs/10.1080/03050620903554614#.UqAvJrXtkWM), especially after 1975. Hyderabad borders are from [sharemap.org](http://sharemap.org/public/Hyderabad) by anonymous users, [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/). Countless old, public domain maps have been used to recreate old borders when needed. We would appreciate a line of credit if you find our shapes useful and reuse them!
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
