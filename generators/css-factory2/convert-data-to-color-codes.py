@@ -30,6 +30,10 @@ def addFillColor(year,land,color):
 	if color not in fillColors:
 		fillColors[color] = []
 	fillColors[color].append(".y{0} .{1} > *".format(year, land))
+def addFillColorNoYear(land,color):
+	if color not in fillColors:
+		fillColors[color] = []
+	fillColors[color].append(".{1} > *".format(year, land))
 	
 ################################################################################################333
 
@@ -44,7 +48,11 @@ parser.add_argument("-i", "--input", dest="infile", required=True,
 #Output file
 parser.add_argument("-o", "--output", dest="outfile",
     help="output file", metavar="FILE")
-    
+
+#Color scheme
+parser.add_argument("-m", "--map", dest="colormap",
+    help="Color map, see https://github.com/jiffyclub/brewer2mpl/wiki/Sequential", default='YlOrRd')
+
 args = parser.parse_args()
 
 inputFile = args.infile
@@ -62,7 +70,7 @@ if os.path.isfile(outputFile):
 		sys.exit()
 
 numberOfJenksBreaks = 8
-colorMap = 'YlOrRd' #https://github.com/jiffyclub/brewer2mpl/wiki/Sequential
+colorMap = args.colormap
 
 #####################################################################################
 
@@ -99,16 +107,29 @@ colors = bmap.hex_colors
 try:
 	with open(inputFile, 'rb') as csvfile:
 		datacsv = csv.reader(csvfile,delimiter=',',quotechar='"')
-
+		firstRow = True
 		for row in datacsv:
-			c = 0
-			for col in row:
-				if is_number(col):
-					for x in range(0, numberOfJenksBreaks-1):
-						if float(col) > float(jenksBreaks[x]):
-							code = colors[x]
+			if firstRow:
+				firstRow = False
+			else:
+				#check if all values are the same
+				colvals = set()
+				for col in row:
+					if is_number(col):
+						colvals.add(col)
+				if len(colvals) == 0:
+					pass
+				elif len(colvals) == 1:
+					addFillColorNoYear(row[0],colvals[0]) # yearland,color
+				else:
+					c = 0
+					for col in row:
+						if is_number(col):
+							for x in range(0, numberOfJenksBreaks-1):
+								if float(col) > float(jenksBreaks[x]):
+									code = colors[x]
 							addFillColor(headers[c] ,row[0],code) # year,land,color
-				c = c +1
+						c = c +1
 						
 		#https://pypi.python.org/pypi/colorbrewer
 

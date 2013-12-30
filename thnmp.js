@@ -404,14 +404,14 @@ var Thenmap = {
 			type: 'button',
 			id: 'thenmap-rewind',
 			title: '<?php echo(L::controlbar_rewindtitle); ?>',
-			value: '<?php echo(L::controlbar_rewind); ?>',
+			value: '⏮',
 			class: 'control'
 		}).appendTo(controlbar).click(function(){self.moveToStart(self)});
 		$('<input/>', {
 			type: 'button',
 			id: 'thenmap-stepback',
 			title: '<?php echo(L::controlbar_stepbacktitle); ?>',
-			value: '<?php echo(L::controlbar_stepback); ?>',
+			value: '◂',
 			class: 'control'
 		}).appendTo(controlbar).click(function(){self.moveLeft(self)});
 		self.playButton = $('<input/>', {
@@ -424,14 +424,14 @@ var Thenmap = {
 			type: 'button',
 			id: 'thenmap-stepforward',
 			title: '<?php echo(L::controlbar_stepforwardtitle); ?>',
-			value: '<?php echo(L::controlbar_stepforward); ?>',
+			value: '▸',
 			class: 'control'
 		}).appendTo(controlbar).click(function(){self.moveRight(self)});
 		$('<input/>', {
 			type: 'button',
 			id: 'thenmap-gotoend',
 			title: '<?php echo(L::controlbar_gotoendtitle); ?>',
-			value: '<?php echo(L::controlbar_gotoend); ?>',
+			value: '⏭',
 			class: 'control'
 		}).appendTo(controlbar).click(function(){self.moveToEnd(self)});
 

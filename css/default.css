@@ -53,6 +53,18 @@ svg:not(:root) {
 	margin-right:auto;
 }
 
+/* Web font for icons */
+@font-face {
+	font-family: 'icons';
+	src:url('../fonts/icomoon.eot');
+	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/icomoon.woff') format('woff'),
+		url('../fonts/icomoon.ttf') format('truetype'),
+		url('../fonts/icomoon.svg#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
 /*
  * qTip2 - Pretty powerful tooltips - v2.1.1
  * http://qtip2.com
@@ -221,8 +233,9 @@ svg g#background {
 }
 
 .control {
-	font-family: Arial, "sans-serif";
-	font-weight: bold;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: "icons", sans-serif;
 	cursor: pointer;
 	background-color:#C00;
 	color: #fff;
