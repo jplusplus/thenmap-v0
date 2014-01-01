@@ -13,6 +13,7 @@ include_once('lib/Minifier.php');	/* JShrink minifyer */
 /* Paths */
 $staticUrl = '//static.thenmap.net';
 $thenmapUrl = '//www.thenmap.net';
+$thenmapUrl = '//' . $_SERVER['HTTP_HOST'] . '/' . dirname($_SERVER['PHP_SELF']);
 
 /* Languages*/
 $languages = array( 'available'    => array ('sv','en','fi','fr','de','es','ru','it','nl','pl','zh','pt','ar','ja','fa','no','he','tr','da','uk','ca','id','hu','vi','ko','et','cs','hi','sr','bg'),
