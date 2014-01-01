@@ -12,7 +12,7 @@ include_once('lib/Minifier.php');	/* JShrink minifyer */
 /* SETTINGS */
 /* Paths */
 $staticUrl = '//static.thenmap.net';
-$thenmapUrl = '//www.thenmap.net';
+//$thenmapUrl = '//www.thenmap.net';
 $thenmapUrl = '//' . $_SERVER['HTTP_HOST'] . '/' . dirname($_SERVER['PHP_SELF']);
 
 /* Languages*/
@@ -50,9 +50,6 @@ $autoInit->set( filter_input(INPUT_GET,"autoinit",FILTER_SANITIZE_STRING) );
 /* Debug mode? */
 $debugMode = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "false" ) );
 $debugMode->set( filter_input(INPUT_GET,"debug",FILTER_SANITIZE_STRING) /*|| "localhost" === $_SERVER["HTTP_HOST"]*/);
-if ( $debugMode->get() ) {
-	$thenmapUrl = '/thenmap';
-}
 
 /* Interface language */
 $interfaceLanguage = new Setting( $languages );
@@ -116,7 +113,7 @@ ob_start();
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
 /* include croww browser console.log in debug mode */
-if ( $debugMode ) {
+if ( $debugMode->get() ) {
 	echo (file_get_contents('js/consolelog.js'));
 }
 ?>
@@ -444,7 +441,12 @@ var Thenmap = {
 		var self = this;
 		if ("undefined" === typeof(jQuery)) {
 			console.log("loading jQuery...");
-			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js', function () {
+			LazyLoad.js('<?php
+			if ( $debugMode->get() ) {
+				echo "js/jquery.min.js";
+			} else {
+				echo "//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js";
+			} ?>', function () {
 				console.log("done");
 				self.loadQtip();
 			});
@@ -476,7 +478,12 @@ var Thenmap = {
 		});
 
 		if ("undefined" === typeof($.qtip)) {
-			LazyLoad.js('//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js', function () {
+			LazyLoad.js('<?php
+			if ( $debugMode->get() ) {
+				echo "js/jquery.qtip.min.js";
+			} else {
+				echo "//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js";
+			} ?>', function () {
 				self.attachQtip();
 			});
 		} else {
@@ -565,7 +572,7 @@ var Thenmap = {
 	},
 	debug: function(mes) {
 		<?php
-		if ( $debugMode ) { ?>
+		if ( $debugMode->get() ) { ?>
 		console.log(mes + "\nIn function:"+arguments.callee.caller.name);
 		<?php } ?>
 	
