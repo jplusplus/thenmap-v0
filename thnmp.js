@@ -76,7 +76,7 @@ $cacheHash = md5($mapsVersion);
 $firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1946 ) );
 $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
 
-$lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2013 ) );
+$lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2014 ) );
 $lastYear->set( filter_input(INPUT_GET,'lYear',FILTER_SANITIZE_STRING) );
 
 $startingYear  = new Setting ( array ( 'type' => Setting::YEAR, "fallback" => 1965 ) );
