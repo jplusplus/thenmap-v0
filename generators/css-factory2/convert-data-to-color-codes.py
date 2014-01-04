@@ -1,12 +1,14 @@
 # coding=utf-8
 
 import csv
-import argparse
+import argparse, argcomplete
 import os.path
 import sys
 import brewer2mpl
 import pyssed
 import jenks
+from itertools import groupby    #for function most_common
+from operator  import itemgetter #for function most_common
 
 #Check if file exists
 def is_valid_file(parser, arg):
@@ -22,6 +24,26 @@ def is_number(s):
         return True
     except ValueError:
         return False
+        
+#Find the most common _numerical_ value, or False if most values are non numerical
+#From http://stackoverflow.com/questions/1518522/python-most-common-element-in-a-list
+def most_common(L):
+  # get an iterable of (item, iterable) pairs
+  SL = sorted((x, i) for i, x in enumerate(L))
+  # print 'SL:', SL
+  groups = groupby(SL, key=itemgetter(0))
+  # auxiliary function to get "quality" for an item
+  def _auxfun(g):
+    item, iterable = g
+    count = 0
+    min_index = len(L)
+    for _, where in iterable:
+      count += 1
+      min_index = min(min_index, where)
+    # print 'item %r, count %r, minind %r' % (item, count, min_index)
+    return count, -min_index
+  # pick the highest-count/earliest item
+  return max(groups, key=_auxfun)[0]
 
 # Add fill color to dict
 fillColors = {} # save all css rules here
@@ -33,7 +55,7 @@ def addFillColor(year,land,color):
 def addFillColorNoYear(land,color):
 	if color not in fillColors:
 		fillColors[color] = []
-	fillColors[color].append(".{1} > *".format(year, land))
+	fillColors[color].append(".%s > *" % land)
 	
 ################################################################################################333
 
@@ -52,6 +74,8 @@ parser.add_argument("-o", "--output", dest="outfile",
 #Color scheme
 parser.add_argument("-m", "--map", dest="colormap",
     help="Color map, see https://github.com/jiffyclub/brewer2mpl/wiki/Sequential", default='YlOrRd')
+
+argcomplete.autocomplete(parser)
 
 args = parser.parse_args()
 
@@ -112,26 +136,34 @@ try:
 			if firstRow:
 				firstRow = False
 			else:
-				#check if all values are the same
-				colvals = set()
+
+				colorrow = []
+				#Replace values with color codes
+				firstCol = True
 				for col in row:
-					if is_number(col):
-						colvals.add(col)
-				if len(colvals) == 0:
-					pass
-				elif len(colvals) == 1:
-					addFillColorNoYear(row[0],colvals[0]) # yearland,color
-				else:
-					c = 0
-					for col in row:
+					if firstCol:
+						firstCol = False
+					else:
 						if is_number(col):
 							for x in range(0, numberOfJenksBreaks-1):
 								if float(col) > float(jenksBreaks[x]):
 									code = colors[x]
-							addFillColor(headers[c] ,row[0],code) # year,land,color
-						c = c +1
-						
-		#https://pypi.python.org/pypi/colorbrewer
+							colorrow.append(code)
+						else:
+							colorrow.append(False)
+
+				#Set default color
+				defaultColorForNation = most_common(colorrow)
+				print defaultColorForNation
+				if defaultColorForNation is not False:
+					addFillColorNoYear(row[0],defaultColorForNation) # land,color
+					
+				#Set otger colors
+				i = 0
+				for c in colorrow:
+					i += 1
+					if (c is not False) and (c is not defaultColorForNation):
+						addFillColor(headers[i] ,row[0], c) # year,land,color
 
 except IOError:
     print ("Could not open input file")
