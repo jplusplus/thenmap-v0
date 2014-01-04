@@ -55,7 +55,7 @@ svg:not(:root) {
 
 /* Web font for icons */
 @font-face {
-	font-family: 'icons';
+	font-family: 'thenmap-icons';
 	src:url('../fonts/icomoon.eot');
 	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
 		url('../fonts/icomoon.woff') format('woff'),
@@ -183,12 +183,15 @@ svg#thenmap-map {
 	border:1px solid whitesmoke;
 }
 
-/*#thenmap-map-container.loading*/ .land {
+#thenmap-map-container.loading .land {
 	fill:#eee;
 	stroke:none;
 }
 
-#thenmap-map .land {
+/* .land 
+   ugly way of targeting .land paths with lowest possible specificity, to allow css to override us as easily as possible
+*/
+g > g > path {
 	fill:lightgray;
 	stroke:white;
 	stroke-width:1px;
@@ -235,7 +238,7 @@ svg g#background {
 .control {
 	-webkit-font-smoothing: antialiased;
 	-moz-osx-font-smoothing: grayscale;
-	font-family: "icons", sans-serif;
+	font-family: "thenmap-icons", sans-serif;
 	cursor: pointer;
 	background-color:#C00;
 	color: #fff;
