@@ -35,15 +35,15 @@ http://www.leowallentin.se/thenmap/demo.html
 For more control over the script, see alternative usage method below
 
 Five maps are currently avaiable, but more maps can easily be rendered. (A python script renders all maps automatically):
- * The world, Robinson projection:  http://www.leowallentin.se/thenmap?map=world-robinson
- * The world, Mollweide projection: http://www.leowallentin.se/thenmap/?map=world-mollweide
- * Europe, orthographic projection: http://www.leowallentin.se/thenmap/?map=europe-ortho
- * Europe, incl. Caucasus, Lambert conformal conic: http://www.leowallentin.se/thenmap/?map=europe-caucasus-lcc
- * Africa, Lambert Azimuthal Equal-Area Projection: http://www.leowallentin.se/thenmap/?map=africa-laea (oh yes, there is a border error there)
+ * The world, Robinson projection:  http://www.thenmap.net?map=world-robinson
+ * The world, Mollweide projection: http://www.thenmap.net?map=world-mollweide
+ * Europe, orthographic projection: http://www.thenmap.net?map=europe-ortho
+ * Europe, incl. Caucasus, Lambert conformal conic: http://www.thenmap.net?map=europe-caucasus-lcc
+ * Africa, Lambert Azimuthal Equal-Area Projection: http://www.thenmap.net?map=africa-laea
 
 Nation names are translated into 30 languages, thanks to the WikiData project. Swedish and English should be fully covered. English is used as a fallback language, when no translation is available. A better approach should be implemented.
- * Europe in French: http://www.leowallentin.se/thenmap/?map=europe&mlang=fr
- * The World in Hindi: http://www.leowallentin.se/thenmap/?map=world&mlang=hi
+ * Europe in French: http://www.thenmap.net?map=europe&mlang=fr
+ * The World in Hindi: http://www.thenmap.net?map=world&mlang=hi
 The languages are: sv,en,fi,fr,de,es,ru,it,nl,pl,zh,pt,ar,ja,fa,no,he,tr,da,uk,ca,id,hu,vi,ko,et,cs,hi,sr, and bg
 
 All parameters to the script:
@@ -91,21 +91,6 @@ The map has tooltip windows for each nation, that can contain additional data. B
 On the flipside:
  * Flags (the actual images from WikiMedia Commons, not the WikiData entry) can sometimes have more restrictive licenses. We should probably add an option to filter out CC0 and public domain images only.
  * We can only be as granular as WikiData. We will, in other words, not be able to display every flag, capital, etc, unless we create a local repository for such data
-
-Roadmap
--------
-Coming next
-* Support for older Internet Explorer versions (<= IE8), by serving vml files to those browsers
-* Lot's of bug fixes (e.g. hash pattern for disputed territories looking weird in many browsers)
-* Some territorial fixes
-* Better looking control panel
-* Better performance (it's currently quite sluggish in old smart phones)
-Coming later:
-* Border going back to 1920
-* More accurate flags and nation titles
-* More maps and projections
-* Shorter loading times
-* functions for plotting data on the map (other than just coloring it)
 
 Credits, copyright and licensing
 --------------------------------
