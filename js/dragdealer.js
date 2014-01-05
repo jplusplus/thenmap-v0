@@ -210,12 +210,17 @@ Dragdealer.prototype =
 		}
 	},
 	setBounds: function(){
+		var how = 100;
+		var wow = Math.min(this.wrapper.offsetWidth,1080);
+		/* FIXME offsetwidth blir fel i IE.  */
+
 		this.bounds.x0 = this.bounds.left;
-		this.bounds.x1 = this.wrapper.offsetWidth + this.bounds.right;
-		var ow = /*this.handle.offsetWidth*/ 100;
-		/* FIXME offsetwidth blir fel i IE */
-		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - 100;
-		this.bounds.xStep = 1 / (this.xPrecision || Math.max(this.wrapper.offsetWidth, 100));
+		this.bounds.x1 = wow + this.bounds.right;
+		
+		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - how;
+		this.bounds.xStep = 1 / (this.xPrecision || Math.max(wow, how));
+		console.log(wow);
+		
 	},
 	setSteps: function(){
 		if(this.steps > 1){
