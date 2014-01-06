@@ -38,7 +38,7 @@ $map->set( filter_input(INPUT_GET,"map",FILTER_SANITIZE_STRING) );
 /* Dates */
 $firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1946 ) );
 $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
-$lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2013 ) );
+$lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2014 ) );
 $lastYear->set( filter_input(INPUT_GET,"lYear",FILTER_SANITIZE_STRING) );
 $startingYear  = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1965 ) );
 $startingYear->set( filter_input(INPUT_GET,"sYear",FILTER_SANITIZE_STRING) );
@@ -106,6 +106,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	</article>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
-		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=227&debug=true"></script>
+		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;controls=true&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=232"></script>
 	</body>
 </html>
