@@ -219,7 +219,6 @@ Dragdealer.prototype =
 		
 		this.bounds.xRange = (this.bounds.x1 - this.bounds.x0) - how;
 		this.bounds.xStep = 1 / (this.xPrecision || Math.max(wow, how));
-		console.log(wow);
 		
 	},
 	setSteps: function(){
