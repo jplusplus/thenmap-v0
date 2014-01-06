@@ -73,7 +73,8 @@ parser.add_argument("-o", "--output", dest="outfile",
 
 #Color scheme
 parser.add_argument("-m", "--map", dest="colormap",
-    help="Color map, see https://github.com/jiffyclub/brewer2mpl/wiki/Sequential", default='YlOrRd')
+    help="Color map, see https://github.com/jiffyclub/brewer2mpl/wiki/Sequential", default='YlOrRd',
+    choices=('Blues','BuGn','BuPu','GnBu','Greens','Greys','OrRd','Oranges','PuBu','PuBuGn','PuRd','Purples','RdPu','Reds','YlGn','YlGnBu','YlOrBr','YlOrRd'))
 
 argcomplete.autocomplete(parser)
 
