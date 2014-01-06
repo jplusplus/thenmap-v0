@@ -112,7 +112,7 @@ ob_start();
 
 /* include dragdealer */
 echo (file_get_contents('js/dragdealer.js'));
-/* include croww browser console.log in debug mode */
+/* include cross browser console.log in debug mode */
 if ( $debugMode->get() ) {
 	echo (file_get_contents('js/consolelog.js'));
 }
@@ -165,7 +165,7 @@ var Thenmap = {
 		if (callback) {
 			this.callback = callback;
 		}
-		/* Check if we will be able to use textContent for updating text in dragdealer handle. IE<9 only understand innerText */
+		/* Check if we will be able to use textContent for updating text in dragdealer handle. IE<9 only understands innerText */
 		self.textPropName = this.section.textContent === undefined ? 'innerText' : 'textContent';
 		
 		/* Polluting the environment a bit here, for our own convenience. Sorry for that. */
@@ -180,7 +180,7 @@ var Thenmap = {
 			}
 		}
 
-		/* Create map container, if it do not already exist */
+		/* Create map container, if it does not already exist */
 		this.mapcontainer = document.getElementById('thenmap-map-container');
 		if ( !(this.mapcontainer) ) {
 			this.mapcontainer = document.createElement('div');
@@ -215,7 +215,13 @@ var Thenmap = {
 
 		/* LOAD SVG IMAGE */
 		/* Fetch file */
-		this.ajax.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) { //	equivalent of $.get("url", function(data) {
+		//this.ajax.get("<?php echo "$svgFile?v=$cacheHash"; ?>", function(data) { //	equivalent of $.get("url", function(data) {
+		var xhr = this.createCORSRequest('<?php echo "$svgFile?v=$cacheHash"; ?>');
+		if (!xhr) {
+			this.debug("No CORS support");
+		}
+		xhr.onload = function() {
+			var data = xhr.responseText;
 
 			// Extract the SVG tag from the reply
 			var tmp =  document.createElement('div');
@@ -251,7 +257,9 @@ var Thenmap = {
 						
 			self.loadJQueryAndQtip();
 
-		});//		}, 'xml');//END loading svg
+		};//		}, 'xml');//END loading svg
+		
+		xhr.send();
 
 		return this;
 	},
@@ -323,20 +331,18 @@ var Thenmap = {
 			i = this.paths[pid].length;
 			while(i-- && unknown){
 				if ( (this.paths[pid][i].f <= yy) && (yy <= this.paths[pid][i].t) ) {
-					this.paths[pid]["e"].style.visibility = "visible";
                     this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
-
+					this.paths[pid]["e"].style.visibility = "visible";
 					unknown = false;
-	    		}
-	    	}
-	    	if (unknown) {
+				}
+			}
+			if (unknown) {
 				if ("undefined" === typeof(this.paths[pid]["e"])) {
-					self.debug( "pid problem: "+pid+". This should never happen.");
+					self.debug( "pid "+pid+" has no corresponding path. This should never happen.");
 				} else {
 					this.paths[pid]["e"].style.visibility = "hidden";
 				}
-	    	}
-
+			}
 		}
 
 	},
@@ -440,14 +446,14 @@ var Thenmap = {
 	loadJQueryAndQtip: function() {
 		var self = this;
 		if ("undefined" === typeof(jQuery)) {
-			console.log("loading jQuery...");
+			self.debug("loading jQuery...");
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
 				echo "js/jquery.min.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js";
 			} ?>', function () {
-				console.log("done");
+				self.debug("done");
 				self.loadQtip();
 			});
 		} else {
@@ -532,39 +538,27 @@ var Thenmap = {
 			},
 			hide: {
 				fixed: true, // Let the user mouse into the tip
-				delay: 120 // Don't hide right away so that they can mouse into it
+				delay: 140 // So that users can mouse into tooltop
 			},
 			show: {
 		         solo: true
 			}
 		});
-
 	},
-	ajax: {
-		get: function(url, callback, queryString) {
-			var ids = ['MSXML2.XMLHTTP.3.0',
-					   'MSXML2.XMLHTTP',
-					   'Microsoft.XMLHTTP'],
-				xhr;
-
-			if (window.XMLHttpRequest) {
-				xhr = new XMLHttpRequest();
-			} else {
-				for (var i = 0; i < ids.length; i++) {
-					try {
-						xhr = new ActiveXObject(ids[i]);
-						break;
-					} catch(e) {}
-				}
-			}
-			xhr.onreadystatechange = function() {
-				if (xhr.readyState==4 && xhr.status==200) {
-					callback(xhr.responseText);
-				}
-			};
+	createCORSRequest: function(url) {
+		var xhr = new XMLHttpRequest();
+		if ("withCredentials" in xhr) {
+			// XHR for Chrome/Firefox/Opera/Safari.
 			xhr.open('GET', url, true);
-			xhr.send();
+		} else if (typeof XDomainRequest != "undefined") {
+			// XDomainRequest for IE.
+			xhr = new XDomainRequest();
+			xhr.open('GET', url);
+		} else {
+			// CORS not supported.
+			xhr = null;
 		}
+		return xhr;
 	},
 	svgSupported: function() {
 		return !! document.createElementNS &&
