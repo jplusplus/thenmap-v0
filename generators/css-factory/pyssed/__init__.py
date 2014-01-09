@@ -19,7 +19,7 @@ class style(object):
         return self._styles.iteritems()
 
     def append(self, other):
-        """Append syle 'other' to self."""
+        """Append style 'other' to self."""
         self._styles = self.__add__(other)._styles
 
     def __add__(self, other):
@@ -47,6 +47,22 @@ def generate(css, parent='', indent=4):
     stylenodes = []
     result = []
 
+	#split large selectors, see http://stackoverflow.com/questions/20828995/how-long-can-a-css-selector-be	
+	
+#    css2 = {}
+#    for name, value in css.iteritems():
+#        selectors = list(name.split(","))
+#        print value
+#        if (len(name) > 1300) or (len(selectors) > 100):
+#            chunks=[name[x:x+100] for x in xrange(0, len(name), 100)]
+#            for c in chunks:
+#            	css2[c] = value            
+#        else:
+ #           css2[name] = value
+#    css = css2
+#    	
+#    print css2
+    
     for name, value in css.iteritems():
         # If the sub node is a sub-style...
         if isinstance(value, dict) or isinstance(value, style):
@@ -76,6 +92,19 @@ def generate(css, parent='', indent=4):
         result.append('}')
         result.append('') # a newline
 
+    subnodes2 = []
+    #split large selectors, see http://stackoverflow.com/questions/20828995/how-long-can-a-css-selector-be	
+    for subnode in subnodes:
+        selectors = list(subnode[0].split(","))
+        if (len(subnode[0]) > 20000) or (len(selectors) > 1000):
+            chunks=[selectors[x:x+1000] for x in xrange(0, len(selectors), 1000)]
+            for c in chunks:
+            	string = ','.join(c)
+                subnodes2.append((string,subnode[1]))
+        else:
+            subnodes2.append((subnode[0],subnode[1]))
+    subnodes = subnodes2
+    
     for subnode in subnodes:
         result += generate(subnode[1],
                            parent=(parent.strip() + ' ' + subnode[0]).strip())
