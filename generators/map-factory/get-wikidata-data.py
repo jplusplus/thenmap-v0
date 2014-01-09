@@ -87,6 +87,8 @@ nations = {}
 properties = {}
 files = {}
 
+chunkSize = 48
+
 #Read dbf file, we will use this data a lot through out the process
 currentPath = os.path.dirname(os.path.realpath(__file__))
 dbffile     = currentPath + '/../shapes/thenshapes.dbf'
@@ -116,21 +118,20 @@ site = wikitools.Wiki("http://www.wikidata.org/w/api.php", settings.login.user, 
 site.login(settings.login.user,settings.login.password)
 print "Logged in?",
 print site.isLoggedIn()
-if site.isLoggedIn():
-	chunkSize = 48
-else:
-	#WikiData allows only 49 id's at a time for anonymous users (docs say 50). Split our array 
-	chunkSize = 48
 
 #Store qid's for second round of label lookups
 secondLookup = {}
-for pkey,pid in settings.entityProperties.items():
+for pkey,(pid,abbr) in settings.entityProperties.items():
 	secondLookup[pkey] = set()
-
+	
+#Store internal image id's
+imageIDs = {}
+fileId = 0
 #Store image names
 imagesFound = {}
-for pkey,pid in settings.imageProperties.items():
+for pkey,(pid,abbr) in settings.imageProperties.items():
 	imagesFound[pkey] = set()
+	imageIDs[pkey] = {}
 	
 languagesQueryString = '|'.join(settings.languages)
 
@@ -151,14 +152,14 @@ for c in chunks:
 			nation = {}
 
 			# Look for translations (labels)
-			nation["names"] = getLabelsFromEntity(e)
+			nation["n"] = getLabelsFromEntity(e)
 
 			#Lookfor properties
 			if "claims" in e:
 
 				# Look for entity properties
 				# These will be pointers to other WD enteties, from which we will get the names later 
-				for pkey,pid in settings.entityProperties.items():
+				for pkey,(pid,abbr) in settings.entityProperties.items():
 					if pid in e["claims"]:
 						vals = e["claims"][pid]
 						outPropList = []
@@ -172,8 +173,8 @@ for c in chunks:
 									outPropVal["qid"] = q.get()
 																		
 								if "qualifiers" in val:
-									outPropVal["start"] = getStartDate(val)
-									outPropVal["end"]   = getEndDate(val)
+									outPropVal["s"] = getStartDate(val)
+									outPropVal["e"]   = getEndDate(val)
 
 							
 								outPropList.append(outPropVal)
@@ -181,8 +182,8 @@ for c in chunks:
 						nation[pkey] = outPropList
 
 				# Look for image properties
-				# These will be text strings
-				for pkey,pid in settings.imageProperties.items():
+				# These will be represented with a numerical id
+				for pkey,(pid,abbr) in settings.imageProperties.items():
 					if pid in e["claims"]:
 						vals = e["claims"][pid]
 						outPropList = []
@@ -191,12 +192,14 @@ for c in chunks:
 								outPropVal = {}
 
 								if val["mainsnak"]["datavalue"]["type"] == "string":
-									outPropVal["file"] = val["mainsnak"]["datavalue"]["value"]
+									outPropVal["i"] = fileId
 									imagesFound[pkey].add(val["mainsnak"]["datavalue"]["value"])
+									imageIDs["File:"+val["mainsnak"]["datavalue"]["value"]] = fileId
+									fileId += 1
 																		
 								if "qualifiers" in val:
-									outPropVal["start"] = getStartDate(val)
-									outPropVal["end"]   = getEndDate(val)
+									outPropVal["s"] = getStartDate(val)
+									outPropVal["e"] = getEndDate(val)
 							
 								outPropList.append(outPropVal)
 								
@@ -232,11 +235,13 @@ for pkey, qids in secondLookup.items():
 				properties[pkey][qid] = names
 
 print "Writing property files...",
-for key,pid in settings.entityProperties.items():
+for key,(pid,abbr) in settings.entityProperties.items():
 	with open("data/"+key+".json", 'w') as outfile:
 		json.dump(properties[key], outfile)
 	print "done"
 
+#print "Image id's: ",
+#print imageIDs
 #Get path fragments for each flag
 print "Connecting to Wikimedia Commons..."
 site = wikitools.Wiki("http://commons.wikimedia.org/w/api.php", settings.login.user, settings.login.password)
@@ -266,18 +271,24 @@ for pid, imgset in imagesFound.items():
 		
 		for key,page in result["query"]["pages"].iteritems():
 			if "missing" in page:
-				pass
+				print "%s does not exist on Wikimedia Commons" % page["title"]
 			else:
 				if "imageinfo" in page:
 					urlinfo = {}
 					url = page["imageinfo"][0]["thumburl"]
 					m = re.compile('\/([a-f0-9]{1,2}\/[a-f0-9]{1,2})\/.*?(\.[a-zA-Z]{3,4})?(\.[a-zA-Z]{3,4})?$')
 					r = m.search(url)
-					urlinfo["filename"] = page["title"]
-					urlinfo["infix"] = r.group(1)
+					urlinfo["n"] = page["title"].replace("File:","",1).replace(" ","_")
+					urlinfo["i"] = r.group(1)
 					if r.group(3) is not None:
-						urlinfo["suffix"] = r.group(3)
-					files[page["title"]] = urlinfo
+						urlinfo["s"] = r.group(3)
+					if page["title"] in imageIDs:
+						files[str(imageIDs[page["title"]])] = urlinfo
+					else:
+						print "The file %s somehow got lost in the process" % page["title"]
+				else:
+					print "No 'imageinfo' found for image %s" % page["title"]
+
 print "Writing data/files.json...",
 with open("data/files.json", 'w') as outfile:
 	json.dump(files, outfile)
