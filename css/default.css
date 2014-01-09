@@ -197,6 +197,8 @@ g > g > path {
 	stroke-width:1px;
 }
 
+g.n {visibility:hidden}
+
 @media screen and (-webkit-min-device-pixel-ratio:0) {
 	.limit .land {
 		fill:url("#diagonalHatch") !important;
