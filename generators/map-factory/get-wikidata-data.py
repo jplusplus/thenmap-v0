@@ -282,6 +282,8 @@ for pid, imgset in imagesFound.items():
 					urlinfo["i"] = r.group(1)
 					if r.group(3) is not None:
 						urlinfo["s"] = r.group(3)
+					else:
+						urlinfo["s"] = "" #Need a value so that we can be lazy when putting this together in the js
 					if page["title"] in imageIDs:
 						files[str(imageIDs[page["title"]])] = urlinfo
 					else:
