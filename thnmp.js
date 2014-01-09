@@ -13,7 +13,11 @@ include_once('lib/Minifier.php');	/* JShrink minifyer */
 /* Paths */
 $staticUrl = '//static.thenmap.net';
 //$thenmapUrl = '//www.thenmap.net';
-$thenmapUrl = '//' . $_SERVER['HTTP_HOST'] . '/' . dirname($_SERVER['PHP_SELF']);
+$thenmapUrl = '//' . $_SERVER['HTTP_HOST'];
+$p = dirname($_SERVER['PHP_SELF']);
+if ( $p && ('/' !==  $p) ) {
+	$thenmapUrl .= "/$p";
+}
 
 /* Languages*/
 $languages = array( 'available'    => array ('sv','en','fi','fr','de','es','ru','it','nl','pl','zh','pt','ar','ja','fa','no','he','tr','da','uk','ca','id','hu','vi','ko','et','cs','hi','sr','bg'),
@@ -326,22 +330,16 @@ var Thenmap = {
 		for (var pid in this.paths) {
 
 			var unknown = true;
-
 			//Loop though nations, or until we found a nation that need this path
 			i = this.paths[pid].length;
 			while(i-- && unknown){
 				if ( (this.paths[pid][i].f <= yy) && (yy <= this.paths[pid][i].t) ) {
                     this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
-					this.paths[pid]["e"].style.visibility = "visible";
 					unknown = false;
 				}
 			}
 			if (unknown) {
-				if ("undefined" === typeof(this.paths[pid]["e"])) {
-					self.debug( "pid "+pid+" has no corresponding path. This should never happen.");
-				} else {
-					this.paths[pid]["e"].style.visibility = "hidden";
-				}
+				this.paths[pid]["e"].setAttribute("class", "n");
 			}
 		}
 
