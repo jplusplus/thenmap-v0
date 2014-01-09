@@ -15,11 +15,11 @@ import hashlib #md5 for svg paths, to find duplicates
 languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
 #mapType     = "world-mollweide"          #
-#mapType     = "world-robinson"           #
+mapType     = "world-robinson"           #
 #mapType     = "africa-laea"              #  
 #mapType     = "europe-caucasus-lcc"      #
 startDate   = "1945-01-01"               #
-endDate     = "2013-12-31"               #
+endDate     = "2014-12-31"               #
 ##########################################
 
 mapSettings = {
@@ -113,7 +113,7 @@ dbffile     = currentPath + '/../shapes/thenshapes.dbf'
 fileAfterKartograph  = currentPath + '/temp/' + mapType + '.svg'
 #output files
 svgFileName = outputDirectory + "/" + mapType + ".svg"
-flagsFileName = outputDirectory + "/" + mapType + "-flags.json"
+flagsFileName = outputDirectory + "/" + "flags.json"
 
 ####################################################
 # CLASSES AND FUNCTIONS
@@ -371,8 +371,8 @@ for rec in db:
 		nation["n"] = rec["NAME"]
 
 		#from/to
-		nation["f"] = rec["JSDATESTR"]
-		nation["t"] = rec["JEDATESTR"]
+		nation["s"] = rec["JSDATESTR"]
+		nation["e"] = rec["JEDATESTR"]
 
 		nation["c"] = rec["CLASSES"]
 
@@ -387,110 +387,17 @@ for rec in db:
 		#Add nation to json
 		nations[nationId.get()] = nation
 
-
 print "Found %d nations" % len(nations)
 print "Found %d wikidata codes" % len(wikidataCodes)
 
-wikidataTranslations = {}
-for l in languages:
-	wikidataTranslations[l] = {}
-wikidataFlags = {}
+#Create json objects:
+# One localized list of nations, where key is a path id
+# nXXX: {n:NAME, f:FLAGID, s:STARTDATE, e:ENDDATE, c:CLASSES}
 
-#WikiData allows only 49 id's at a time for anonymous users (docs say 50). Split our array 
-wikidataCodes = list(wikidataCodes)
-chunks=[wikidataCodes[x:x+48] for x in xrange(0, len(wikidataCodes), 48)]
-#Fetch datas
-for c in chunks:
-	print ("Getting %d items from Wikidata..." % len(c))
-	cQueryString = '|'.join(c)
-	languagesQueryString = '|'.join(languages)
-	url = "http://www.wikidata.org/w/api.php?action=wbgetentities&languages="+languagesQueryString+"&props=labels|claims&ids="+cQueryString+"&format=json"
-	req = urllib2.Request(url)
-	try:
-		response = urllib2.urlopen(req)
-		data = json.load(response)
+json_data=open('data/nations.json')
+wikidatajson = json.load(json_data)
 
-		#Get all nation names in all languages
-		for l in languages:
-			if "entities" in data:
-				for i,e in data["entities"].items():
-					#Look for translation
-					if "labels" in e:
-						if l in e["labels"]:
-							wikidataTranslations[l][i] = e["labels"][l]["value"]
-
-		#Get all nation flags
-		if "entities" in data:
-			for i,e in data["entities"].items():
-				if "claims" in e:
-					if "P41" in e["claims"]: #flag image
-						flag = e["claims"]["P41"][0]["mainsnak"]["datavalue"]["value"]
-						wikidataFlags[i] = flag
-					else:
-						print ("No flag found for %s" % i)
-		print "done"
-	except (ValueError,urllib2.URLError) as e:
-		print "failed, no internet connection?"
-		print e
-
-#More info on flag images
-print "Getting image paths for %d flags" % len(wikidataFlags)
-
-#create and chunk list of flags
-flags = {}
-wikidataFlagsList = wikidataFlags.values()
-chunks=[wikidataFlagsList[x:x+48] for x in xrange(0, len(wikidataFlagsList), 48)]
-#Get flag paths
-for c in chunks:
-	print "Asking Commons for %d flags" % len(c)
-	c2 = []
-	for f in c:
-		c2.append("File:"+f)
-	cQueryString = '|'.join(c2)
-	cQueryString = urllib.quote(cQueryString.encode("utf-8"))
-	url = "http://commons.wikimedia.org/w/api.php?action=query&titles="+cQueryString+"&prop=imageinfo&iiurlparam&iiurlwidth=80&iiprop=url&format=json"
-	req = urllib2.Request(url)
-	try:
-		response = urllib2.urlopen(req)
-		data = json.load(response)
-
-		if "pages" in data["query"]:
-			print "got %d images back " % len(data["query"]["pages"])
-			for k,p in data["query"]["pages"].iteritems():
-				if "title" in p:
-					title = p["title"]
-					if "imageinfo" in p:
-						imageinfo = p["imageinfo"][0]
-						if "thumburl" in imageinfo:
-							thumbUrl = imageinfo["thumburl"]
-							
-							m = re.compile('\/([a-f0-9]{1,2}\/[a-f0-9]{1,2})\/.*?(\.[a-zA-Z]{3,4})?(\.[a-zA-Z]{3,4})?$')
-							r = m.search(thumbUrl)
-
-							for qid, flag in wikidataFlags.iteritems():
-								if ("File:"+flag) == title:
-									title2 = flag.replace(" ","_")
-									infix = r.group(1)
-									suffix = ""
-									if r.group(3) is not None:
-										suffix = r.group(3)
-									flags[qid]={"n": title2, "i": infix, "s": suffix}
-
-		else:
-			print "Empty response from Commons, you should probably run this script again"
-	except (ValueError,urllib2.URLError) as e:
-		print "failed, no internet connection?"
-		print e
-
-	print "done"
-
-#print flags
-#flag images
-print ("Writing flags file"),
-with open(flagsFileName, 'w') as outfile:
-	json.dump(flags, outfile)
-print "done"
-
+flagIdsInMap = set()
 
 #Nation names for each language
 i18nNations = {}
@@ -515,8 +422,19 @@ for l in languages:
 			qid = nation["q"]
 			if nation["n"] in localTranslations:
 				nation["n"] = localTranslations[nation["n"]].decode('UTF-8') #'ISO-8859-1')
-			elif qid in wikidataTranslations[l]:
-				nation["n"] = wikidataTranslations[l][qid]
+			elif qid in wikidatajson:
+				nation["n"] = wikidatajson[qid]["n"][l]
+			else:
+				print "Failed to translate %s" % nation["n"]
+
+			if qid in wikidatajson:
+				if ("flag_image" in wikidatajson[qid]) and (wikidatajson[qid]["flag_image"] is not ""):
+					nation["f"] = wikidatajson[qid]["flag_image"]
+					for f in wikidatajson[qid]["flag_image"]:
+						flagIdsInMap.add(f["i"])
+
+				if "capital" in wikidatajson[qid]:
+					nation["h"] = wikidatajson[qid]["capital"]
 
 		i18nNations[l][k] = nation
 
@@ -538,6 +456,32 @@ for l in languages:
 		json.dump(i18nPaths[l], outfile)
 print "done"
 
+#
+# One list of flags
+# XX: {i:INFIX, s:SUFFIX, n:FILENAME}
+#
+
+i = 0
+json_data=open('data/files.json')
+filejson = json.load(json_data)
+
+flags = {}
+
+#print flagIdsInMap
+#print filejson
+
+for fileid,pathdata in filejson.items():
+#	print type(fileid),
+#	print fileid,
+	if int(fileid) in flagIdsInMap:
+		flags[fileid] = pathdata
+	
+print flags
+#flag images
+print ("Writing flags file"),
+with open(flagsFileName, 'w') as outfile:
+	json.dump(flags, outfile)
+print "done"
 
 # Projection best practices from
 # http://www.georeference.org/doc/guide_to_selecting_map_projections.htm
