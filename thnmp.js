@@ -135,7 +135,7 @@ var Thenmap = {
 		}
 	?>,
 	flags: <?php
-		$file = 'maps/' . $map->get(). '/' . $map->get() . '-flags.json';
+		$file = 'maps/' . $map->get(). '/flags.json';
 		if ( $c = file_get_contents($file) ) {
 			echo ($c);
 		} else {
@@ -333,8 +333,8 @@ var Thenmap = {
 			//Loop though nations, or until we found a nation that need this path
 			i = this.paths[pid].length;
 			while(i-- && unknown){
-				if ( (this.paths[pid][i].f <= yy) && (yy <= this.paths[pid][i].t) ) {
-                    this.paths[pid]["e"].setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
+				if ( (this.paths[pid][i].s <= yy) && (yy <= this.paths[pid][i].e) ) {
+                    this.paths[pid].e.setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
 					unknown = false;
 				}
 			}
@@ -502,15 +502,31 @@ var Thenmap = {
 			content: {
 				text: function(event, api) {
 					pid = api.target[0].id;
-					i = self.paths[pid].length;
+					/* Loop through all nations attached to this path */
+					var i = self.paths[pid].length;
 					while(i--){
 						var yy = self.currentYear+"-<?php echo $dateOffset->get(); ?>";
-						if ( (self.paths[pid][i].f <= yy) && (yy <= self.paths[pid][i].t) ) {
+						if ( (self.paths[pid][i].s <= yy) && (yy <= self.paths[pid][i].e) ) {
 							var s = "<h3>"+self.paths[pid][i].n+"</h3>";
-							var q;
-							if ( q = self.paths[pid][i].q ) {
-								if (self.flags[q]) {
-									s += '<a href="//commons.wikimedia.org/wiki/File:'+self.flags[q].n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+self.flags[q].i+'/'+self.flags[q].n+'/80px-'+self.flags[q].n+self.flags[q].s+'"/></a>';
+							/* Loop through flags */
+							if (self.paths[pid][i].f !== undefined) {
+								var j = self.paths[pid][i].f.length;
+								while(j--){
+									var sy = self.paths[pid][i].f[j].s;
+									if  (sy === undefined) {
+										sy = self.firstYear+'-01-01';
+									}
+									var ey = self.paths[pid][i].f[j].e;
+									if  (ey === undefined) {
+										ey = self.lastYear+'-12-31';
+									}
+									if ( ( sy <= yy) && (yy <= ey ) ) {
+										var f = self.paths[pid][i].f[j].i;
+										/* Look up this flag id in flag dict */
+										if (self.flags[f] !== undefined) {
+											s += '<a href="//commons.wikimedia.org/wiki/File:'+self.flags[f].n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+self.flags[f].i+'/'+self.flags[f].n+'/80px-'+self.flags[f].n+self.flags[f].s+'"/></a>';
+										}
+									}
 								}
 							}
 							if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
