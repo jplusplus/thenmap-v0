@@ -86,8 +86,9 @@ svg:not(:root) {
 	max-width: 280px;
 	min-width: 50px;
 	
-	font-size: 10.5px;
-	line-height: 12px;
+/*/	font-size: 10.5px;
+/	line-height: 12px;*/
+	font-size: .85em;
 
 	direction: ltr;
 
@@ -97,11 +98,22 @@ svg:not(:root) {
 
 .qtip img.flag {
 	float:	right;
+	margin: .2em;
+	border: 1px solid #f5f5f5;
 }
 
 .qtip h3 {
 	font-size: 1.2em;
 	margin-top:0;
+}
+
+.qtip .currentYear {
+	font-size: .6em;
+}
+
+.qtip .credit {
+	font-size: small;
+	font-style:italic;
 }
 
 .qtip-content{
