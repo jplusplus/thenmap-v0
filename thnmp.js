@@ -6,7 +6,6 @@ header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");
 
 /* LIBRARIES */
 require_once('lib/setting.php');	/* 	 for handling all settings */
-require_once('lib/light-i18n.php');	/* i18n for controls */
 include_once('lib/Minifier.php');	/* JShrink minifyer */
 
 /* SETTINGS */
@@ -58,7 +57,8 @@ $debugMode->set( filter_input(INPUT_GET,"debug",FILTER_SANITIZE_STRING) /*|| "lo
 /* Interface language */
 $interfaceLanguage = new Setting( $languages );
 $interfaceLanguage->set( filter_input(INPUT_GET,"lang",FILTER_SANITIZE_STRING) );
-$_SESSION['lang'] = $interfaceLanguage->get();
+//$_SESSION['lang'] = $interfaceLanguage->get();
+require_once('lib/light-i18n.php');	/* i18n for controls */
 
 /* Map language */ 
 $mapLanguage = new Setting( $languages );
@@ -104,6 +104,15 @@ if ($startingYear > $lastYear ) {
 /* Data sets */
 $dataCss = new Setting ( array ( "type" => Setting::STRING ) );
 $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
+
+/* Local data file */
+$dataJson = new Setting ( array ( "type" => Setting::STRING ) );
+$dataJson->set( filter_input(INPUT_GET,"data",FILTER_SANITIZE_STRING) );
+
+/* Local data file */
+$dataUnit = new Setting ( array ( "type" => Setting::STRING ) );
+$dataUnit->set( filter_input(INPUT_GET,"dataUnit",FILTER_SANITIZE_STRING) );
+
 
 /***********************************************************************************************/
 /* Start buffer */
@@ -258,7 +267,8 @@ var Thenmap = {
 
 			self.mapcontainer.className = "";
 			self.initTimeline('thenmap-slider');
-						
+			
+			self.qtip.parent = self; // so that qtip functions can reference the thenmap object
 			self.loadJQueryAndQtip();
 
 		};//		}, 'xml');//END loading svg
@@ -332,6 +342,8 @@ var Thenmap = {
 			var unknown = true;
 			//Loop though nations, or until we found a nation that need this path
 			i = this.paths[pid].length;
+//			console.log(i);
+//			this.debug(console.log(this.paths[pid]));
 			while(i-- && unknown){
 				if ( (this.paths[pid][i].s <= yy) && (yy <= this.paths[pid][i].e) ) {
                     this.paths[pid].e.setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
@@ -339,7 +351,7 @@ var Thenmap = {
 				}
 			}
 			if (unknown) {
-				this.paths[pid]["e"].setAttribute("class", "n");
+				this.paths[pid].e.setAttribute("class", "n");
 			}
 		}
 
@@ -385,13 +397,14 @@ var Thenmap = {
 					self.callback(self.currentYear);
 				}
 			},
-			callback: function(x) {
+//			callback: function(x) {
+//				console.log("BC");
 			//Called at the end, but then anomationCallback will already have been called
 //				self.printMap();
 //				if (self.callback) {
 //					self.callback(self.currentYear);
 //				}
-			}
+//				}
 		});
 	},
 	buildControlbar: function() {	/* CREATE HTML MARKUP */	
@@ -447,7 +460,7 @@ var Thenmap = {
 			self.debug("loading jQuery...");
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
-				echo "js/jquery.min.js";
+				echo "$thenmapUrl/js/jquery.min.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js";
 			} ?>', function () {
@@ -484,80 +497,168 @@ var Thenmap = {
 		if ("undefined" === typeof($.qtip)) {
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
-				echo "js/jquery.qtip.min.js";
+				echo "$thenmapUrl/js/jquery.qtip.min.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js";
 			} ?>', function () {
-				self.attachQtip();
+				self.qtip.attachQtip();
 			});
 		} else {
-			self.attachQtip();
+			self.qtip.attachQtip();
 		}
-	},
-	attachQtip: function() {
-		var	nations = $(this.svg).find("g.nations > *");
-		var self = this;
-		$(nations).qtip({ 
-			prerender: false,
-			content: {
-				text: function(event, api) {
-					pid = api.target[0].id;
-					/* Loop through all nations attached to this path */
-					var i = self.paths[pid].length;
-					while(i--){
-						var yy = self.currentYear+"-<?php echo $dateOffset->get(); ?>";
-						if ( (self.paths[pid][i].s <= yy) && (yy <= self.paths[pid][i].e) ) {
-							var s = "<h3>"+self.paths[pid][i].n+"</h3>";
-							/* Loop through flags */
-							if (self.paths[pid][i].f !== undefined) {
-								var j = self.paths[pid][i].f.length;
-								while(j--){
-									var sy = self.paths[pid][i].f[j].s;
-									if  (sy === undefined) {
-										sy = self.firstYear+'-01-01';
-									}
-									var ey = self.paths[pid][i].f[j].e;
-									if  (ey === undefined) {
-										ey = self.lastYear+'-12-31';
-									}
-									if ( ( sy <= yy) && (yy <= ey ) ) {
-										var f = self.paths[pid][i].f[j].i;
-										/* Look up this flag id in flag dict */
-										if (self.flags[f] !== undefined) {
-											s += '<a href="//commons.wikimedia.org/wiki/File:'+self.flags[f].n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+self.flags[f].i+'/'+self.flags[f].n+'/80px-'+self.flags[f].n+self.flags[f].s+'"/></a>';
-										}
-									}
-								}
-							}
-							if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
-								s += '<p>'+nationDescriptions[q]+'</p>';
-							}
-							return s;
-						}
-					}
-
-				}
-			},
-			position: {
-				target: 'mouse', // Use the mouse position as the position origin
-				adjust: {
-					mouse: false, //Follow the mouse?
-					x: -40,
-					y: 15
-				},
-				corner: {
-					tooltip: 'bottomMiddle'
-				},
-				effect: false,
-			},
-			hide: {
-				fixed: true, // Let the user mouse into the tip
-				delay: 140 // So that users can mouse into tooltop
-			},
-			show: {
-		         solo: true
-			}
+		/* load data local json */
+		<?php
+		if ($str = $dataJson->get() ) { ?>
+		$.getJSON("<?php echo($str); ?>", function( data ) {
+			self.qtip.dataJson = data;
+//			console.log(self.qtip.dataJson);
 		});
+		
+		<?php } ?>
+		
+	},
+	qtip: {
+		/* Loop through an array of WikiData entities, to find the current one(s) */
+		findCurrentWDItem: function(arr, key, callback) {
+	
+			var yy = this.currentYear+"-<?php echo $dateOffset->get(); ?>";
+			var j = arr.length;
+			var matches = [];
+			while(j--){
+				var sy = arr[j].s;
+				if  (sy === undefined || sy === "") {
+					sy = this.firstYear+'-01-01';
+				}
+				var ey = arr[j].e;
+				if  (ey === undefined || ey === "") {
+					ey = this.lastYear+'-12-31';
+				}
+				if ( ( sy <= yy) && (yy <= ey ) ) {
+	//				matches.push(arr[i][key]);
+	//console.log("match vid: "+j);
+	//console.log("värde: "+arr[j]);
+					if (arr[j][key]) {
+						matches.push(arr[j][key]);
+					}
+				}
+	//			console.log(matches);
+			}
+
+			callback && callback.call(this, matches);
+		},
+		makeList: function(list) {
+			list = list.join("<?php echo(L::qtip_listseparator); ?>");
+			return list;
+		},
+		printListItem: function(SingularLabel, PluralLabel, items) {
+			s = '';
+			if (items.length){
+				s += '<dt>';
+				if (items.length > 1) {
+					s += PluralLabel;
+				} else {
+					s += SingularLabel;
+				}
+				s += '</dt><dd>'+this.makeList(items)+'</dd>';
+			}
+			return s;
+		},
+		attachQtip: function() {
+			var self = this;
+			var	nations = $(self.parent.svg).find("g.nations > *");
+
+			$(nations).qtip({ 
+				prerender: false,
+				content: {
+					text: function(event, api) {
+						pid = api.target[0].id;
+						/* Loop through all nations attached to this path */
+						var p = self.parent.paths[pid];
+						var i = p.length;
+						while(i--){
+							var yy = self.parent.currentYear+"-<?php echo $dateOffset->get(); ?>";
+							if ( (p[i].s <= yy) && (yy <= p[i].e) ) {
+								var s = '';
+								/* Header: Nation name, current year and type of regime*/
+								s += "<header><h3>"+p[i].n+' <span class="currentYear">'+self.parent.currentYear+"</span></h3>";
+								/* find current flag */
+								if (p[i].f !== undefined) {
+									self.findCurrentWDItem(p[i].f, "i", function(flag) {
+										/* Look up this flag id in flag dict */
+										if (self.parent.flags[flag] !== undefined) {
+											f = self.parent.flags[flag];
+											s += '<a href="//commons.wikimedia.org/wiki/File:'+f.n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+f.i+'/'+f.n+'/80px-'+f.n+f.s+'"/></a>';
+										}
+									});
+								}
+								/* Find current governement */
+								if (p[i].g !== undefined) {
+									self.findCurrentWDItem(p[i].g, "n", function(gov) {
+										if (gov.length) {
+											s += '<p>'+gov+'</p>';
+										}
+									});
+								}
+								s+="</header>";
+								s+="<dl>";
+								/* Find current capital */
+								if (p[i].h !== undefined) {
+									self.findCurrentWDItem(p[i].h, "n", function(capital) {
+										s += self.printListItem("<?php echo(L::qtip_capital); ?>","<?php echo(L::qtip_capitals); ?>", capital);
+									});
+								}
+								/* Find current currency */
+								if (p[i].u !== undefined) {
+									self.findCurrentWDItem(p[i].u, "n", function(curr) {
+										s += self.printListItem("<?php echo(L::qtip_currency); ?>","<?php echo(L::qtip_currencies); ?>", curr);
+									});
+								}
+								s+="</dl>";
+								/* do we have a data json? */
+								if (self.dataJson !== undefined) {
+									/*leta efter matchande klasser */
+									$(self.dataJson).each(function(row) {
+										var classStr = p[i].c;
+										$(classStr.split(" ")).each(function(n, c) {
+											if (self.dataJson[c] !== undefined) {
+												if (self.dataJson[c][self.parent.currentYear]) {
+													s += "<hr style='clear:both'>"+self.dataJson[c][self.parent.currentYear]+"&nbsp;<?php echo($dataUnit->get()); ?>";
+												}
+											}
+										});
+									});
+								}
+	//							if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
+	//								s += '<p>'+nationDescriptions[q]+'</p>';
+	//							}
+	//							s += '<p class="credit"><?php echo(L::qtip_wikidatacred); ?></p>'
+								return s;
+							}
+						}
+
+					}
+				},
+				position: {
+					target: 'mouse', // Use the mouse position as the position origin
+					adjust: {
+						mouse: false, //Follow the mouse?
+						x: -40,
+						y: 15
+					},
+					corner: {
+						tooltip: 'bottomMiddle'
+					},
+					effect: false,
+				},
+				hide: {
+					fixed: true, // Let the user mouse into the tip
+					delay: 140 // So that users can mouse into tooltop
+				},
+				show: {
+				     solo: true
+				}
+			});
+		}
 	},
 	createCORSRequest: function(url) {
 		var xhr = new XMLHttpRequest();
