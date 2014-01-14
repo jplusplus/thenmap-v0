@@ -99,7 +99,7 @@ Dragdealer.prototype =
 		this.speed = this.getOption('speed', 10) / 100;
 		this.xPrecision = this.getOption('xPrecision', 0);
 		
-		this.callback = options.callback || null;
+//		this.callback = options.callback || null;
 		this.animationCallback = options.animationCallback || null;
 		
 		this.bounds = {
@@ -369,7 +369,7 @@ Dragdealer.prototype =
 	result: function()
 	{
 //		if(typeof(this.callback) == 'function')	{
-			this.callback(this.value.target);
+//			this.callback(this.value.target);
 //		}
 		if(typeof(this.interval) == 'number'){
 			clearInterval(this.interval);
