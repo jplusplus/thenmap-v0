@@ -53,7 +53,7 @@ def getLabelsFromEntity(e):
 	if "labels" in e:
 		for l in settings.languages:
 			if l in e["labels"]:
-				names[l] = e["labels"][l]["value"]
+				names[l] = removeDisambig(e["labels"][l]["value"])
 			else:
 				names[l] = ''
 	else:
@@ -77,6 +77,15 @@ def getEndDate(val):
 			date = getDateFromWD(val["qualifiers"]["P582"][0]["datavalue"]["value"])
 	return date
 
+#Wikipedia disambigation patterns. 
+disambigPatterns = ['(.+)[\（\(].+[\)\）]', '(.+)[\,\、].+']
+def removeDisambig(t):
+	for p in disambigPatterns:
+		m = re.compile(p)
+		r = m.search(t)
+		if r is not None:
+			t = r.group(1)
+	return t
 ###########################################################################################################################
 ###########################################################################################################################
 # START PROGRAM ###########################################################################################################
@@ -87,7 +96,7 @@ nations = {}
 properties = {}
 files = {}
 
-chunkSize = 48
+chunkSize = 45
 
 #Read dbf file, we will use this data a lot through out the process
 currentPath = os.path.dirname(os.path.realpath(__file__))
@@ -249,10 +258,10 @@ site.login(settings.login.user,settings.login.password)
 print "Logged in?",
 print site.isLoggedIn()
 
-if site.isLoggedIn():
-	chunkSize = 48
-else:
-	chunkSize = 48
+#if site.isLoggedIn():
+#	chunkSize = 45
+#else:
+#	chunkSize = 45
 
 for pid, imgset in imagesFound.items():
 
