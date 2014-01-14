@@ -10,16 +10,15 @@ from dbfpy import dbf
 import re, urlparse #URI-encoding
 import hashlib #md5 for svg paths, to find duplicates 
 
+import settings
+
 ##########################################
 #          SETTINGS                      #
-languages   = ["sv","en","fi","fr","de","es","ru","it","nl","pl","zh","pt","ar","ja","fa","no","he","tr","da","uk","ca","id","hu","vi","ko","et","cs","hi","sr","bg"] #
 mapType     = "europe-ortho"             #
 #mapType     = "world-mollweide"          #
 mapType     = "world-robinson"           #
 #mapType     = "africa-laea"              #  
 #mapType     = "europe-caucasus-lcc"      #
-startDate   = "1945-01-01"               #
-endDate     = "2014-12-31"               #
 ##########################################
 
 mapSettings = {
@@ -122,7 +121,7 @@ flagsFileName = outputDirectory + "/" + "flags.json"
 # Filter for nations to include when generating map
 def nationFilter(record):
 	#Only include nations within date bounds
-	ok = (record['JSDATESTR'] <= endDate) and (record['JEDATESTR'] >= startDate)
+	ok = (record['JSDATESTR'] <= settings.endDate) and (record['JEDATESTR'] >= settings.startDate)
 	
 	#Only include nations of a certain area, if that setting is used
 	if "hide" in mapSettings[mapType]:
@@ -397,11 +396,16 @@ print "Found %d wikidata codes" % len(wikidataCodes)
 json_data=open('data/nations.json')
 wikidatajson = json.load(json_data)
 
+wikidataPropjson = {}
+for propName,(qid,propAbbr) in settings.entityProperties.items():
+	json_data=open('data/'+propName+'.json')
+	wikidataPropjson[propName] = json.load(json_data)
+
 flagIdsInMap = set()
 
-#Nation names for each language
+#Nation names and properties for each language
 i18nNations = {}
-for l in languages:
+for l in settings.languages:
 	#Open file with local translation, if it exists, for fallback
 	#Format:
 	# internalNationName, translation
@@ -427,21 +431,37 @@ for l in languages:
 			else:
 				print "Failed to translate %s" % nation["n"]
 
+			# Get properties 
 			if qid in wikidatajson:
+				#Get flag (image) property #TODO get all image props
 				if ("flag_image" in wikidatajson[qid]) and (wikidatajson[qid]["flag_image"] is not ""):
 					nation["f"] = wikidatajson[qid]["flag_image"]
 					for f in wikidatajson[qid]["flag_image"]:
 						flagIdsInMap.add(f["i"])
 
-				if "capital" in wikidatajson[qid]:
-					nation["h"] = wikidatajson[qid]["capital"]
+				#Get all entity properties
+				for propName, (pid,propAbbr) in settings.entityProperties.items():
+					if propName in wikidatajson[qid]:
+						print "wikidatajson: for %s in %s", (propName,qid)
+						print wikidatajson[qid][propName]
+						outitems = []
+						for item in wikidatajson[qid][propName]:
+							if "qid" in item:
+								#s/e in wikidatajson
+								outitem = item
+								#localized name from prop file
+								outitem["n"] = wikidataPropjson[propName][item["qid"]][l]
+								#qid no longer needed, we have all data we need contained
+								del outitem["qid"]
+								outitems.append(outitem)
+							nation[propAbbr] = outitems
 
 		i18nNations[l][k] = nation
 
 #Recreate nation list as path list
 # path > [nation]
 i18nPaths = {}
-for l in languages:
+for l in settings.languages:
 	i18nPaths[l] = {}
 	for pid,nlist in dictOfNationsInPaths.iteritems():
 		i18nPaths[l]["n"+pid] = []
@@ -449,8 +469,8 @@ for l in languages:
 			if nid in i18nNations[l]:
 				i18nPaths[l]["n"+pid].append(i18nNations[l][nid].copy())
 
-print ("Writing nation files for %d languages..." % len(languages)),
-for l in languages:
+print ("Writing nation files for %d languages..." % len(settings.languages)),
+for l in settings.languages:
 	languageFileName = outputDirectory + "/" + mapType + "-" + l + ".json"
 	with open(languageFileName, 'w') as outfile:
 		json.dump(i18nPaths[l], outfile)
@@ -476,7 +496,7 @@ for fileid,pathdata in filejson.items():
 	if int(fileid) in flagIdsInMap:
 		flags[fileid] = pathdata
 	
-print flags
+#print flags
 #flag images
 print ("Writing flags file"),
 with open(flagsFileName, 'w') as outfile:
