@@ -460,7 +460,8 @@ var Thenmap = {
 			self.debug("loading jQuery...");
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
-				echo "$thenmapUrl/js/jquery.min.js";
+//				echo "$thenmapUrl/js/jquery.min.js";
+				echo "$thenmapUrl/js/jquery-1.8.3.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js";
 			} ?>', function () {
@@ -511,6 +512,15 @@ var Thenmap = {
 		if ($str = $dataJson->get() ) { ?>
 		$.getJSON("<?php echo($str); ?>", function( data ) {
 			self.qtip.dataJson = data;
+			/* Local data is added to tooltips as plain text and sparklines */
+			LazyLoad.js('<?php
+			if ( $debugMode->get() ) {
+				echo "$thenmapUrl/js/jquery.sparkline.js";
+			} else {
+				echo "//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js";
+			} ?>', function () {
+				$(".sparkline").sparkline([1,2,3,6,4]);
+			});
 //			console.log(self.qtip.dataJson);
 		});
 		
@@ -595,7 +605,7 @@ var Thenmap = {
 								if (p[i].g !== undefined) {
 									self.findCurrentWDItem(p[i].g, "n", function(gov) {
 										if (gov.length) {
-											s += '<p>'+gov+'</p>';
+											s += '<p>'+gov.join(", ")+'</p>';
 										}
 									});
 								}
@@ -621,9 +631,23 @@ var Thenmap = {
 										var classStr = p[i].c;
 										$(classStr.split(" ")).each(function(n, c) {
 											if (self.dataJson[c] !== undefined) {
-												if (self.dataJson[c][self.parent.currentYear]) {
-													s += "<hr style='clear:both'>"+self.dataJson[c][self.parent.currentYear]+"&nbsp;<?php echo($dataUnit->get()); ?>";
+												//FIXME ersätt med en array; Vi vet ju vilka år det rör sig om, + kompatibilitet m sparkline
+												arrIndex = self.parent.currentYear - self.parent.firstYear;
+												if (self.dataJson[c][arrIndex]) {
+													s += "<hr style='clear:both' /><p>"+self.dataJson[c][arrIndex]+"&nbsp;<?php echo($dataUnit->get()); ?><span class='sparkline'></span></p>";
 												}
+												/* Can we know when this element is ready? */
+												setTimeout(function(){
+													$(api.tooltip[0]).find(".sparkline").sparkline(
+																							self.dataJson[c], {
+																							barColor: "black",
+																							zeroColor: "",
+																							fillColor: "",
+																							disableTooltips: true,
+																							type: "bar",
+																							chartRangeMin:0
+																							});
+												}, 70);
 											}
 										});
 									});
@@ -632,6 +656,7 @@ var Thenmap = {
 	//								s += '<p>'+nationDescriptions[q]+'</p>';
 	//							}
 	//							s += '<p class="credit"><?php echo(L::qtip_wikidatacred); ?></p>'
+
 								return s;
 							}
 						}
@@ -656,6 +681,18 @@ var Thenmap = {
 				},
 				show: {
 				     solo: true
+				},
+				events: {
+					/* Run before tooltip is created */
+					show: function(event, tt) {
+						setTimeout(function(){
+//							$(".sparkline").sparkline();
+						}, 100);
+					}
+					/* Run before tooltip is created */
+//					show: function(event, tt) {
+//						$(".sparkline").sparkline();
+//					}
 				}
 			});
 		}
@@ -728,6 +765,7 @@ var Thenmap = {
 
 <?php
 /* Minify and send content */
+
 if ( $debugMode->get() ) {
 	echo('console.log("Running in debug mode");');
 	echo("//".$debugMode->get());
