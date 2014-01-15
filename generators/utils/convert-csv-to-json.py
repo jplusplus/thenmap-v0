@@ -30,7 +30,7 @@ def is_number(s):
         return False
         
 def doRounding(s):
-	return str(round(float(s)))#[:-2]
+	return str(round(float(s)))[:-2]
 
 
 #Check if values are years
@@ -99,18 +99,18 @@ try:
 					headers.append(col)
 			else:
 				currentNation = row[indataColumn]
-				outdata[currentNation] = {}
+				outdata[currentNation] = []
 				i = 0
 				for col in row:
 					currentHeader = headers[i]
 					if isYear(currentHeader):
 						if is_number(col):
 							if (args.decimals > -1):
-								outdata[currentNation][currentHeader] = doRounding(col)
+								outdata[currentNation].append(doRounding(col))
 							else:
-								outdata[currentNation][currentHeader] = col
+								outdata[currentNation].append(col)
 						else:
-							outdata[currentNation][currentHeader] = ''
+							outdata[currentNation].append('')
 					i += 1
     
 except IOError:
