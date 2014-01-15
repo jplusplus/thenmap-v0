@@ -460,8 +460,7 @@ var Thenmap = {
 			self.debug("loading jQuery...");
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
-//				echo "$thenmapUrl/js/jquery.min.js";
-				echo "$thenmapUrl/js/jquery-1.8.3.js";
+				echo "$thenmapUrl/js/jquery.min.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery/1.10.2/jquery.min.js";
 			} ?>', function () {
@@ -631,9 +630,8 @@ var Thenmap = {
 										var classStr = p[i].c;
 										$(classStr.split(" ")).each(function(n, c) {
 											if (self.dataJson[c] !== undefined) {
-												//FIXME ersätt med en array; Vi vet ju vilka år det rör sig om, + kompatibilitet m sparkline
 												arrIndex = self.parent.currentYear - self.parent.firstYear;
-												if (self.dataJson[c][arrIndex]) {
+												if (self.dataJson[c]) {
 													s += "<hr style='clear:both' /><p>"+self.dataJson[c][arrIndex]+"&nbsp;<?php echo($dataUnit->get()); ?><span class='sparkline'></span></p>";
 												}
 												/* Can we know when this element is ready? */
@@ -681,19 +679,16 @@ var Thenmap = {
 				},
 				show: {
 				     solo: true
-				},
-				events: {
+				}
+//				events: {
 					/* Run before tooltip is created */
-					show: function(event, tt) {
-						setTimeout(function(){
-//							$(".sparkline").sparkline();
-						}, 100);
-					}
+//					show: function(event, tt) {
+//					}
 					/* Run before tooltip is created */
 //					show: function(event, tt) {
 //						$(".sparkline").sparkline();
 //					}
-				}
+//				}
 			});
 		}
 	},
