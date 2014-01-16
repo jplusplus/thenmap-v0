@@ -29,8 +29,11 @@ def is_number(s):
     except ValueError:
         return False
         
-def doRounding(s):
-	return str(round(float(s)))[:-2]
+def doRounding(s,d):
+	if d > 0:
+		return round(float(s),d)
+	else:
+		return int(str(round(float(s),d))[:-2])
 
 
 #Check if values are years
@@ -106,11 +109,11 @@ try:
 					if isYear(currentHeader):
 						if is_number(col):
 							if (args.decimals > -1):
-								outdata[currentNation].append(doRounding(col))
+								outdata[currentNation].append(doRounding(col,args.decimals))
 							else:
 								outdata[currentNation].append(col)
 						else:
-							outdata[currentNation].append('')
+							outdata[currentNation].append(None)
 					i += 1
     
 except IOError:
