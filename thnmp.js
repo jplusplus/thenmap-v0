@@ -1,4 +1,5 @@
 <?php
+/* NB: JQuery is only loaded atfer the map is fully rendered and functional, and used for tooltips and other decorations.  The map shuld be fuly functional without it. We want to keep the initial loading, as well as the map updating mechanisms, as lightweight as possible.*/
 header("Content-Type: application/javascript; charset=utf-8");
 //header('Cache-Control: public');
 $modify_time = filemtime(__FILE__);
@@ -11,8 +12,7 @@ include_once('lib/Minifier.php');	/* JShrink minifyer */
 /* SETTINGS */
 /* Paths */
 $staticUrl = '//static.thenmap.net';
-//$thenmapUrl = '//www.thenmap.net';
-$thenmapUrl = '//' . $_SERVER['HTTP_HOST'];
+$thenmapUrl = '//' . $_SERVER['HTTP_HOST']; //'//www.thenmap.net'
 $p = dirname($_SERVER['PHP_SELF']);
 if ( $p && ('/' !==  $p) ) {
 	$thenmapUrl .= "/$p";
@@ -45,6 +45,10 @@ $maps = array(	"available"    => array ('europe-ortho',
 /* Print controlbar (pause/play-button etc)? */
 $printControlbar = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "true" ) );
 $printControlbar->set( filter_input(INPUT_GET,"controls",FILTER_SANITIZE_STRING) );
+
+/* Print nation info-box in tooltips? */
+$printInfobox = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "true" ) );
+$printInfobox->set( filter_input(INPUT_GET,"infobox",FILTER_SANITIZE_STRING) );
 
 /* Initiate automatically? Then all the end user need is to include the script, no js code at all */
 $autoInit = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "true" ) );
@@ -113,6 +117,9 @@ $dataJson->set( filter_input(INPUT_GET,"data",FILTER_SANITIZE_STRING) );
 $dataUnit = new Setting ( array ( "type" => Setting::STRING ) );
 $dataUnit->set( filter_input(INPUT_GET,"dataUnit",FILTER_SANITIZE_STRING) );
 
+/* Floor for sparklines in infoboxes */
+$sparklineFloor = new Setting ( array ( "type" => Setting::INTEGER, "fallback" => 0 ) );
+$sparklineFloor->set( filter_input(INPUT_GET,"sparklinefloor",FILTER_SANITIZE_STRING) );
 
 /***********************************************************************************************/
 /* Start buffer */
@@ -348,6 +355,14 @@ var Thenmap = {
 				if ( (this.paths[pid][i].s <= yy) && (yy <= this.paths[pid][i].e) ) {
                     this.paths[pid].e.setAttribute("class", this.paths[pid][i].c); //.className does not work for svg in Chrome
 					unknown = false;
+/*					if ("undefined" !== typeof(jQuery)) {
+						var qtipE = this.paths[pid].e.getAttribute("aria-describedby");
+						if (qtipE) {
+							if ($("#"+qtipE).qtip('api').elements.tooltip.is(':visible')) {
+								$("#"+qtipE).qtip('toggle', true);
+							}
+						}
+					}*/
 				}
 			}
 			if (unknown) {
@@ -518,7 +533,6 @@ var Thenmap = {
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js";
 			} ?>', function () {
-				$(".sparkline").sparkline([1,2,3,6,4]);
 			});
 //			console.log(self.qtip.dataJson);
 		});
@@ -576,7 +590,7 @@ var Thenmap = {
 			var self = this;
 			var	nations = $(self.parent.svg).find("g.nations > *");
 
-			$(nations).qtip({ 
+			self.parent.tooltips = $(nations).qtip({ 
 				prerender: false,
 				content: {
 					text: function(event, api) {
@@ -600,6 +614,8 @@ var Thenmap = {
 										}
 									});
 								}
+								<?php if ( $printInfobox->get() ) { ?>
+
 								/* Find current governement */
 								if (p[i].g !== undefined) {
 									self.findCurrentWDItem(p[i].g, "n", function(gov) {
@@ -608,7 +624,11 @@ var Thenmap = {
 										}
 									});
 								}
+								<?php } ?>
+
 								s+="</header>";
+								<?php if ( $printInfobox->get() ) { ?>
+
 								s+="<dl>";
 								/* Find current capital */
 								if (p[i].h !== undefined) {
@@ -623,6 +643,12 @@ var Thenmap = {
 									});
 								}
 								s+="</dl>";
+								/* Add a separator if we have both an infobox and other data */
+								if (self.dataJson !== undefined) {
+									s += "<hr style='clear:both' />";
+								}
+								<?php } ?>
+
 								/* do we have a data json? */
 								if (self.dataJson !== undefined) {
 									/*leta efter matchande klasser */
@@ -632,29 +658,35 @@ var Thenmap = {
 											if (self.dataJson[c] !== undefined) {
 												arrIndex = self.parent.currentYear - self.parent.firstYear;
 												if (self.dataJson[c]) {
-													s += "<hr style='clear:both' /><p>"+self.dataJson[c][arrIndex]+"&nbsp;<?php echo($dataUnit->get()); ?><span class='sparkline'></span></p>";
+													s += "<p>";
+													if (self.dataJson[c][arrIndex]) {
+														s += self.dataJson[c][arrIndex]+"&nbsp;<?php echo($dataUnit->get()); ?>";
+													} else {
+														s += "<?php echo(L::qtip_novalueavailable); ?>";
+													}
+													s += '</p><div class="sparklineContainer"><span class="firstyear year"><?php echo $firstYear->get(); ?></span><span class="sparkline"></span><span class="lastyear year"><?php echo $lastYear->get(); ?></span></div>';
 												}
 												/* Can we know when this element is ready? */
+												/* TODO continue polling until ready */
 												setTimeout(function(){
+													for ( var rm=[], i=0; i < arrIndex; i++ ){
+														rm[i] = "#000";
+													}
+													rm[arrIndex] = "#C00";
 													$(api.tooltip[0]).find(".sparkline").sparkline(
 																							self.dataJson[c], {
-																							barColor: "black",
-																							zeroColor: "",
+																							barColor: "#000",
+																							colorMap: rm,
 																							fillColor: "",
 																							disableTooltips: true,
 																							type: "bar",
-																							chartRangeMin:0
+																							chartRangeMin:<?php echo $sparklineFloor->get(); ?>
 																							});
 												}, 70);
 											}
 										});
 									});
 								}
-	//							if ( (typeof nationDescriptions !== "undefined") && nationDescriptions[q] ) {
-	//								s += '<p>'+nationDescriptions[q]+'</p>';
-	//							}
-	//							s += '<p class="credit"><?php echo(L::qtip_wikidatacred); ?></p>'
-
 								return s;
 							}
 						}
@@ -684,8 +716,8 @@ var Thenmap = {
 					/* Run before tooltip is created */
 //					show: function(event, tt) {
 //					}
-					/* Run before tooltip is created */
-//					show: function(event, tt) {
+					//FIXME: check if this is what we need, rather than timeouts
+//					visible: function(event, tt) {
 //						$(".sparkline").sparkline();
 //					}
 //				}
