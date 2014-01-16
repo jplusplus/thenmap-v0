@@ -18,6 +18,7 @@ class Setting {
 	const YEAR     = 2;
 	const STRING   = 3;
 	const BOOLEAN  = 4;
+	const INTEGER  = 5;
 	
 	private $_value;
 
@@ -51,7 +52,7 @@ class Setting {
 
     	if ( isset( $params["type"] ) ) {
     		if( in_array(	$params["type"], 
-    						array ( self::LANGUAGE, self::STRING, self::YEAR, self::BOOLEAN ) 
+    						array ( self::LANGUAGE, self::STRING, self::YEAR, self::BOOLEAN, self::INTEGER ) 
     					) ) {
 	    		$this->type = $params["type"];
 	    	}
@@ -109,7 +110,10 @@ class Setting {
     									return false;
     								}
     							break;
-    		case self::STRING:
+			case self::INTEGER:
+								return is_int( intval($val) );
+    							break;
+	   		case self::STRING:
 					    		if ( is_string( $val ) ) {
     								 	return true;
     								} else {
@@ -132,7 +136,9 @@ class Setting {
 		switch ( $this->type ) {
 
 			case self::YEAR:
+			case self::INTEGER:
 								return intval($val);
+								break;
 			case self::BOOLEAN:
 								if ( "true" === $val || "1" === $val ) {
 									return (true);
