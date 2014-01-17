@@ -52,6 +52,7 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	<head>
 		<meta charset=utf-8 />
 		<meta name="viewport" content="width=device-width">
+		<link rel="dns-prefetch" href="//commons.wikimedia.org">
 
 		<title>Thenmap</title>
 
@@ -106,6 +107,6 @@ $dataCss->set( filter_input(INPUT_GET,"dataCss",FILTER_SANITIZE_STRING) );
 	</article>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js></script>
 		<script src=//cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/3.0.4/jquery.imagesloaded.min.js></script>
-		<script src="thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;mlang=<?php echo $mapLanguage->get(); ?>&amp;unCache=234&amp;debug=true"></script>
+		<script src="v/0.1.0/thnmp.js?map=<?php echo $map->get(); ?>&amp;dataCss=<?php echo $dataCss->get(); ?>&amp;fYear=<?php echo $firstYear->get(); ?>&amp;sYear=<?php echo $startingYear->get(); ?>&amp;lYear=<?php echo $lastYear->get(); ?>&amp;mlang=<?php echo $mapLanguage->get(); ?>"></script>
 	</body>
 </html>
