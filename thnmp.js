@@ -143,7 +143,7 @@ var Thenmap = {
 
 	/* DATA    */
 	paths: <?php
-		$file = 'maps/' . $map->get() . '/' . $map->get() . '-' . $mapLanguage->get() . '.json';
+		$file = 'maps/' . $map->get() . '/' . $mapLanguage->get() . '.json';
 		if ( $c = file_get_contents($file) ) {
 			echo ($c);
 		} else {
