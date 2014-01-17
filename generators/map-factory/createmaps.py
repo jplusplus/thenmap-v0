@@ -10,7 +10,6 @@ from dbfpy import dbf
 import re, urlparse #URI-encoding
 import hashlib #md5 for svg paths, to find duplicates 
 
-
 ##########################################
 #          SETTINGS                      #
 import settings                          #
@@ -448,9 +447,9 @@ for mapType in mapTypes:
 								if "qid" in item:
 									#s/e in wikidatajson
 									outitem = {}
-									if "s" in outitem:
+									if "s" in item:
 										outitem["s"] = item["s"]
-									if "e" in outitem:
+									if "e" in item:
 										outitem["e"] = item["e"]
 									#localized name from prop file
 									outitem["n"] = wikidataPropjson[propName][item["qid"]][l]
