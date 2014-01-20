@@ -4,6 +4,7 @@ header("Content-Type: application/javascript; charset=utf-8");
 //header('Cache-Control: public');
 $modify_time = filemtime(__FILE__);
 header('Last-Modified: ' . gmdate("D, d M Y H:i:s", $modify_time) . " GMT");
+$cacheHash = md5($modify_time);
 
 /* LIBRARIES */
 require_once('lib/setting.php');	/* 	 for handling all settings */
@@ -11,12 +12,15 @@ include_once('lib/Minifier.php');	/* JShrink minifyer */
 
 /* SETTINGS */
 /* Paths */
+$currentVersion = '0.1.0';
 $staticUrl = '//static.thenmap.net';
-$thenmapUrl = '//' . $_SERVER['HTTP_HOST']; //'//www.thenmap.net'
+$thenmapBaseUrl = '//' . $_SERVER['HTTP_HOST']; //'//www.thenmap.net'
 $p = dirname($_SERVER['PHP_SELF']);
 if ( $p && ('/' !==  $p) ) {
-	$thenmapUrl .= "/$p";
+	$thenmapUrl = "$thenmapBaseUrl/$p";
 }
+$serverRoot = $_SERVER['DOCUMENT_ROOT'];
+
 
 /* Languages*/
 $languages = array( 'available'    => array ('sv','en','fi','fr','de','es','ru','it','nl','pl','zh','pt','ar','ja','fa','no','he','tr','da','uk','ca','id','hu','vi','ko','et','cs','hi','sr','bg'),
@@ -41,6 +45,14 @@ $maps = array(	"available"    => array ('europe-ortho',
 										),
 				"fallback"     => 'world-robinson',
 			);
+
+/* TODO calculate this when generating the map, and store in svg, or in a separate file */
+$ratios = array (	'world-robinson' => '44%',
+					'world-mollweide' => '44%',
+					'europe-ortho' => '94%',
+					'europe-caucasus-lcc' => '98%',
+					'africa-laea' => '104%',
+				);
 
 /* Print controlbar (pause/play-button etc)? */
 $printControlbar = new Setting( array( "type" => Setting::BOOLEAN , "fallback" => "true" ) );
@@ -76,9 +88,7 @@ if ( $_GET["lang"] && !$_GET["mlang"] ) {
 $map = new Setting( $maps );
 $map->set( filter_input(INPUT_GET,"map",FILTER_SANITIZE_STRING) );
 
-$svgFile = $thenmapUrl . '/maps/' . $map->get() . '/' . $map->get() . '.svg';
-$mapsVersion = filemtime($svgFile);
-$cacheHash = md5($mapsVersion);
+$svgFile = $thenmapBaseUrl . '/maps/' . $map->get() . '/' . $map->get() . '.svg';
 
 /* Dates */
 $firstYear     = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 1946 ) );
@@ -87,7 +97,7 @@ $firstYear->set( filter_input(INPUT_GET,"fYear",FILTER_SANITIZE_STRING) );
 $lastYear      = new Setting ( array ( "type" => Setting::YEAR, "fallback" => 2014 ) );
 $lastYear->set( filter_input(INPUT_GET,'lYear',FILTER_SANITIZE_STRING) );
 
-$startingYear  = new Setting ( array ( 'type' => Setting::YEAR, "fallback" => 1965 ) );
+$startingYear  = new Setting ( array ( 'type' => Setting::YEAR, "fallback" => 1980 ) );
 $startingYear->set( filter_input(INPUT_GET,'sYear',FILTER_SANITIZE_STRING) );
 
 $dateOffset    = new Setting ( array ( 'fallback' => '07-01') );
@@ -143,7 +153,7 @@ var Thenmap = {
 
 	/* DATA    */
 	paths: <?php
-		$file = 'maps/' . $map->get() . '/' . $mapLanguage->get() . '.json';
+		$file = $serverRoot . '/maps/' . $map->get() . '/' . $mapLanguage->get() . '.json';
 		if ( $c = file_get_contents($file) ) {
 			echo ($c);
 		} else {
@@ -151,7 +161,7 @@ var Thenmap = {
 		}
 	?>,
 	flags: <?php
-		$file = 'maps/' . $map->get(). '/flags.json';
+		$file = $serverRoot . '/maps/' . $map->get(). '/flags.json';
 		if ( $c = file_get_contents($file) ) {
 			echo ($c);
 		} else {
@@ -173,6 +183,7 @@ var Thenmap = {
 	timelineHandle:false,	//element
 	svg:false,		//element
 	mapcontainer: false, //element
+	innercontainer: false, //element
 	
 	callback: false,	// extra callback function for animation (normally for updating custom buttons, etc)
 						// Will be called like this: callback(currentYear)
@@ -211,12 +222,19 @@ var Thenmap = {
 			var ajaxloader  = document.createElement('div');
 			ajaxloader.className = 'ajaxloader';
 
+			this.innercontainer  = document.createElement('div');
+			this.innercontainer.id = 'thenmap-inner-container';
+
 			var unsupported = document.createComment("[if lte IE 8]><i><?php echo(L::nosupport);?></i><![endif]");
 			
 			this.mapcontainer.appendChild(ajaxloader);
 			this.mapcontainer.appendChild(unsupported);
 			this.section.appendChild(this.mapcontainer);
+			this.mapcontainer.appendChild(this.innercontainer);
+		} else {
+			this.innercontainer = document.getElementById('thenmap-inner-container');
 		}
+		this.innercontainer.style.paddingBottom = "<?php echo $ratios[$map->get()]; ?>";
 		/* Create slider bar, if it do not already exist */
 		var sliderElement = document.getElementById('thenmap-slider');
 		if ( !(sliderElement) ) {
@@ -250,10 +268,12 @@ var Thenmap = {
 
 			// Add attributes
 			svg.id = "thenmap-map";
-			svg.preserveAspectRatio = "xMinYMin slice";
+//			svg.preserveAspectRatio = "xMinYMin slice";
+			svg.removeAttribute("width");
+			svg.removeAttribute("height");
 
 			/* Append image */
-			self.svg = self.mapcontainer.appendChild(svg);
+			self.svg = self.innercontainer.appendChild(svg);
 
 			/* Fix clipping problems in IE, by explicitly setting max-width */
 //			var bBox = self.svg.getBBox();
@@ -586,6 +606,9 @@ var Thenmap = {
 			}
 			return s;
 		},
+		makeImageSrc: function(f, width){
+			return "//upload.wikimedia.org/wikipedia/commons/thumb/"+f.i+"/"+f.n+"/"+width+"px-"+f.n+f.s;
+		},
 		attachQtip: function() {
 			var self = this;
 			var	nations = $(self.parent.svg).find("g.nations > *");
@@ -610,7 +633,7 @@ var Thenmap = {
 										/* Look up this flag id in flag dict */
 										if (self.parent.flags[flag] !== undefined) {
 											f = self.parent.flags[flag];
-											s += '<a href="//commons.wikimedia.org/wiki/File:'+f.n+'" target="_blank"><img class="flag" width="40" src="//upload.wikimedia.org/wikipedia/commons/thumb/'+f.i+'/'+f.n+'/80px-'+f.n+f.s+'"/></a>';
+											s += '<a href="//commons.wikimedia.org/wiki/File:'+f.n+'" target="_blank"><img class="flag" width="40" src="'+self.makeImageSrc(f,40)+'" srcset="'+self.makeImageSrc(f,60)+' 1.5x, '+self.makeImageSrc(f,80)+' 2x"/></a>';
 										}
 									});
 								}
@@ -772,7 +795,7 @@ var Thenmap = {
 	/*      el.type= "text/css";*/ 
 	/*     if(el.styleSheet) { el.styleSheet.... = ...};//IE only */
 	if (document.styleSheets[0].addImport) {
-		 document.styleSheets[0].addImport("//www.thenmap.net/css/ie.css");
+		 document.styleSheets[0].addImport("<?php echo $thenmapUrl; ?>/css/ie.css");
 	}
 
 	/* ADD PREDEFINED DATA CSS, IF ANY.  */
