@@ -14,7 +14,6 @@ import hashlib #md5 for svg paths, to find duplicates
 #          SETTINGS                      #
 import settings                          #
 #                                        #
-mapTypes = ["europe-ortho", "world-mollweide", "world-robinson", "africa-laea", "europe-caucasus-lcc"]
 ##########################################
 
 mapSettings = {
@@ -163,7 +162,7 @@ print "Reading dbf file...",
 db = dbf.Dbf(dbffile)
 print "done"
 
-for mapType in mapTypes:
+for mapType in settings.mapTypes:
 
 	outputDirectory       = currentPath+'/../../maps/'+mapType
 	#temp file
@@ -419,15 +418,33 @@ for mapType in mapTypes:
 
 		for k,v in nations.iteritems():
 			nation = v.copy()
-#			print nation
+			
+#			Always use local fallback if available
+			if nation["n"] in localTranslations:
+				nation["n"] = localTranslations[nation["n"]].decode('UTF-8') #'ISO-8859-1')
 			if "q" in nation:
 				qid = nation["q"]
+
+#				if l is "sv":
+#					print qid
+#					print nation["n"],
+#					if nation["n"] in localTranslations:
+#						print ", Lokal: ",
+#						print localTranslations[nation["n"]]
+#					if qid in wikidatajson:
+#						print ", WD: ",
+#						print wikidatajson[qid]["n"][l].encode('UTF-8'),
+#						print (qid in wikidatajson) and (wikidatajson[qid]["n"][l] != "")
+
+#				Always use local fallback if available				
 				if nation["n"] in localTranslations:
 					nation["n"] = localTranslations[nation["n"]].decode('UTF-8') #'ISO-8859-1')
-				elif qid in wikidatajson:
+				elif (qid in wikidatajson) and (wikidatajson[qid]["n"][l] != ""):
 					nation["n"] = wikidatajson[qid]["n"][l]
 				else:
 					print "Failed to translate %s" % nation["n"]
+				if nation["n"] is "":
+					print "%s turned out empty in %s" % (nation["n"],l)
 
 				# Get properties 
 				if qid in wikidatajson:
@@ -440,8 +457,8 @@ for mapType in mapTypes:
 					#Get all entity properties
 					for propName, (pid,propAbbr) in settings.entityProperties.items():
 						if propName in wikidatajson[qid]:
-							print "wikidatajson: for %s in %s", (propName,qid)
-							print wikidatajson[qid][propName]
+#							print "wikidatajson: for %s in %s" % (propName,qid)
+#							print wikidatajson[qid][propName]
 							outitems = []
 							for item in wikidatajson[qid][propName]:
 								if "qid" in item:
