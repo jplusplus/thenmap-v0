@@ -201,10 +201,15 @@ for c in chunks:
 								outPropVal = {}
 
 								if val["mainsnak"]["datavalue"]["type"] == "string":
-									outPropVal["i"] = fileId
-									imagesFound[pkey].add(val["mainsnak"]["datavalue"]["value"])
-									imageIDs["File:"+val["mainsnak"]["datavalue"]["value"]] = fileId
-									fileId += 1
+									fullFileName = "File:"+val["mainsnak"]["datavalue"]["value"]
+									#File already used?
+									if fullFileName in imageIDs:
+										outPropVal["i"] = imageIDs[fullFileName]
+									else:
+										outPropVal["i"] = fileId
+										imagesFound[pkey].add(val["mainsnak"]["datavalue"]["value"])
+										imageIDs["File:"+val["mainsnak"]["datavalue"]["value"]] = fileId
+										fileId += 1
 																		
 								if "qualifiers" in val:
 									outPropVal["s"] = getStartDate(val)
