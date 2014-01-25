@@ -564,17 +564,17 @@ var Thenmap = {
 		/* Loop through an array of WikiData entities, to find the current one(s) */
 		findCurrentWDItem: function(arr, key, callback) {
 	
-			var yy = this.currentYear+"-<?php echo $dateOffset->get(); ?>";
+			var yy = this.parent.currentYear+"-<?php echo $dateOffset->get(); ?>";
 			var j = arr.length;
 			var matches = [];
 			while(j--){
 				var sy = arr[j].s;
 				if  (sy === undefined || sy === "") {
-					sy = this.firstYear+'-01-01';
+					sy = '<?php echo $firstYear->get(); ?>-01-01';	
 				}
 				var ey = arr[j].e;
 				if  (ey === undefined || ey === "") {
-					ey = this.lastYear+'-12-31';
+					ey = '<?php echo $lastYear->get(); ?>-12-31';
 				}
 				if ( ( sy <= yy) && (yy <= ey ) ) {
 	//				matches.push(arr[i][key]);
@@ -631,8 +631,8 @@ var Thenmap = {
 								if (p[i].f !== undefined) {
 									self.findCurrentWDItem(p[i].f, "i", function(flag) {
 										/* Look up this flag id in flag dict */
-										if (self.parent.flags[flag] !== undefined) {
-											f = self.parent.flags[flag];
+										if (self.parent.flags[flag[0]] !== undefined) {
+											f = self.parent.flags[flag[0]];
 											s += '<a href="//commons.wikimedia.org/wiki/File:'+f.n+'" target="_blank"><img class="flag" width="40" src="'+self.makeImageSrc(f,40)+'" srcset="'+self.makeImageSrc(f,60)+' 1.5x, '+self.makeImageSrc(f,80)+' 2x"/></a>';
 										}
 									});
