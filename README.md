@@ -24,26 +24,27 @@ The easiest way to implement thenmap is by creating a `<div>` or `<section>` ele
     <script src="//thenmap.net/thenmap.js"></script>
 
 Nations are now colored with css classes. The css can also be hosted, like here (decolonization of the world):
-http://www.leowallentin.se/thenmap/demo2.html
+//www.thenmap.net/demo
 
 And here is the unemployment in European nations, year by year (using customized styles):
-http://www.leowallentin.se/thenmap/demo.html
+//www.thenmap.net/demo/demo.html
 
 You can also build your own, custom controls for the map, like in this map showing countries taking part in the Eurovision Song Contest since the start:
-http://www.leowallentin.se/thenmap/demo.html
+//www.thenmap.net/demo/demo.html
 
 For more control over the script, see alternative usage method below
 
 Five maps are currently avaiable, but more maps can easily be rendered. (A python script renders all maps automatically):
- * The world, Robinson projection:  http://www.thenmap.net?map=world-robinson
- * The world, Mollweide projection: http://www.thenmap.net?map=world-mollweide
- * Europe, orthographic projection: http://www.thenmap.net?map=europe-ortho
- * Europe, incl. Caucasus, Lambert conformal conic: http://www.thenmap.net?map=europe-caucasus-lcc
- * Africa, Lambert Azimuthal Equal-Area Projection: http://www.thenmap.net?map=africa-laea
+ * The world, Robinson projection:  //www.thenmap.net?map=world-robinson
+ * The world, Mollweide projection: //www.thenmap.net?map=world-mollweide
+ * Europe, orthographic projection: //www.thenmap.net?map=europe-ortho
+ * Europe, incl. Caucasus, Lambert conformal conic: //www.thenmap.net?map=europe-caucasus-lcc
+ * Africa, Lambert Azimuthal Equal-Area Projection: //www.thenmap.net?map=africa-laea
 
 Nation names are translated into 30 languages, thanks to the WikiData project. Swedish and English should be fully covered. English is used as a fallback language, when no translation is available. A better approach should be implemented.
- * Europe in French: http://www.thenmap.net?map=europe&mlang=fr
- * The World in Hindi: http://www.thenmap.net?map=world&mlang=hi
+ * Europe in French: //www.thenmap.net?map=europe&mlang=fr
+ * The World in Hindi: //www.thenmap.net?map=world&mlang=hi
+ 
 The languages are: sv,en,fi,fr,de,es,ru,it,nl,pl,zh,pt,ar,ja,fa,no,he,tr,da,uk,ca,id,hu,vi,ko,et,cs,hi,sr, and bg
 
 All parameters to the script:
@@ -114,7 +115,8 @@ Colors schemes are from [ColorBrewer2](http://colorbrewer2.org/) by Cynthia A. B
 
 The icon font was generated with [IcoMoon](http://icomoon.io/).
 
-Shapefiles are primarily based on [Natural Earth](http://www.naturalearthdata.com/about/), but also borrowing from [DIVA-GIS free spatial data](http://www.diva-gis.org/Data) and [CSHAPES](http://nils.weidmann.ws/projects/cshapes), Weidmann, Nils B., Doreen Kuse, and Kristian Skrede Gleditsch. 2010. [The Geography of the International System: The CShapes Dataset. International Interactions 36 (1)](http://www.tandfonline.com/doi/abs/10.1080/03050620903554614#.UqAvJrXtkWM), especially after 1975. Hyderabad borders are from [sharemap.org](http://sharemap.org/public/Hyderabad) by anonymous users, [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/). Countless old, public domain maps have been used to recreate old borders when needed. We would appreciate a line of credit if you find our shapes useful and reuse them!
+Shapefiles are primarily based on [Natural Earth](http://www.naturalearthdata.com/about/), but also borrowing from [DIVA-GIS free spatial data](http://www.diva-gis.org/Data) and [CSHAPES](http://nils.weidmann.ws/projects/cshapes), Weidmann, Nils B., Doreen Kuse, and Kristian Skrede Gleditsch. 2010. [The Geography of the International System: The CShapes Dataset. International Interactions 36 (1)](http://www.tandfonline.com/doi/abs/10.1080/
+03050620903554614#.UqAvJrXtkWM), especially after 1975. Hyderabad borders are from [sharemap.org](http://sharemap.org/public/Hyderabad) by anonymous users, [CC-BY-SA 3.0](http://creativecommons.org/licenses/by-sa/3.0/). Countless old, public domain maps have been used to recreate old borders when needed. We would appreciate a line of credit if you find our shapes useful and reuse them!
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
