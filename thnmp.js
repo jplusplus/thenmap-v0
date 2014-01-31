@@ -523,27 +523,30 @@ var Thenmap = {
 			} else if(e.which === 36){
 				self.moveToStart();
 				return false;
-			} else if(e.which === 8){
+			} else if(e.which === 32){
 				self.togglePlayPause();
 				return false;
 			}
 		});
-
 		if ("undefined" === typeof($.qtip)) {
+			self.debug("loading qtip2...");
 			LazyLoad.js('<?php
 			if ( $debugMode->get() ) {
 				echo "$thenmapUrl/js/jquery.qtip.min.js";
 			} else {
 				echo "//cdnjs.cloudflare.com/ajax/libs/qtip2/2.1.1/basic/jquery.qtip.min.js";
 			} ?>', function () {
+				self.debug("done. Attaching...");
 				self.qtip.attachQtip();
 			});
 		} else {
+			self.debug("Qtip2 already loaded. Attaching...");
 			self.qtip.attachQtip();
 		}
 		/* load data local json */
 		<?php
 		if ($str = $dataJson->get() ) { ?>
+		self.debug("loading dataJson...");
 		$.getJSON("<?php echo($str); ?>", function( data ) {
 			self.qtip.dataJson = data;
 			/* Local data is added to tooltips as plain text and sparklines */
@@ -554,7 +557,7 @@ var Thenmap = {
 				echo "//cdnjs.cloudflare.com/ajax/libs/jquery-sparklines/2.1.2/jquery.sparkline.min.js";
 			} ?>', function () {
 			});
-//			console.log(self.qtip.dataJson);
+			self.debug("done");
 		});
 		
 		<?php } ?>
@@ -612,7 +615,6 @@ var Thenmap = {
 		attachQtip: function() {
 			var self = this;
 			var	nations = $(self.parent.svg).find("g.nations > *");
-
 			self.parent.tooltips = $(nations).qtip({ 
 				prerender: false,
 				content: {
@@ -714,7 +716,8 @@ var Thenmap = {
 							}
 						}
 
-					}
+					}, //END text:
+					button: true
 				},
 				position: {
 					target: 'mouse', // Use the mouse position as the position origin
@@ -734,7 +737,10 @@ var Thenmap = {
 				},
 				show: {
 				     solo: true
-				}
+				},
+//				position: {
+//					viewport: self.innerContaner
+//				}
 //				events: {
 					/* Run before tooltip is created */
 //					show: function(event, tt) {
