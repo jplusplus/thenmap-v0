@@ -211,7 +211,7 @@ Dragdealer.prototype =
 	},
 	setBounds: function(){
 		var how = 100;
-		var wow = Math.min(this.wrapper.offsetWidth,1080);
+		var wow = Math.min(this.wrapper.offsetWidth,1600);
 		/* FIXME offsetwidth blir fel i IE.  */
 
 		this.bounds.x0 = this.bounds.left;
