@@ -1,0 +1,413 @@
+/* Some hacks need to be reapplied after using css minificators */
+/* http://cssminifier.com/ will remove svg#thenmap-map {height:auto} */
+/* http://www.csscompressor.com/ will remove svg#thenmap-map {height:auto; height:none\9;} */ 
+/* http://www.minifycss.com/ will remove svg#thenmap-map {height:auto; height:none\9;} */ 
+/**/
+/* http://refresh-sf.com/ seem to work out of the box */
+
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+main,
+nav,
+section,
+summary {
+    display: block;
+}
+
+/**
+ * Remove the gray background color from active links in IE 10.
+ */
+#thenmap a {
+    background: transparent;
+}
+/**
+ * Address `outline` inconsistency between Chrome and other browsers.
+ */
+#thenmap a:focus {
+    outline: thin dotted;
+}
+/**
+ * Improve readability when focused and also mouse hovered in all browsers.
+ */
+#thenmap a:active,
+#thenmap a:hover {
+    outline: 0;
+}
+
+/**
+ * Correct overflow displayed oddly in IE 9.
+ */
+svg:not(:root) {
+    overflow: hidden;
+}
+
+#thenmap {
+/*	max-width:1080px;*/
+	margin-left:auto;
+	margin-right:auto;
+}
+
+/* Web font for icons */
+@font-face {
+	font-family: 'thenmap-icons';
+	src:url('../fonts/icomoon.eot');
+	src:url('../fonts/icomoon.eot?#iefix') format('embedded-opentype'),
+		url('../fonts/icomoon.woff') format('woff'),
+		url('../fonts/icomoon.ttf') format('truetype'),
+		url('../fonts/icomoon.svg#icomoon') format('svg');
+	font-weight: normal;
+	font-style: normal;
+}
+
+/*
+ * qTip2 - Pretty powerful tooltips - v2.1.1
+ * http://qtip2.com
+ *
+ * Copyright (c) 2013 Craig Michael Thompson
+ * Released under the MIT, GPL licenses
+ * http://jquery.org/license
+ *
+ * Date: Thu Jul 11 2013 02:03 GMT+0100+0100
+ * Plugins: None
+ * Styles: None
+ */
+.qtip{
+	position: absolute;
+	left: -28000px;
+	top: -28000px;
+	display: none;
+
+	max-width: 280px;
+	min-width: 50px;
+	
+/*/	font-size: 10.5px;
+/	line-height: 12px;*/
+	font-size: .85em;
+
+	direction: ltr;
+
+	box-shadow: none;
+	padding: 0;
+	
+}
+
+/*FIXME rtl*/
+.qtip img.flag {
+	float:	right;
+	margin-left: 4px;
+	border: 1px solid #f5f5f5;
+}
+
+.qtip h3 {
+	font-size: 1.2em;
+	margin-top:0;
+}
+
+/*.qtip .currentYear {
+	font-size: .6em;
+}*/
+
+.qtip .sparklineContainer {
+	white-space: nowrap;
+	margin:4px 0;
+	clear: right;
+}
+
+.qtip .year {
+	display: inline-block;
+	font-size: 8px;
+	-webkit-transform:rotate(90deg);
+	-moz-transform:rotate(90deg);
+	-ms-transform:rotate(90deg);
+	-o-transform:rotate(90deg);
+	transform:rotate(90deg);
+	padding:0;margin:0;
+}
+
+.qtip-content{
+	position: relative;
+	padding: 5px 9px;
+	overflow: hidden;
+
+	text-align: left;
+	word-wrap: break-word;
+}
+
+	/* Default close button class */
+	.qtip-close{
+		position: absolute;
+		right: -9px; top: -9px;
+
+		cursor: pointer;
+		outline: medium none;
+
+		border-width: 1px;
+		border-style: solid;
+		border-color: transparent;
+	}
+	
+		.qtip-icon, .qtip-icon .ui-icon{
+			-moz-border-radius: 3px;
+			-webkit-border-radius: 3px;
+			border-radius: 3px;
+			text-decoration: none;
+		}
+
+			.qtip-icon .ui-icon{
+				width: 18px;
+				height: 14px;
+
+				line-height: 14px;
+				text-align: center;
+				text-indent: 0;
+				font: normal bold 10px/13px Tahoma,sans-serif;
+
+				color: inherit;
+				background: transparent none no-repeat -100em -100em;
+			}
+
+/* Applied to 'focused' tooltips e.g. most recently displayed/interacted with */
+.qtip-focus{}
+
+/* Applied on hover of tooltips i.e. added/removed on mouseenter/mouseleave respectively */
+.qtip-hover{}
+
+/* Default tooltip style */
+.qtip-default{
+	border-width: 1px;
+	border-style: solid;
+	border-color: #F1D031;
+
+	background-color: #FFFFA3;
+	color: #555;
+}
+
+#thenmap-map-container{
+	/*We need to set this for the svg element as well */
+	max-height: 640px;	
+}
+
+#thenmap-inner-container {
+	/* from http://demosthenes.info/blog/744/Make-SVG-Responsive */
+	display: inline-block;
+	position: relative;
+	width: 100%;
+
+	/* Padding-bottom will depend on the h/w ratio of the image, and is set in the js */
+	/*padding-bottom: 30%;*/
+	vertical-align: middle;
+	overflow: hidden;
+}
+
+#thenmap-slider {
+	margin-top:.4em;
+}
+
+/* SVG */
+svg#thenmap-map, #thenmap svg {
+	width: 100%;
+	height: 100%;
+	max-height: 640px;
+	
+	/* from http://demosthenes.info/blog/744/Make-SVG-Responsive */
+	display: inline-block;
+	position: absolute;
+	top: 0;
+	left: 0;
+				
+/*	width:auto;/* For FF. Will use nominal svg width, possibly displaying clipped content (e.g. Russia in europe-ortho) otherwise */
+/*	height:auto;/* For FF. Will use nominal svg height (768px) otherwise */
+	border:1px solid whitesmoke;
+}
+
+#thenmap-map-container.loading .land {
+	fill:#eee;
+	stroke:none;
+}
+
+/* .land 
+   ugly way of targeting .land paths with lowest possible specificity, to allow css to override us as easily as possible
+*/
+g > g > path {
+	fill:lightgray;
+	stroke:white;
+	stroke-width:1px;
+}
+
+g.n, path.n, circle.n {visibility:hidden}
+
+circle.point {visibility:visible}
+
+@media screen and (-webkit-min-device-pixel-ratio:0) {
+	.limit .land, .limit path.nations {
+		fill:url("#diagonalHatch") !important;
+	}
+}
+
+.limit .land, path.nations .limit {
+	fill:url("/maps/styles.svg#diagonalHatch");
+}
+
+.circle {
+	opacity:.4;
+	fill:none;
+}
+
+/* Sea */
+svg g#background {
+	fill: aliceblue;
+	opacity: .4;
+}
+
+/* Control bar */
+.controlbar {
+	margin-left:auto;margin-right:auto;
+	max-width:280px;
+	padding:0;
+	/* Place us on top of svg padding (z-index needs a position) */
+	z-index:2;
+	position:relative;
+}
+
+/* Normalize buttons */
+.controlbar input[type="button"] {
+    -webkit-appearance: button; /* 2 */
+    cursor: pointer; /* 3 */
+}
+
+.controlbar html input[disabled] {
+    cursor: default;
+}
+
+.control {
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	font-family: "thenmap-icons", sans-serif;
+	cursor: pointer;
+	background-color:#C00;
+	color: #fff;
+	padding: 4px 8px;
+	margin: 4px 2px;
+	border-radius: 3px;
+	display: inline-block;
+	text-align: center;
+	outline:0;border:0;
+}
+.control:hover, .control:focus {
+	background-color: #8A0000;
+}
+#thenmap-play {width: 100px;}
+#thenmap-stepback,#thenmap-stepforward, #thenmap-rewind,#thenmap-rewind {width: 30px;}
+
+.dragdealer {
+	position: relative;
+	height: 30px;
+	background: #EEE;
+	max-width: 1600px;
+	margin-left:auto;margin-right:auto;
+}
+.dragdealer .handle {
+	position: absolute;
+	cursor: pointer;
+	width: 100px;
+	height: 30px;
+	background: #C00;
+	color: #FFF;
+	line-height: 30px;
+	text-align: center;
+}
+.dragdealer .disabled {
+	background: #898989;
+}
+
+.dragdealer .handle:active {
+	background-color: #8A0000;
+}
+
+@media (pointer:coarse) {
+	.dragdealer, .dragdealer .handle {
+		height: 50px !important;
+		font-size:1.2em !important;
+	}
+}
+
+/* Gice the container some height (we don't know yet how big the image is)*/
+#thenmap-map-container.loading .placeholder {height:350px;}
+#thenmap-map-container.loading {max-height:100%;}
+
+
+/* http://www.sitepoint.com/css3-ajax-loading-icon/ */
+#thenmap-map-container.loading .ajaxloader {
+	z-index: 2;
+	position: absolute;
+	top:15%;
+	left:48%;
+	width: 30px;
+	height: 30px;
+	border: 8px solid #933;
+	border-right-color: transparent;
+	border-right: 0 none;
+	border-radius: 50%;
+	box-shadow: 0 0 25px 2px #633;
+	-webkit-animation: spin 1s linear infinite;
+	-moz-animation: spin 1s linear infinite;
+	-ms-animation: spin 1s linear infinite;
+	-o-animation: spin 1s linear infinite;
+	animation: spin 1s linear infinite;
+}
+
+@-webkit-keyframes spin
+{
+	from { -webkit-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -webkit-transform: rotate(180deg); opacity: 1; }
+	to   { -webkit-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-moz-keyframes spin
+{
+	from { -moz-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -moz-transform: rotate(180deg); opacity: 1; }
+	to   { -moz-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-ms-keyframes spin
+{
+	from { -ms-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -ms-transform: rotate(180deg); opacity: 1; }
+	to   { -ms-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@-o-keyframes spin
+{
+	from { -o-transform: rotate(0deg); opacity: 0.4; }
+	50%  { -o-transform: rotate(180deg); opacity: 1; }
+	to   { -o-transform: rotate(360deg); opacity: 0.4; }
+}
+
+@keyframes spin
+{
+	from { transform: rotate(0deg); opacity: 0.2; }
+	50%  { transform: rotate(180deg); opacity: 1; }
+	to   { transform: rotate(360deg); opacity: 0.2; }
+}
+
+.land, .circle {
+  -webkit-transition: fill 200ms cubic-bezier(0.42, 0, 0.8, 1);
+  -moz-transition: fill 200ms cubic-bezier(0.42, 0, 0.8, 1);
+  -o-transition: fill 200ms cubic-bezier(0.42, 0, 0.8, 1);
+   transition: fill 200ms cubic-bezier(0.42, 0, 0.8, 1);
+}
+
+/*.land:hover .n, .circle:hover .n, path.nations:hover {
+	fill:darkgray;
+}*/
+
+.land:hover, .circle:hover {
+	opacity:.5;
+}
